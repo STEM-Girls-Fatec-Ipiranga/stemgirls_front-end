@@ -1,0 +1,576 @@
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/*------------------------------ FONTES DO PROJETO ------------------------------*/
+@font-face {
+    font-family: 'Quicksand-Bold';
+    src: url(../assets/fontes/Quicksand-Bold.ttf);
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'Quicksand-Light';
+    src: url(../assets/fontes/Quicksand-Light.ttf);
+}
+
+@font-face {
+    font-family: 'Quicksand-Medium';
+    src: url(../assets/fontes/Quicksand-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'Quicksand-Regular';
+    src: url(../assets/fontes/Quicksand-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'Quicksand-SemiBold';
+    src: url(../assets/fontes/Quicksand-SemiBold.ttf);
+}
+
+/*------------------------------ CLASSES GLOBAIS ------------------------------*/
+.container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #ecf0f1;
+    background-image: url(../assets/img/fundologin.png);
+    color: black;
+}
+
+.content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 15px;
+    background-color: white;
+    width: 870px;
+    height: 540px;
+    box-shadow: 0px 0px 20px 5px #ecf0f1;
+}
+
+.content::before {
+    content: "";
+    position: absolute;
+    width: 40%;
+    height: 100%;
+    background: linear-gradient(to top, #f36ec0, #af5fe4);
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
+    left: 0;
+}
+
+.titulo {
+    font-family: 'Quicksand-Bold';
+    font-size: 1.5rem;
+}
+
+.botao {
+    border-radius: 25px;
+    color: #fff;
+    padding: 10px 30px;
+    cursor: pointer;
+    align-self: center;
+    border: none;
+    font-family: 'Quicksand-Bold';
+    font-size: 1rem;
+}
+
+/*------------------------------ PRIMEIRA SESSÃO (CONTENT) - CADASTRO ------------------------------*/
+.primeiro_content {
+    display: flex;
+}
+
+.primeira_coluna {
+    text-align: center;
+    width: 40%;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.logo_login {
+    width: 150px;
+}
+
+.logo_login img {
+    width: 100%;
+    object-fit: contain;
+}
+
+.primeiro_titulo {
+    color: white;
+    margin: 18px 0;
+    width: 100%;
+}
+
+.botao_texto{
+    width: 100%;
+}
+
+.descricao {
+    font-family: 'Quicksand-Regular';
+    font-size: 1rem;
+    color: white;
+    margin: 60px 0 16px;
+}
+
+.meio {
+    width: 70%;
+    margin: 0 50px;
+}
+
+.primeiro_botao {
+    background-color: transparent;
+    border: 3px solid white;
+    transition: background-color .5s;
+    box-sizing: border-box;
+}
+
+.primeiro_botao:hover {
+    background-color: white;
+    color: #f36ec0;
+    border: 3px solid white;
+}
+
+.primeiro_content .segunda_coluna{
+    z-index: 11;
+}
+
+.segundo_titulo {
+    color: #f36ec0;
+    margin-bottom: 20px;
+}
+
+.social_media {
+    width: 35%;
+    height: 45px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    margin: 5px;
+}
+
+.social_media a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: solid 1px #c7c7c7;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    text-decoration: none;
+}
+
+.social_media a i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #c7c7c7;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    font-size: 20px;
+    transition: color .5s;
+}
+
+.social_media a i:hover {
+    color: #ffffff;
+    border: solid 1px #c7c7c7;
+}
+
+.social_media a:hover {
+    background-color: #c7c7c7;
+    border: none;
+}
+
+.segunda_coluna {
+    width: 60%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.form {
+    width: 55%;
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 20px;
+}
+
+/* =================================================================== */
+/* --- ESTILOS REUTILIZÁVEIS PARA INPUTS (CÓDIGO ALTERADO) --- */
+/* =================================================================== */
+
+/* Usamos uma classe genérica '.input_group' para o <label> que envolve o ícone e o input */
+.input_group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 45px;
+    width: 100%;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    outline: none;
+    border-radius: 15px;
+    color: #81868b;
+    font-size: 1rem;
+    margin: 10px 0; /* Ajustado para não ter margem lateral */
+    transition: border-color 0.3s ease;
+}
+
+/* Efeito de foco para o grupo */
+.input_group:focus-within {
+    border-color: #f36ec0;
+}
+
+/* Estilo para o ícone dentro do grupo */
+.input_group i {
+    margin: 0 10px 0 15px; /* Ajuste para alinhar o ícone */
+}
+
+/* Estilo para o input dentro do grupo */
+.input_group input {
+    flex: 1;
+    height: 100%;
+    border: none;
+    outline: none;
+    background-color: transparent;
+    font-size: 1rem;
+    font-family: 'Quicksand-Regular';
+    color: #333;
+    padding-right: 15px;
+}
+
+.form input::placeholder {
+    font-family: 'Quicksand-Regular';
+}
+
+.terms_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: auto;
+    margin: 10px 0;
+}
+
+.input_terms {
+    margin-top: 10px;
+    padding: 0;
+    font-size: 16px;
+}
+
+.segundo_botao {
+    background-color: #f36ec0;
+    color: white;
+    transition: background-color .5s;
+    border: 3px solid #f36ec0;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+.segundo_botao:hover {
+    background-color: transparent;
+    border: 3px solid #f36ec0;
+    color: #f36ec0;
+    box-sizing: border-box;
+}
+
+/*------------------------------ SEGUNDA SESSÃO (CONTENT) - LOGIN ------------------------------*/
+.segundo_content {
+    position: absolute;
+}
+
+.segundo_content .primeira_coluna{
+    order: 2;
+    z-index: -1;
+}
+
+.segundo_content .segunda_coluna{
+    order: 1;
+    z-index: -1;
+}
+
+.form a{
+    text-align: center;
+    color: #81868b;
+    font-size: 1rem;
+    text-decoration: none;
+}
+
+.password{
+    margin: 10px 0;
+}
+
+/* ---------------------- CLASSES DE DEFINIÇÃO DE ESTADO ---------------------- */
+.loga .primeiro_content .primeira_coluna,
+.loga .primeiro_content .segunda_coluna{
+    z-index: -1;
+}
+
+.loga .segundo_content .segunda_coluna{
+    z-index: 11;
+}
+
+.loga .segundo_content .primeira_coluna{
+    z-index: 13;
+}
+
+.loga .content::before{
+    left: 60%;
+    border-bottom-right-radius: 15px;
+    border-top-right-radius: 15px;
+    border-bottom-left-radius: 0;
+    border-top-left-radius: 0;
+    animation: slidein  300ms;
+    z-index: 12;
+}
+
+.cadastra .segundo_content .primeira_coluna,
+.cadastra .segundo_content .segunda_coluna{
+    z-index: -1;
+}
+
+.cadastra .primeiro_content .segunda_coluna{
+    z-index: 11;
+}
+
+.cadastra .primeiro_content .primeira_coluna{
+    z-index: 13;
+}
+
+.cadastra .content::before{
+    left: 0;
+    animation: slideout 300ms;
+    z-index: 12;
+}
+
+.loga .primeiro_content .segunda_coluna {
+    z-index: -1;
+    position: relative;
+    animation: deslocamentoEsq  350ms;
+}
+
+.cadastra .segundo_content .segunda_coluna {
+    position: relative;
+    z-index: -1;
+    animation: deslocamentoDir  350ms;
+}
+ 
+ .segundo_content {
+    position: absolute;
+    display: flex;
+    width: 870px;
+    height: 540px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.form input:-webkit-autofill,
+.form input:-webkit-autofill:hover,
+.form input:-webkit-autofill:focus,
+.form input:-webkit-autofill:active {
+    -webkit-text-fill-color: #333;
+    -webkit-box-shadow: 0 0 0 30px white inset !important;
+    box-shadow: 0 0 0 30px white inset !important;
+}
+
+/* ---------------- ANIMAÇÃO ------------------- */
+@keyframes deslocamentoEsq {
+    from {
+        left: 0;
+        opacity: 1;
+        z-index: 12;
+    }
+    25% {
+        left: -80px;
+        opacity: .5;
+    }
+    50% {
+        left: -100px;
+        opacity: .2;
+    }
+    to {
+        left: -110px;
+        opacity: 0;
+        z-index: -1;
+    }
+}
+
+@keyframes deslocamentoDir {
+    from {
+        left: 0;
+        z-index: 12;
+    }
+    25% {
+        left: 80px;
+    }
+    50% {
+        left: 100px;
+    }
+    to {
+        left: 110px;
+        z-index: -1;
+    }
+}
+
+@keyframes slidein {
+    from {
+        left: 0;
+        width: 40%;
+    }
+    25% {
+        left: 5%;
+        width: 50%;
+    }
+    50% {
+        left: 25%;
+        width: 60%;
+    }
+    75% {
+        left: 45%;
+        width: 50%;
+    }
+    to {
+        left: 60%;
+        width: 40%;
+    }
+}
+
+@keyframes slideout {
+    from {
+        left: 60%;
+        width: 40%;
+    }
+    25% {
+        left: 45%;
+        width: 50%;
+    }
+    50% {
+        left: 25%;
+        width: 60%;
+    }
+    75% {
+        left: 5%;
+        width: 50%;
+    }
+    to {
+        left: 0;
+        width: 40%;
+    }
+}
+
+
+/* --- ESTILIZAÇÃO CUSTOMIZADA DO CHECKBOX --- */
+
+.input_terms {
+    display: none;
+}
+
+.label_terms {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.5;
+    color: #81868b;
+    background-color: transparent !important;
+    margin: 0 !important;
+    padding-left: 26px; /* Espaço para o checkbox customizado */
+}
+
+.label_terms::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 2px; /* Ajuste vertical */
+    width: 16px;
+    height: 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+    flex-shrink: 0;
+}
+
+.input_terms:checked + .label_terms::before {
+    background-color: #f36ec0;
+    border-color: #f36ec0;
+}
+
+.label_terms::after {
+    content: '✓';
+    position: absolute;
+    left: 3px; /* Ajuste horizontal do símbolo */
+    top: 1px; /* Ajuste vertical do símbolo */
+    font-size: 14px;
+    font-weight: bold;
+    color: white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.input_terms:checked + .label_terms::after {
+    opacity: 1;
+}
+
+.label_terms a {
+    color: #af5fe4;
+    font-family: 'Quicksand-Bold';
+    text-decoration: underline;
+}
+/* =================================================================== */
+/* --- ESTILOS PARA AS TELAS DE REDEFINIÇÃO DE SENHA --- */
+/* =================================================================== */
+
+/*
+  Container para os formulários de 'Esqueci a Senha' e 'Redefinir Senha'.
+  É uma versão mais simples do .content, para uma única coluna.
+*/
+.form_container {
+    background-color: white;
+    padding: 50px 70px;
+    border-radius: 15px;
+    box-shadow: 0px 0px 20px 5px #ecf0f1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 90%;
+    max-width: 520px; /* Limita a largura para não ficar muito grande em telas maiores */
+}
+
+/* Estilo para o texto descritivo abaixo do título */
+.form_description {
+    font-family: 'Quicksand-Regular';
+    color: #81868b; /* Mesma cor de texto dos ícones e placeholders */
+    font-size: 1rem;
+    margin-top: 10px;
+    margin-bottom: 30px;
+    max-width: 400px; /* Limita a largura da linha de texto */
+}
+
+/* Estilo para o link de 'Voltar ao Login' */
+.back_link {
+    margin-top: 25px;
+    font-family: 'Quicksand-Regular';
+    color: #81868b;
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.back_link:hover {
+    text-decoration: underline;
+    color: #f36ec0; /* Cor do tema no hover */
+}
