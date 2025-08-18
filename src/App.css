@@ -1,0 +1,26 @@
+/*------------------------------ FONTES DO PROJETO ------------------------------*/
+@font-face {
+    font-family: 'Quicksand-Bold';
+    src: url(../assets/fontes/Quicksand-Bold.ttf);
+    font-weight: 800;
+}
+
+@font-face {
+    font-family: 'Quicksand-Light';
+    src: url(../assets/fontes/Quicksand-Light.ttf);
+}
+
+@font-face {
+    font-family: 'Quicksand-Medium';
+    src: url(../assets/fontes/Quicksand-Medium.ttf);
+}
+
+@font-face {
+    font-family: 'Quicksand-Regular';
+    src: url(../assets/fontes/Quicksand-Regular.ttf);
+}
+
+@font-face {
+    font-family: 'Quicksand-SemiBold';
+    src: url(../assets/fontes/Quicksand-SemiBold.ttf);
+}

@@ -1,4 +1,5 @@
 import Styles from '../css/Login.module.css';
+//import Styles from '../css/Global.module.css';
 import LogoSG from '../assets/img/LogoSG.png';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';

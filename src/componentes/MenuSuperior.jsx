@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Search, Sun, Moon, Menu, X } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const MenuSuperior = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
