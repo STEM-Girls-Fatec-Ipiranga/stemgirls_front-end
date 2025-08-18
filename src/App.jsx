@@ -5,11 +5,14 @@ import Login from "./componentes/Login.jsx"; // Adicione .jsx
 import ForgotPasswordPage from "./componentes/ForgotPasswordPage.jsx"; // Adicione .jsx
 import ResetPasswordPage from "./componentes/ResetPasswordPage.jsx"; // Adicione .jsx
 import Historia from "./componentes/Historia.jsx"; // Corrigido: primeira letra maiúscula
+import Eventos from "./componentes/Eventos.jsx";
+import SobreNos from "./componentes/SobreNos.jsx";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx"; // Adicione .jsx
 
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import "./App.css";
+
 
 // ... resto do seu componente App
 
@@ -27,6 +30,12 @@ function App() {
 
         {/* Rota para a página de História */}
         <Route path="/Historia" element={<Historia />} />
+
+        {/* Rota para a página de Eventos */}
+        <Route path="/Eventos" element={<Eventos />} />
+
+        {/* Rota para a página de Sobre Nós */}
+        <Route path="/SobreNos" element={<SobreNos />} />
 
         {/* Rota para a página "Esqueci a Senha". É esta que vai corrigir o seu problema! */}
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
