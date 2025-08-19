@@ -40,11 +40,13 @@ export default function SobreNos() {
     <div className="bg-gray-100 text-gray-800 px-6 py-16 font-sans">
       {/* Seção Nossa Equipe */}
       <div className="max-w-6xl mx-auto mb-20">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">Nossa equipe</h2>
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">STEM Girls</h2>
+        <p className="m-10 text-[18px]">Em março de 2024 foi criada uma Equipe no Microsoft Teams da Fatec Ipiranga e divulgado para as alunas dos cursos de TI da Fatec, nomeada STEM Girls Fatec Ipiranga. Nessa equipe foi apresentado o projeto</p>
         <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-12">
+
           {/* Carrossel */}
           <div className="relative w-full md:w-1/2 mb-8 md:mb-0">
-            <div className="w-full h-80 bg-gray-300 rounded-2xl overflow-hidden shadow-xl">
+            <div className="w-full h-90 bg-gray-300 rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={fotos[current]}
                 alt="Equipe"
@@ -66,12 +68,12 @@ export default function SobreNos() {
           </div>
 
           {/* Texto equipe */}
-          <div className="w-full md:w-1/2 text-center md:text-left">
-            <p className="text-gray-600 leading-relaxed mb-4">
-              Em março de 2024 foi criada uma Equipe no Microsoft Teams da Fatec Ipiranga e divulgada para as alunas dos cursos de TI da Fatec, nomeada STEM Girls Fatec Ipiranga. Nessa equipe foi apresentado o projeto.
+          <div className="w-full md:w-1/2 text-center md:text-left text-[18px] mt-10">
+            <p className="leading-relaxed mb-4">
+              A partir da criação do comitê gestor foram realizadas as seguintes atividades: cronograma de reuniões semanais ou quinzenais, proposta e escolha de outro nome, criação de um logo, elaboração do planos de trabalho para cada equipe.
             </p>
-            <p className="text-gray-600 leading-relaxed">
-              A partir da criação do comitê gestor foram realizadas as seguintes atividades: cronograma de reuniões semanais ou quinzenais, proposta e escolha de outro nome, criação de um logo, elaboração dos planos de trabalho para cada equipe.
+            <p className="leading-relaxed">
+              Reunião presencial para o fechamento do semestre e roda de conversa, na qual foram tratados temas importantes e definidas as próximas ações.
             </p>
           </div>
         </div>
@@ -93,7 +95,7 @@ export default function SobreNos() {
               <div className="absolute top-4 right-4 z-20 text-white animate-pulse">
                 <FaHandPointer size={20} />
               </div>
-              
+
               <motion.div
                 animate={{ rotateY: flipped === index ? 180 : 0 }}
                 transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
@@ -119,6 +121,13 @@ export default function SobreNos() {
           ))}
         </div>
       </div>
+
+      {/* Seção de vídeo */}
+      <div className="mt-[80px] max-w-6xl mx-auto flex flex-col items-center">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Apresentação</h2>
+          <div className="w-10 h-10 bg-grey-800">video</div>
+      </div>
+
     </div>
   );
 }
