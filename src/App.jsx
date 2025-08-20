@@ -19,7 +19,7 @@ import "./App.css";
 function App() {
   const location = useLocation();
 
-  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha, /perfil"];
+  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil"];
   const mostrarMenu = !rotasSemMenu.some(rota => location.pathname.startsWith(rota));
 
   return (

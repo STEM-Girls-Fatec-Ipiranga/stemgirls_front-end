@@ -57,7 +57,7 @@ const MenuSuperior = () => {
           </div>
 
           {/* Botão Cadastre-se - Desktop */}
-          <div className="hidden md:flex items-center gap-4">
+          {/* <div className="hidden md:flex items-center gap-4">
             <Link to="/login">
               <button
                 className="px-6 py-2 bg-white text-pink-500 rounded-full font-quicksand font-semibold 
@@ -67,16 +67,16 @@ const MenuSuperior = () => {
                 Cadastre-se
               </button>
             </Link>
-          </div>
+          </div> */}
 
           {/* Botão de perfil */}
-          {/* <div>
+          <div>
             <Link to="/perfil">
               <button className="px-6 py-2 text-white font-semibold hover:scale-105 transition-all duration-200">
                 <CircleUser size={45} />
               </button>
             </Link>
-          </div> */}
+          </div>
 
           {/* Menu mobile button */}
           <button
