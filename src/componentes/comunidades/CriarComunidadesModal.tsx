@@ -142,7 +142,7 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
             </button>
             <button
               type="submit"
-              className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105"
+              className="bg-pink-500 text-white px-6 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105"
             >
               Criar comunidade
             </button>

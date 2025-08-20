@@ -74,7 +74,7 @@ const PerfilComunidade: React.FC<PerfilComunidadeProps> = ({
                                 <>
                                     <button
                                         onClick={() => setMostrarCriarPostagem(true)}
-                                        className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105 flex items-center"
+                                        className="bg-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105 flex items-center"
                                     >
                                         <Plus className="h-4 w-4 mr-2" />
                                         Fazer publicação
