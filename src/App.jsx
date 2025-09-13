@@ -9,9 +9,10 @@ import ResetPasswordPage from "./componentes/ResetPasswordPage.jsx";
 import Historia from "./componentes/Historia.jsx";
 import Eventos from "./componentes/Eventos.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
-import PerfilUsuario from "./componentes/PerfilUsuário.jsx";
+import PerfilUsuario from "./componentes/PerfilUsuario.js";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
+//import Rodape from "./componentes/Rodape.jsx";
 
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import "./App.css";
@@ -19,7 +20,7 @@ import "./App.css";
 function App() {
   const location = useLocation();
 
-  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/homevisit"];
+  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil"];
   const mostrarMenu = !rotasSemMenu.some(rota => location.pathname.startsWith(rota));
 
   return (
@@ -34,11 +35,13 @@ function App() {
         <Route path="/historia" element={<Historia />} />
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
-        <Route path="/perfil" element={<PerfilUsuario />} />
+        <Route path="/perfil" element={<PerfilUsuario/>} />
 
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
       </Routes>
+
+      {/* <Rodape /> */}
     </GoogleOAuthProvider>
   );
 }

@@ -11,13 +11,16 @@
   },
   "dependencies": {
     "@react-oauth/google": "^0.12.2",
+    "@tailwindcss/postcss": "^4.1.13",
     "axios": "^1.10.0",
     "framer-motion": "^12.23.12",
     "lucide-react": "^0.539.0",
+    "postcss": "^8.5.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-icons": "^5.5.0",
-    "react-router-dom": "^7.6.2"
+    "react-router-dom": "^7.6.2",
+    "tailwindcss": "^4.1.13"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
@@ -30,5 +33,18 @@
     "globals": "^16.0.0",
     "vite": "^6.3.1"
   },
-  "proxy": "http://localhost:8080"
+  "proxy": "http://localhost:8080",
+  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
+  "main": "eslint.config.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_front-end.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_front-end/issues"
+  },
+  "homepage": "https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_front-end#readme"
 }

@@ -93,10 +93,9 @@ function Login() {
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
 
-        // Bloqueia o envio se a senha não for válida
         if (!isPasswordValid) {
             alert('Por favor, crie uma senha que atenda a todos os critérios de segurança.');
-            return; // Impede o envio do formulário
+            return; 
         }
 
         try {
@@ -104,8 +103,15 @@ function Login() {
                 nomeCompleto: form.nomeCompleto,
                 nomeUsuario: form.nomeUsuario,
                 email: form.email,
-                senha: form.senha
+                senha: form.senha,
+                joinDate: new Date() // Adiciona a data de cadastro
             });
+            const user = response.data;
+            if (response.status === 201) {
+                localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
+                alert("Login bem-sucedido!");
+                navigate("/");
+            }
             alert("Cadastro realizado com sucesso! Por favor, faça o login.");
             setModo("signup");
         } catch (error) {
@@ -124,11 +130,13 @@ function Login() {
                 senha: loginForm.senha
             });
 
-            const token = response.data.token;
+            const { token, user } = response.data;
+            console.log(user);
             if (token) {
                 localStorage.setItem("userToken", token);
+                localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
                 alert("Login bem-sucedido!");
-                navigate("/dashboard");
+                navigate("/"); // redireciona pro perfil
             }
         } catch (error) {
             const errorMessage = error.response?.data || "Verifique suas credenciais.";
@@ -209,9 +217,9 @@ function Login() {
                                 Li e aceito os <a href="#" target="_blank"> Termos de Uso</a>
                             </label>
                         </div>
-                        
+
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
-                        
+
                     </form>
                 </div>
             </div>
@@ -256,9 +264,9 @@ function Login() {
                             }}
                         />
                         <Link to="/esqueci-a-senha" className={`${Styles.password} ${Styles.back_link}`}>Esqueceu a senha?</Link>
-                        
+
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Entrar</button>
-                        
+
                     </form>
                 </div>
             </div>
