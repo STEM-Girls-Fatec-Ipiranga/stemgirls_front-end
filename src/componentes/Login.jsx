@@ -209,7 +209,9 @@ function Login() {
                                 Li e aceito os <a href="#" target="_blank"> Termos de Uso</a>
                             </label>
                         </div>
+                        
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
+                        
                     </form>
                 </div>
             </div>
@@ -254,7 +256,9 @@ function Login() {
                             }}
                         />
                         <Link to="/esqueci-a-senha" className={`${Styles.password} ${Styles.back_link}`}>Esqueceu a senha?</Link>
+                        
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Entrar</button>
+                        
                     </form>
                 </div>
             </div>

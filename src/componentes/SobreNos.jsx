@@ -1,6 +1,12 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaUsers, FaComments, FaLaptopCode, FaHandPointer } from "react-icons/fa";
+import fundoSG from "../assets/img/FundoSGcolorido.jpg";
+
+import FotoTalita from "../assets/img/Foto_Talita.jpg";
+import FotoKauane from "../assets/img/Foto_Kauane.jpg";
+import FotoAna from "../assets/img/Foto_Ana.jpeg";
+import FotoLethicia from "../assets/img/Foto_lelet.jpg";
 
 export default function SobreNos() {
   const [current, setCurrent] = useState(0);
@@ -14,6 +20,48 @@ export default function SobreNos() {
   const prevSlide = () => {
     setCurrent((prev) => (prev - 1 + fotos.length) % fotos.length);
   };
+
+  const membros = [
+    {
+      nome: "Talita Vitória",
+      cargo: "Product Owner",
+      descricao: "Designer UX e Dev Full Stack",
+      foto: FotoTalita,
+    },
+    {
+      nome: "Kauane Martins",
+      cargo: "Scrum Master",
+      descricao: "Designer UX e Dev BD",
+      foto: FotoKauane,
+    },
+    {
+      nome: "Ana Clara",
+      cargo: "Tester",
+      descricao: "Analista de Qualidade",
+      foto: FotoAna,
+    },
+    {
+      nome: "Lethicia Ribeiro",
+      cargo: "Tester",
+      descricao: "Analista de Documentação",
+      foto: FotoLethicia,
+    },
+  ];
+
+  const empresaCards = [
+    {
+      titulo: "Missão",
+      texto: "Nossa missão é inspirar e capacitar meninas na tecnologia."
+    },
+    {
+      titulo: "Visão",
+      texto: "Ser referência no incentivo à diversidade na área de STEM."
+    },
+    {
+      titulo: "Valores",
+      texto: "Inclusão, respeito, inovação e colaboração."
+    }
+  ];
 
   const cards = [
     {
@@ -37,7 +85,7 @@ export default function SobreNos() {
   ];
 
   return (
-    <div className="bg-gray-100 text-gray-800 px-6 py-16 font-sans">
+    <div className="max-w-full bg-gray-100 text-gray-800 py-16 font-sans">
       {/* Seção Nossa Equipe */}
       <div className="max-w-6xl mx-auto mb-20">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">STEM Girls</h2>
@@ -72,6 +120,7 @@ export default function SobreNos() {
             <p className="leading-relaxed mb-4">
               A partir da criação do comitê gestor foram realizadas as seguintes atividades: cronograma de reuniões semanais ou quinzenais, proposta e escolha de outro nome, criação de um logo, elaboração do planos de trabalho para cada equipe.
             </p>
+            <br />
             <p className="leading-relaxed">
               Reunião presencial para o fechamento do semestre e roda de conversa, na qual foram tratados temas importantes e definidas as próximas ações.
             </p>
@@ -123,10 +172,89 @@ export default function SobreNos() {
       </div>
 
       {/* Seção de vídeo */}
-      <div className="mt-[80px] max-w-6xl mx-auto flex flex-col items-center">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Apresentação</h2>
-          <div className="w-10 h-10 bg-grey-800">video</div>
+      <div className="mt-[80px] h-[600px] justify-center mx-auto flex flex-col items-center">
+        <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-2">Apresentação</h2>
+        <div className="w-[70%] h-[70%] text-center bg-gray-300 rounded-[20px]">video</div>
       </div>
+
+
+      {/* Seção Missão Visão e Valores */}
+      <section className="mt-[80px] mb-[80px]">
+        <h2 className="text-3xl mb-12 font-bold text-center text-gray-800">
+          Empresa
+        </h2>
+        <div
+          className="bg-gray-400 bg-cover bg-center max-w-full h-[600px] flex items-center justify-center shadow-[inset_0_0_27px_4px_rgba(0,0,0,0.6)]"
+          style={{ backgroundImage: `url(${fundoSG})` }}
+        >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-[85%] h-[60%] place-items-center">
+            {empresaCards.map((card, i) => (
+              <div key={i} className="group [perspective:1000px]">
+                <div className="relative w-[350px] h-[350px] transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
+
+                  {/* Frente */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-white border border-purple-600 shadow-md rounded-[25px] [backface-visibility:hidden]">
+                    <h3 className="text-xl font-bold text-purple-700">
+                      {card.titulo}
+                    </h3>
+                  </div>
+
+                  {/* Verso */}
+                  <div className="absolute inset-0 flex items-center justify-center bg-white text-gray-800 p-4 rounded-[25px] [transform:rotateY(180deg)] [backface-visibility:hidden]">
+                    <p className="text-center">{card.texto}</p>
+                  </div>
+
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+      {/* Nossa equipe */}
+
+      <section className="bg-pink-50 py-16 px-6">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Nossa equipe de desenvolvimento
+          </h2>
+          <p className="text-gray-700 mb-12 max-w-2xl mx-auto">
+            Para melhoras nossa conexão e nos aproximar, conheça um pouco mais
+            sobre a equipe que desenvolveu a plataforma!
+          </p>
+
+          {/* Grid de membros */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            {membros.map((membro, index) => (
+              <div
+                key={index}
+                className="bg-white border border-purple-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center"
+              >
+                <img
+                  src={membro.foto}
+                  alt={membro.nome}
+                  className="w-28 h-28 rounded-full object-cover mb-4 border-2 border-purple-400"
+                />
+                <h3 className="text-lg font-bold text-gray-900">
+                  {membro.nome}
+                </h3>
+                <p className="text-sm text-gray-600">{membro.cargo}</p>
+                <p className="text-sm text-gray-500">{membro.descricao}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* <section>
+        <h2 className="text-3xl mb-12 font-bold text-center text-gray-800">
+          Equipe de desenvolvimento
+        </h2>
+
+
+
+      </section> */}
 
     </div>
   );

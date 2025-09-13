@@ -5,8 +5,8 @@ import { Postagem, Comunidade } from '../types';
 
 interface CartaoPostagemProps {
   postagem: Postagem;
-  aoEntrarNaComunidade: (idComunidade: string) => void;
-  aoExcluirPostagem: (idPostagem: string) => void;
+  aoEntrarNaComunidade?: (idComunidade: string) => void;
+  aoExcluirPostagem?: (idPostagem: string) => void;
   comunidades: Comunidade[];
 }
 
@@ -18,10 +18,12 @@ const CartaoPostagem: React.FC<CartaoPostagemProps> = ({
 }) => {
   const [mostrarMenu, setMostrarMenu] = useState(false);
   
+  // 🔹 Busca os dados da comunidade
   const comunidade = comunidades.find(c => c.id === postagem.comunidadeId);
   const podeExcluir = comunidade?.souDono;
   const ehMembro = comunidade?.souMembro;
 
+  // 🔹 Exibe o tempo relativo da postagem
   const formatarTempoAtras = (data: Date) => {
     const agora = new Date();
     const diffEmMinutos = Math.floor((agora.getTime() - data.getTime()) / (1000 * 60));
@@ -45,13 +47,13 @@ const CartaoPostagem: React.FC<CartaoPostagemProps> = ({
             <h3 className="font-semibold text-gray-800">{postagem.comunidadeNome}</h3>
             <div className="flex items-center text-sm text-gray-500">
               <Clock className="h-3 w-3 mr-1" />
-              {formatarTempoAtras(postagem.dataCriacao)}
+              {formatarTempoAtras(new Date(postagem.dataCriacao))}
             </div>
           </div>
         </div>
         
         <div className="flex items-center space-x-2">
-          {!ehMembro && (
+          {!ehMembro && aoEntrarNaComunidade && (
             <button
               onClick={() => aoEntrarNaComunidade(postagem.comunidadeId)}
               className="bg-pink-600 text-white px-4 py-1 rounded-lg text-sm font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105"
@@ -70,7 +72,7 @@ const CartaoPostagem: React.FC<CartaoPostagemProps> = ({
             
             {mostrarMenu && (
               <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-32">
-                {podeExcluir && (
+                {podeExcluir && aoExcluirPostagem && (
                   <button
                     onClick={() => {
                       aoExcluirPostagem(postagem.id);

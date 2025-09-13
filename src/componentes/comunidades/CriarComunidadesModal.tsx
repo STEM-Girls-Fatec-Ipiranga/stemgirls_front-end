@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { X, Upload } from 'lucide-react';
+import React, { useState } from "react";
+import { X, Upload } from "lucide-react";
 
 interface CriarComunidadeModalProps {
   estaAberto: boolean;
@@ -10,32 +10,23 @@ interface CriarComunidadeModalProps {
 const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
   estaAberto,
   aoFechar,
-  aoCriar
+  aoCriar,
 }) => {
-  const [nome, setNome] = useState('');
-  const [usuario, setUsuario] = useState('');
-  const [avatar, setAvatar] = useState('');
-
-  const avataresPadrao = [
-    'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    'https://images.pexels.com/photos/1181424/pexels-photo-1181424.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    'https://images.pexels.com/photos/1181263/pexels-photo-1181263.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    'https://images.pexels.com/photos/1181316/pexels-photo-1181316.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    'https://images.pexels.com/photos/1181280/pexels-photo-1181280.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop',
-    'https://images.pexels.com/photos/1181519/pexels-photo-1181519.jpeg?auto=compress&cs=tinysrgb&w=100&h=100&fit=crop'
-  ];
+  const [nome, setNome] = useState("");
+  const [usuario, setUsuario] = useState("");
+  const [avatar, setAvatar] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (nome.trim() && usuario.trim() && avatar) {
       aoCriar({
         nome: nome.trim(),
-        usuario: usuario.startsWith('@') ? usuario : `@${usuario}`,
-        avatar
+        usuario: usuario.startsWith("@") ? usuario : `@${usuario}`,
+        avatar,
       });
-      setNome('');
-      setUsuario('');
-      setAvatar('');
+      setNome("");
+      setUsuario("");
+      setAvatar("");
       aoFechar();
     }
   };
@@ -46,7 +37,9 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 max-w-md w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Criar nova comunidade</h2>
+          <h2 className="text-xl font-semibold text-gray-800">
+            Criar nova comunidade
+          </h2>
           <button
             onClick={aoFechar}
             className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
@@ -65,7 +58,7 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
               value={nome}
               onChange={(e) => setNome(e.target.value)}
               placeholder="Ex: TechWomen Brasil"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full text-black px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               required
             />
           </div>
@@ -79,47 +72,32 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
               value={usuario}
               onChange={(e) => setUsuario(e.target.value)}
               placeholder="techwomenbr"
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full text-black px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
               required
             />
-            <p className="text-xs text-gray-500 mt-1">Será exibido como @{usuario.replace('@', '')}</p>
+            <p className="text-xs text-gray-500 mt-1">
+              Será exibido como @{usuario.replace("@", "")}
+            </p>
           </div>
 
-          <div>
+
+          {/* <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Foto da comunidade
             </label>
-            <div className="grid grid-cols-3 gap-3 mb-4">
-              {avataresPadrao.map((urlAvatar, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  onClick={() => setAvatar(urlAvatar)}
-                  className={`relative rounded-lg overflow-hidden border-2 transition-all duration-200 ${
-                    avatar === urlAvatar ? 'border-pink-500 ring-2 ring-pink-200' : 'border-gray-200 hover:border-pink-300'
-                  }`}
-                >
-                  <img
-                    src={urlAvatar}
-                    alt={`Avatar ${index + 1}`}
-                    className="w-full h-16 object-cover"
-                  />
-                </button>
-              ))}
-            </div>
-            
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
               <Upload className="h-6 w-6 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-500">Ou cole uma URL de imagem</p>
+              <p className="text-sm text-gray-500">Cole uma URL de imagem</p>
               <input
                 type="url"
-                value={avatar.startsWith('https://images.pexels.com') ? '' : avatar}
+                value={avatar}
                 onChange={(e) => setAvatar(e.target.value)}
                 placeholder="https://exemplo.com/imagem.jpg"
                 className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
               />
             </div>
-          </div>
+          </div> */}
+          
 
           {avatar && (
             <div className="text-center">

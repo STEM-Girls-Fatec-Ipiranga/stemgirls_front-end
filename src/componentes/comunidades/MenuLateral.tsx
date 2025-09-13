@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, ChevronLeft, Plus, Users } from 'lucide-react';
+import { Search, Plus } from 'lucide-react';
 import { Comunidade } from '../types';
 import CriarComunidadesModal from './CriarComunidadesModal';
 
@@ -10,7 +10,6 @@ interface MenuLateralProps {
   aoSelecionarComunidade: (comunidade: Comunidade) => void;
   comunidadeSelecionada: Comunidade | null;
   colapsada: boolean;
-  aoAlternarColapso: () => void;
 }
 
 const MenuLateral: React.FC<MenuLateralProps> = ({
@@ -19,8 +18,7 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
   aoEntrarNaComunidade,
   aoSelecionarComunidade,
   comunidadeSelecionada,
-  colapsada,
-  aoAlternarColapso
+  colapsada
 }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -36,140 +34,140 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
 
   return (
     <>
-      <div className={`bg-white shadow-lg transition-all duration-300 ${colapsada ? 'w-0 overflow-hidden' : 'w-80'
-          } relative border-r border-pink-100`}>
-          {/* Botão de colapso */}
-          {/* <button
-              onClick={aoAlternarColapso}
-              className="absolute -right-4 top-6 z-10 bg-gradient-to-r from-pink-500 to-purple-500 text-white p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-          >
-              <ChevronLeft className={`h-4 w-4 transition-transform duration-300 ${colapsada ? 'rotate-180' : ''}`} />
-          </button> */}
+      <div
+        className={`bg-white shadow-lg transition-all duration-300 ${
+          colapsada ? 'w-0 overflow-hidden' : 'w-80'
+        } relative border-r border-pink-100`}
+      >
 
-          <div className="p-6 h-screen overflow-y-auto">
-              {/* Busca */}
-              <div className="relative mb-6">
-                  <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
-                  <input
-                      type="text"
-                      placeholder="Buscar comunidades..."
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
-                      className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-50 text-gray-700"
-                  />
-              </div>
-
-              {/* Minhas comunidades */}
-              <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Minhas comunidades</h3>
-                  {minhasComunidades.length === 0 ? (
-                      <p className="text-gray-500 text-sm mb-3">Você ainda não possui comunidades.</p>
-                  ) : (
-                      <div className="space-y-2 mb-3">
-                          {minhasComunidades.map(comunidade => (
-                              <div
-                                  key={comunidade.id}
-                                  onClick={() => aoSelecionarComunidade(comunidade)}
-                                  className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${comunidadeSelecionada?.id === comunidade.id
-                                          ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
-                                          : 'hover:bg-gray-50'
-                                      }`}
-                              >
-                                  <img
-                                      src={comunidade.avatar}
-                                      alt={comunidade.nome}
-                                      className="w-8 h-8 rounded-full mr-3"
-                                  />
-                                  <div className="flex-1">
-                                      <p className="font-medium text-gray-800 text-sm">{comunidade.nome}</p>
-                                      <p className="text-xs text-gray-500">{comunidade.usuario}</p>
-                                  </div>
-                              </div>
-                          ))}
-                      </div>
-                  )}
-
-                  <button
-                      onClick={() => setShowCreateModal(true)}
-                      className="w-full bg-pink-600 text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
-                  >
-                      <Plus className="h-4 w-4 mr-2" />
-                      Criar comunidade
-                  </button>
-              </div>
-
-              {/* Comunidades que participo */}
-              <div className="mb-6">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">Comunidades que participo</h3>
-                  {comunidadesParticipadas.length === 0 ? (
-                      <p className="text-gray-500 text-sm">Você ainda não faz parte de uma comunidade.</p>
-                  ) : (
-                      <div className="space-y-2">
-                          {comunidadesParticipadas.map(comunidade => (
-                              <div
-                                  key={comunidade.id}
-                                  onClick={() => aoSelecionarComunidade(comunidade)}
-                                  className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${comunidadeSelecionada?.id === comunidade.id
-                                          ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
-                                          : 'hover:bg-gray-50'
-                                      }`}
-                              >
-                                  <img
-                                      src={comunidade.avatar}
-                                      alt={comunidade.nome}
-                                      className="w-8 h-8 rounded-full mr-3"
-                                  />
-                                  <div className="flex-1">
-                                      <p className="font-medium text-gray-800 text-sm">{comunidade.nome}</p>
-                                      <p className="text-xs text-gray-500">{comunidade.usuario}</p>
-                                  </div>
-                              </div>
-                          ))}
-                      </div>
-                  )}
-              </div>
-
-              {/* Explorar */}
-              <div>
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                      Explorar
-                  </h3>
-                  <div className="space-y-2">
-                      {comunidadesExplorarFiltradas.map(comunidade => (
-                          <div
-                              key={comunidade.id}
-                              className="flex items-center p-3 rounded-lg border border-pink-100 hover:border-pink-200 transition-all duration-200 bg-gradient-to-r from-white to-pink-25"
-                          >
-                              <img
-                                  src={comunidade.avatar}
-                                  alt={comunidade.nome}
-                                  className="w-10 h-10 rounded-full mr-3 cursor-pointer"
-                                  onClick={() => aoSelecionarComunidade(comunidade)}
-                              />
-                              <div
-                                  className="flex-1 cursor-pointer"
-                                  onClick={() => aoSelecionarComunidade(comunidade)}
-                              >
-                                  <p className="font-medium text-gray-800 text-sm">{comunidade.nome}</p>
-                                  <p className="text-xs text-gray-500">{comunidade.usuario}</p>
-                              </div>
-                              <button
-                                  onClick={() => aoEntrarNaComunidade(comunidade.id)}
-                                  className="text-pink-600 font-bold px-3 py-1 rounded-lg text-xs hover:shadow-md transition-all duration-200 transform hover:scale-105"
-                              >
-                                  Entrar
-                              </button>
-                          </div>
-                      ))}
-                  </div>
-              </div>
+        {/* Botão de colapso */} {/* <button onClick={aoAlternarColapso} className="absolute -right-4 top-6 z-10 bg-gradient-to-r from-pink-500 to-purple-500 text-white p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105" > <ChevronLeft className={h-4 w-4 transition-transform duration-300 ${colapsada ? 'rotate-180' : ''}} /> </button> */}
+            
+        <div className="p-6 h-screen overflow-y-auto">
+          {/* Busca */}
+          <div className="relative mb-6">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar comunidades..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-50 text-gray-700"
+            />
           </div>
+
+          {/* Minhas comunidades */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Minhas comunidades</h3>
+            {minhasComunidades.length === 0 ? (
+              <p className="text-gray-500 text-sm mb-3">Você ainda não possui comunidades.</p>
+            ) : (
+              <div className="space-y-2 mb-3">
+                {minhasComunidades.map(comunidade => (
+                  <div
+                    key={comunidade.id}
+                    onClick={() => aoSelecionarComunidade(comunidade)}
+                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                      comunidadeSelecionada?.id === comunidade.id
+                        ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
+                        : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    <img
+                      src={comunidade.avatar}
+                      alt={comunidade.nome}
+                      className="w-8 h-8 rounded-full mr-3"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-800 text-sm">{comunidade.nome}</p>
+                      <p className="text-xs text-gray-500">{comunidade.usuario}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              onClick={() => setShowCreateModal(true)}
+              className="w-full bg-pink-600 text-white py-2 px-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+            >
+              <Plus className="h-4 w-4 mr-2" />
+              Criar comunidade
+            </button>
+          </div>
+
+          {/* Comunidades que participo */}
+          <div className="mb-6">
+            <h3 className="text-lg font-semibold text-gray-800 mb-3">Comunidades que participo</h3>
+            {comunidadesParticipadas.length === 0 ? (
+              <p className="text-gray-500 text-sm">Você ainda não faz parte de uma comunidade.</p>
+            ) : (
+              <div className="space-y-2">
+                {comunidadesParticipadas.map(comunidade => (
+                  <div
+                    key={comunidade.id}
+                    onClick={() => aoSelecionarComunidade(comunidade)}
+                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${
+                      comunidadeSelecionada?.id === comunidade.id
+                        ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
+                        : 'hover:bg-gray-50'
+                    }`}
+                  >
+                    <img
+                      src={comunidade.avatar}
+                      alt={comunidade.nome}
+                      className="w-8 h-8 rounded-full mr-3"
+                    />
+                    <div className="flex-1">
+                      <p className="font-medium text-gray-800 text-sm">{comunidade.nome}</p>
+                      <p className="text-xs text-gray-500">{comunidade.usuario}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Explorar */}
+          <div>
+            <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
+              Explorar
+            </h3>
+            <div className="space-y-2">
+              {comunidadesExplorarFiltradas.map(comunidade => (
+                <div
+                  key={comunidade.id}
+                  className="flex items-center p-3 rounded-lg border border-pink-100 hover:border-pink-200 transition-all duration-200 bg-gradient-to-r from-white to-pink-25"
+                >
+                  <img
+                    src={comunidade.avatar}
+                    alt={comunidade.nome}
+                    className="w-10 h-10 rounded-full mr-3 cursor-pointer"
+                    onClick={() => aoSelecionarComunidade(comunidade)}
+                  />
+                  <div
+                    className="flex-1 cursor-pointer"
+                    onClick={() => aoSelecionarComunidade(comunidade)}
+                  >
+                    <p className="font-medium text-gray-800 text-sm">{comunidade.nome}</p>
+                    <p className="text-xs text-gray-500">{comunidade.usuario}</p>
+                  </div>
+                  <button
+                    onClick={() => aoEntrarNaComunidade(comunidade.id)}
+                    className="text-pink-600 font-bold px-3 py-1 rounded-lg text-xs hover:shadow-md transition-all duration-200 transform hover:scale-105"
+                  >
+                    Entrar
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
 
       <CriarComunidadesModal
-          estaAberto={showCreateModal}
-          aoFechar={() => setShowCreateModal(false)}
-          aoCriar={aoCriarComunidade}
+        estaAberto={showCreateModal}
+        aoFechar={() => setShowCreateModal(false)}
+        aoCriar={aoCriarComunidade}
       />
     </>
   );

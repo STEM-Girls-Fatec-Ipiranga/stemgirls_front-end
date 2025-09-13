@@ -144,13 +144,12 @@ const UserProfile: React.FC<UserProfileProps> = ({ user, onLogout }) => {
                     <Edit3 className="w-4 h-4" />
                     Editar Perfil
                   </button>
-                  <button
-                    onClick={handleLogout}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
-                  >
+
+                  <button className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2">
                     <LogOut className="w-4 h-4" />
                     Sair
                   </button>
+
                 </div>
               </div>
             </div>

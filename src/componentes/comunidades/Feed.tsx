@@ -1,5 +1,4 @@
 import React from 'react';
-import { ArrowLeft } from 'lucide-react';
 import { Postagem, Comunidade } from '../types';
 import PostCard from './PostCard';
 import PerfilComunidade from './PerfilComunidade';
@@ -54,12 +53,12 @@ const Feed: React.FC<FeedProps> = ({
           </h1>
           <div className="flex items-center space-x-2 mt-2">
             <button
-              className="bg-transparent text-pink-600 px-4 rounded-lg border border-2 border-pink-600 text-sm font-bold hover:g-pink-600 hover:text-white border-pink-600 hover:bg-pink-600 transition-all duration-200 flex items-center"
+              className="bg-transparent text-pink-600 px-4 rounded-lg border border-2 border-pink-600 text-sm font-bold hover:text-white hover:bg-pink-600 transition-all duration-200"
             >
               Em alta
             </button>
             <button
-              className="bg-transparent text-pink-600 px-4 rounded-lg border border-2 border-pink-600 text-sm font-bold hover:g-pink-600 hover:text-white border-pink-600 hover:bg-pink-600 transition-all duration-200 flex items-center"
+              className="bg-transparent text-pink-600 px-4 rounded-lg border border-2 border-pink-600 text-sm font-bold hover:text-white hover:bg-pink-600 transition-all duration-200"
             >
               Mais recentes
             </button>
