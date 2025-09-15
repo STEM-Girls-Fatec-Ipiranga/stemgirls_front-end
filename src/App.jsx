@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation, BrowserRouter } from "react-router-dom";
 
 import Home from "./componentes/Home.jsx";
-import Comunidades from "./componentes/comunidades/Comunidades.jsx";
+import Comunidades from "./componentes/comunidades/Comunidades.tsx";
 
 import Login from "./componentes/Login.jsx";
 import ForgotPasswordPage from "./componentes/ForgotPasswordPage.jsx";
