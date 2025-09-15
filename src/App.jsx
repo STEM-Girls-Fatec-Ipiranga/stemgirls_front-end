@@ -9,7 +9,7 @@ import ResetPasswordPage from "./componentes/ResetPasswordPage.jsx";
 import Historia from "./componentes/Historia.jsx";
 import Eventos from "./componentes/Eventos.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
-import PerfilUsuario from "./componentes/PerfilUsuario.js";
+import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
 
 import React from 'react'
 import CadastroEvento from "./componentes/CadastroEvento.jsx";
