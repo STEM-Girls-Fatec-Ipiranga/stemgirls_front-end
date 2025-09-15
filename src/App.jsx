@@ -11,6 +11,10 @@ import Eventos from "./componentes/Eventos.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.js";
 
+import React from 'react'
+import CadastroEvento from "./componentes/CadastroEvento.jsx";
+import ListaEventos from "./componentes/ListaEventos.jsx";
+
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 //import Rodape from "./componentes/Rodape.jsx";
 
@@ -22,6 +26,8 @@ function App() {
 
   const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil"];
   const mostrarMenu = !rotasSemMenu.some(rota => location.pathname.startsWith(rota));
+
+
 
   return (
     <GoogleOAuthProvider clientId="179230958964-5hk3dhg87p16157k6im78eu54j5k1bv6.apps.googleusercontent.com">
@@ -39,11 +45,13 @@ function App() {
 
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
+     
       </Routes>
 
-      {/* <Rodape /> */}
-    </GoogleOAuthProvider>
+    {/* <Rodape /> */}
+  </GoogleOAuthProvider>
   );
 }
 
 export default App;
+
