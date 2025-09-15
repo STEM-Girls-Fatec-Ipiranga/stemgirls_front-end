@@ -10,6 +10,7 @@ import Historia from "./componentes/Historia.jsx";
 import Eventos from "./componentes/Eventos.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.js";
+import MiniMentes from "./componentes/minimentes/MiniMentes.jsx";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 //import Rodape from "./componentes/Rodape.jsx";
@@ -36,6 +37,7 @@ function App() {
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
         <Route path="/perfil" element={<PerfilUsuario/>} />
+        <Route path="/minimentes" element={<MiniMentes />} />
 
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />

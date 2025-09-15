@@ -51,11 +51,11 @@ export default function SobreNos() {
   const empresaCards = [
     {
       titulo: "Missão",
-      texto: "Nossa missão é inspirar e capacitar meninas na tecnologia."
+      texto: "Despertar o interesse de meninas para seguirem carreira em Tecnologia da Informação e Comunicação"
     },
     {
       titulo: "Visão",
-      texto: "Ser referência no incentivo à diversidade na área de STEM."
+      texto: "Ser referência na América Latina em equidade de gênero nas carreiras de Tecnologia da Informação e Comunicação"
     },
     {
       titulo: "Valores",
@@ -85,7 +85,7 @@ export default function SobreNos() {
   ];
 
   return (
-    <div className="max-w-full bg-gray-100 text-gray-800 py-16 font-sans">
+    <div className="max-w-full bg-pink-50 text-gray-800 py-16 font-sans">
       {/* Seção Nossa Equipe */}
       <div className="max-w-6xl mx-auto mb-20">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">STEM Girls</h2>
@@ -201,7 +201,7 @@ export default function SobreNos() {
 
                   {/* Verso */}
                   <div className="absolute inset-0 flex items-center justify-center bg-white text-gray-800 p-4 rounded-[25px] [transform:rotateY(180deg)] [backface-visibility:hidden]">
-                    <p className="text-center">{card.texto}</p>
+                    <p className="text-center text-[20px]">{card.texto}</p>
                   </div>
 
                 </div>
