@@ -1,35 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 // Banco de imagens pré-selecionadas
 const imagensDisponiveis = [
-  "/imagens/evento1.jpg",
-  "/imagens/evento2.jpg",
-  "/imagens/evento3.jpg",
+  "/src/assets/img/emeninas-digitais.jpeg",
+  "/src/assets/img/mulheresfortes.png",
+  "/src/assets/img/mulherwomakers.jpeg",
+  { imagem: "/src/assets/img/mulheres-tecnologia.jpg" },
 ];
 
-// Componentes básicos
-function Card({ children, className }) {
-  return <div className={`bg-white rounded-xl shadow-md ${className}`}>{children}</div>;
-}
-
-function CardContent({ children, className }) {
-  return <div className={`p-4 ${className}`}>{children}</div>;
-}
-
-function Button({ children, className, ...props }) {
-  return (
-    <button
-      className={`px-4 py-2 rounded-lg font-semibold transition ${className}`}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-}
-
 export default function Eventos() {
-  // Lista inicial de eventos
-  const [eventos, setEventos] = useState([
+  // Eventos iniciais (fixos)
+  const eventosFixos = [
     {
       id: 1,
       titulo: "Reunião meninas digitais",
@@ -37,8 +18,9 @@ export default function Eventos() {
       hora: "19:00",
       tipo: "ao-vivo",
       local: "São Paulo",
-      descricao: "Reunião para trocar ideias e conhecimentos sobre o projeto buscando o aprimoramento.",
-      imagem: "/imagens/mulheres-tecnologia.jpg",
+      descricao:
+        "Reunião para trocar ideias e conhecimentos sobre o projeto buscando o aprimoramento.",
+      imagem: "/src/assets/img/mulheres-tecnologia.jpg"
     },
     {
       id: 2,
@@ -48,20 +30,70 @@ export default function Eventos() {
       tipo: "presencial",
       local: "Rio de Janeiro",
       descricao: "Discussão sobre inclusão de mulheres no mercado de tecnologia.",
-      imagem: "/imagens/mulheres-tecnologia.jpg",
+       imagem: "/src/assets/img/mulheres-tecnologia.jpg"
     },
-  ]);
+    {
+      id: 3,
+      titulo: "Workshop React para iniciantes",
+      data: "05/07/2025",
+      hora: "18:00",
+      tipo: "remoto",
+      local: "Online",
+      descricao: "Oficina prática para quem deseja aprender os fundamentos do React.",
+      imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+    },
+    {
+      id: 4,
+      titulo: "Encontro Mulheres na TI",
+      data: "10/07/2025",
+      hora: "14:00",
+      tipo: "presencial",
+      local: "Belo Horizonte",
+      descricao: "Evento presencial para networking e troca de experiências.",
+       imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+    },
+    {
+      id: 5,
+      titulo: "Mentoria carreira em tecnologia",
+      data: "15/07/2025",
+      hora: "20:00",
+      tipo: "remoto",
+      local: "Online",
+      descricao: "Sessão de mentoria com profissionais experientes do mercado.",
+       imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+    },
+    {
+      id: 6,
+      titulo: "Hackathon inclusão digital",
+      data: "20/07/2025",
+      hora: "09:00",
+      tipo: "presencial",
+      local: "Curitiba",
+      descricao: "Competição de programação com foco em soluções inclusivas.",
+     imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+    },
+  ];
 
-  // Estados para filtro, modal e formulário
+  // Eventos criados via formulário (aparecem em "Meus Eventos" e na listagem principal)
+  const [eventosCriados, setEventosCriados] = useState([]);
+
+  // Estados para filtro, modal, telas e confirmação
   const [filtro, setFiltro] = useState("todos");
   const [localidade, setLocalidade] = useState("");
-  const [modalEvento, setModalEvento] = useState(null);
-  const [nome, setNome] = useState("");
-  const [email, setEmail] = useState("");
+  const [modalEvento, setModalEvento] = useState(null); // evento para inscrição
+  const [eventoParaExcluir, setEventoParaExcluir] = useState(null); // confirmação exclusão
 
   const [telaCadastro, setTelaCadastro] = useState(false);
+  const [telaMeusEventos, setTelaMeusEventos] = useState(false);
 
-  // Formulário de cadastro
+  // Dados do modal de inscrição (participação)
+  const [nome, setNome] = useState("");
+  const [cpf, setCpf] = useState("");
+  const [email, setEmail] = useState("");
+  const [telefone, setTelefone] = useState("");
+  const [instituicao, setInstituicao] = useState("");
+
+  // Formulário de cadastro de eventos
   const [empresa, setEmpresa] = useState("");
   const [tituloEvento, setTituloEvento] = useState("");
   const [dataEvento, setDataEvento] = useState("");
@@ -78,85 +110,317 @@ export default function Eventos() {
   const [descricaoEvento, setDescricaoEvento] = useState("");
   const [imagem, setImagem] = useState(imagensDisponiveis[0]);
 
-  // Função para preencher endereço pelo CEP usando ViaCEP
-  const preencherEndereco = async (cep) => {
-    const cepLimpo = cep.replace(/\D/g, "");
-    if (cepLimpo.length !== 8) return; // CEP inválido
+  // Carregar eventos do localStorage ao inicializar
+  useEffect(() => {
+    const eventosSalvos = localStorage.getItem("eventosCriados");
+    if (eventosSalvos) {
+      setEventosCriados(JSON.parse(eventosSalvos));
+    }
+  }, []);
+
+  // Salvar eventos no localStorage sempre que houver mudanças
+  useEffect(() => {
+    localStorage.setItem("eventosCriados", JSON.stringify(eventosCriados));
+  }, [eventosCriados]);
+
+  // Função para aplicar máscara de CPF
+  const aplicarMascaraCPF = (valor) => {
+    const cpfLimpo = valor.replace(/\D/g, "");
+    let cpfFormatado = cpfLimpo;
+    
+    if (cpfLimpo.length > 3) {
+      cpfFormatado = cpfLimpo.substring(0, 3) + '.' + cpfLimpo.substring(3);
+    }
+    if (cpfLimpo.length > 6) {
+      cpfFormatado = cpfFormatado.substring(0, 7) + '.' + cpfFormatado.substring(7);
+    }
+    if (cpfLimpo.length > 9) {
+      cpfFormatado = cpfFormatado.substring(0, 11) + '-' + cpfFormatado.substring(11);
+    }
+    
+    return cpfFormatado.substring(0, 14);
+  };
+
+  // Função para aplicar máscara de telefone
+  const aplicarMascaraTelefone = (valor) => {
+    const telefoneLimpo = valor.replace(/\D/g, "");
+    let telefoneFormatado = telefoneLimpo;
+    
+    if (telefoneLimpo.length > 0) {
+      telefoneFormatado = '(' + telefoneLimpo.substring(0, 2) + ') ' + telefoneLimpo.substring(2);
+    }
+    if (telefoneLimpo.length > 6) {
+      telefoneFormatado = telefoneFormatado.substring(0, 10) + '-' + telefoneFormatado.substring(10);
+    }
+    
+    return telefoneFormatado.substring(0, 15);
+  };
+
+  // Função para validar CPF
+  const validarCPF = (cpf) => {
+    const cpfLimpo = cpf.replace(/\D/g, "");
+    
+    // Verifica se tem 11 dígitos
+    if (cpfLimpo.length !== 11) {
+      return false;
+    }
+    
+    // Verifica se todos os dígitos são iguais (CPF inválido)
+    if (/^(\d)\1+$/.test(cpfLimpo)) {
+      return false;
+    }
+    
+    // Algoritmo de validação de CPF
+    let soma = 0;
+    let resto;
+    
+    for (let i = 1; i <= 9; i++) {
+      soma = soma + parseInt(cpfLimpo.substring(i-1, i)) * (11 - i);
+    }
+    
+    resto = (soma * 10) % 11;
+    
+    if ((resto === 10) || (resto === 11)) {
+      resto = 0;
+    }
+    
+    if (resto !== parseInt(cpfLimpo.substring(9, 10))) {
+      return false;
+    }
+    
+    soma = 0;
+    
+    for (let i = 1; i <= 10; i++) {
+      soma = soma + parseInt(cpfLimpo.substring(i-1, i)) * (12 - i);
+    }
+    
+    resto = (soma * 10) % 11;
+    
+    if ((resto === 10) || (resto === 11)) {
+      resto = 0;
+    }
+    
+    if (resto !== parseInt(cpfLimpo.substring(10, 11))) {
+      return false;
+    }
+    
+    return true;
+  };
+
+  // Componentes simples (internos)
+  function Card({ children, className = "" }) {
+    return <div className={`bg-white rounded-xl shadow-md ${className}`}>{children}</div>;
+  }
+
+  function CardContent({ children, className = "" }) {
+    return <div className={`p-4 ${className}`}>{children}</div>;
+  }
+
+  function Button({ children, className = "", ...props }) {
+    return (
+      <button className={`px-4 py-2 rounded-lg font-semibold transition ${className}`} {...props}>
+        {children}
+      </button>
+    );
+  }
+
+  // Preenche endereço a partir do CEP (ViaCEP)
+  const preencherEndereco = async (cepValor) => {
+    const cepLimpo = cepValor.replace(/\D/g, "");
+    if (cepLimpo.length !== 8) {
+      // Limpa apenas se for inválido e campo ficou vazio
+      if (!cepLimpo) {
+        setCidade("");
+        setEstado("");
+        setBairro("");
+        setRua("");
+      }
+      return;
+    }
     try {
       const res = await fetch(`https://viacep.com.br/ws/${cepLimpo}/json/`);
       const data = await res.json();
       if (!data.erro) {
-        setCidade(data.localidade);
-        setEstado(data.uf);
-        setBairro(data.bairro);
-        setRua(data.logradouro);
+        setCidade(data.localidade || "");
+        setEstado(data.uf || "");
+        setBairro(data.bairro || "");
+        setRua(data.logradouro || "");
       } else {
-        setCidade(""); setEstado(""); setBairro(""); setRua("");
+        setCidade("");
+        setEstado("");
+        setBairro("");
+        setRua("");
       }
     } catch (err) {
-      console.log("Erro ao buscar CEP", err);
-      setCidade(""); setEstado(""); setBairro(""); setRua("");
+      console.error("Erro ao buscar CEP:", err);
+      setCidade("");
+      setEstado("");
+      setBairro("");
+      setRua("");
     }
   };
 
-  // Função para cadastrar evento
+  // Cadastra novo evento (vai para eventosCriados)
   const cadastrarEvento = () => {
-    if (!empresa || !tituloEvento || !dataEvento || !horaEvento || !descricaoEvento || !imagem) {
+    // validações essenciais
+    if (!empresa.trim() || !tituloEvento.trim() || !dataEvento || !horaEvento || !descricaoEvento.trim() || !imagem) {
       alert("Preencha todos os campos obrigatórios!");
       return;
     }
-    if (modelo === "presencial" && (!cep || !cidade || !estado || !bairro || !rua || !numero || !link)) {
-      alert("Preencha todos os campos do endereço e link!");
+    if (modelo === "presencial" && (!cep.trim() || !cidade.trim() || !estado.trim() || !bairro.trim() || !rua.trim() || !numero.trim() || !link.trim())) {
+      alert("Preencha todos os campos do endereço e link para eventos presenciais!");
       return;
     }
-    if (modelo === "remoto" && !link) {
-      alert("Informe o link do evento!");
+    if (modelo === "remoto" && !link.trim()) {
+      alert("Informe o link ou plataforma do evento remoto!");
       return;
     }
 
     const novoEvento = {
-      id: eventos.length + 1,
-      empresa,
-      titulo: tituloEvento,
+      id: Date.now(), // id único simples para os criados
+      empresa: empresa.trim(),
+      titulo: tituloEvento.trim(),
       data: dataEvento,
       hora: horaEvento,
       tipo: modelo === "presencial" ? "presencial" : "remoto",
-      local: modelo === "presencial" ? cidade : "Online",
-      descricao: descricaoEvento,
+      local: modelo === "presencial" ? cidade || "" : "Online",
+      descricao: descricaoEvento.trim(),
       imagem,
-      link,
+      link: link.trim(),
+      enderecoCompleto:
+        modelo === "presencial"
+          ? `${rua || ""}, ${numero || ""}${complemento ? " - " + complemento : ""} - ${bairro || ""} - ${cidade || ""}/${estado || ""}`
+          : "",
     };
 
-    setEventos([...eventos, novoEvento]);
+    setEventosCriados((prev) => [novoEvento, ...prev]);
     setTelaCadastro(false);
 
-    // Limpa formulário
-    setEmpresa(""); setTituloEvento(""); setDataEvento(""); setHoraEvento(""); setModelo("presencial");
-    setCep(""); setCidade(""); setEstado(""); setBairro(""); setRua(""); setNumero(""); setComplemento(""); setLink(""); setDescricaoEvento(""); setImagem(imagensDisponiveis[0]);
+    // limpa formulário
+    setEmpresa("");
+    setTituloEvento("");
+    setDataEvento("");
+    setHoraEvento("");
+    setModelo("presencial");
+    setCep("");
+    setCidade("");
+    setEstado("");
+    setBairro("");
+    setRua("");
+    setNumero("");
+    setComplemento("");
+    setLink("");
+    setDescricaoEvento("");
+    setImagem(imagensDisponiveis[0]);
   };
 
-  // Filtragem de eventos
-  const eventosFiltrados = eventos.filter((e) => {
+  // Deleta evento criado (após confirmação)
+  const confirmarExcluirEvento = () => {
+    if (!eventoParaExcluir) return;
+    setEventosCriados((prev) => prev.filter((e) => e.id !== eventoParaExcluir.id));
+    setEventoParaExcluir(null);
+  };
+
+  // Mostra a listagem que será exibida no feed (fixos + criados)
+  const todosOsEventos = [...eventosFixos, ...eventosCriados];
+
+  // Filtragem
+  const eventosFiltrados = todosOsEventos.filter((e) => {
     const matchTipo = filtro === "todos" || e.tipo === filtro;
     const matchLocal = e.local.toLowerCase().includes(localidade.toLowerCase());
     return matchTipo && matchLocal;
   });
 
+  // Inscrição - confirma dados do participante
+  const confirmarInscricao = () => {
+    if (!nome.trim() || !cpf.trim() || !email.trim() || !telefone.trim()) {
+      alert("Preencha Nome, CPF, Email e Telefone para confirmar inscrição.");
+      return;
+    }
+    
+    // Validação do CPF
+    if (!validarCPF(cpf)) {
+      alert("CPF inválido. Por favor, verifique o número digitado.");
+      return;
+    }
+    
+    // aqui você pode enviar para API / backend se quiser
+    alert(
+      `Inscrição confirmada!\nEvento: ${modalEvento.titulo}\nNome: ${nome}\nCPF: ${cpf}\nEmail: ${email}\nTelefone: ${telefone}\nInstituição: ${instituicao ||
+        "—"}`
+    );
+
+    // limpa formulário e fecha modal
+    setNome("");
+    setCpf("");
+    setEmail("");
+    setTelefone("");
+    setInstituicao("");
+    setModalEvento(null);
+  };
+
   return (
     <div className="flex min-h-screen bg-purple-50 text-gray-800">
-      {/* Barra lateral */}
-      <div className="w-64 bg-purple-100 p-6 flex flex-col gap-4">
-        <h2 className="font-bold text-xl mb-4">Menu</h2>
+      {/* Barra lateral (sem título "Menu") */}
+      <aside className="w-64 bg-purple-100 p-6 flex flex-col gap-4">
         <Button
           className="bg-pink-500 text-white hover:bg-pink-600"
-          onClick={() => setTelaCadastro(true)}
+          onClick={() => {
+            setTelaCadastro(true);
+            setTelaMeusEventos(false);
+          }}
         >
           Cadastrar Evento
         </Button>
-      </div>
+
+        <Button
+          className="bg-purple-500 text-white hover:bg-purple-600"
+          onClick={() => {
+            setTelaMeusEventos(true);
+            setTelaCadastro(false);
+          }}
+        >
+          Meus Eventos
+        </Button>
+
+        <div className="mt-2">
+          <h4 className="font-semibold mb-2">Seus eventos</h4>
+          <div className="flex flex-col gap-2 max-h-64 overflow-auto pr-2">
+            {eventosCriados.length === 0 ? (
+              <div className="text-sm text-gray-600">Você ainda não criou eventos.</div>
+            ) : (
+              eventosCriados.map((ev) => (
+                <div key={ev.id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                  <div className="truncate text-sm mr-2">{ev.titulo}</div>
+                  <div className="flex gap-1">
+                    <button
+                      title="Ver meus eventos"
+                      className="px-2 py-1 text-xs bg-gray-200 rounded"
+                      onClick={() => {
+                        setTelaMeusEventos(true);
+                        setTelaCadastro(false);
+                      }}
+                    >
+                      Ver
+                    </button>
+                    <button
+                      title="Excluir (confirmar)"
+                      className="px-2 py-1 text-xs bg-red-500 text-white rounded"
+                      onClick={() => setEventoParaExcluir(ev)}
+                    >
+                      Excluir
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </aside>
 
       {/* Conteúdo principal */}
-      <div className="flex-1 p-8">
+      <main className="flex-1 p-8">
+        {/* Tela de cadastro */}
         {telaCadastro ? (
           <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
             <h2 className="text-2xl font-bold mb-4">Cadastrar Evento</h2>
@@ -220,13 +484,43 @@ export default function Eventos() {
                   }}
                 />
                 <div className="flex gap-2">
-                  <input type="text" placeholder="Cidade" className="flex-1 p-2 border rounded-lg" value={cidade} readOnly />
-                  <input type="text" placeholder="Estado" className="flex-1 p-2 border rounded-lg" value={estado} readOnly />
+                  <input
+                    type="text"
+                    placeholder="Cidade"
+                    className="flex-1 p-2 border rounded-lg"
+                    value={cidade}
+                    readOnly
+                  />
+                  <input
+                    type="text"
+                    placeholder="Estado"
+                    className="flex-1 p-2 border rounded-lg"
+                    value={estado}
+                    readOnly
+                  />
                 </div>
-                <input type="text" placeholder="Bairro" className="w-full p-2 border rounded-lg" value={bairro} readOnly />
-                <input type="text" placeholder="Rua" className="w-full p-2 border rounded-lg" value={rua} readOnly />
+                <input
+                  type="text"
+                  placeholder="Bairro"
+                  className="w-full p-2 border rounded-lg"
+                  value={bairro}
+                  readOnly
+                />
+                <input
+                  type="text"
+                  placeholder="Rua"
+                  className="w-full p-2 border rounded-lg"
+                  value={rua}
+                  readOnly
+                />
                 <div className="flex gap-2">
-                  <input type="text" placeholder="Número" className="flex-1 p-2 border rounded-lg" value={numero} onChange={(e) => setNumero(e.target.value)} />
+                  <input
+                    type="text"
+                    placeholder="Número"
+                    className="flex-1 p-2 border rounded-lg"
+                    value={numero}
+                    onChange={(e) => setNumero(e.target.value)}
+                  />
                   <input
                     type="text"
                     placeholder="Complemento"
@@ -280,13 +574,47 @@ export default function Eventos() {
             <Button className="bg-pink-500 text-white w-full mt-3" onClick={cadastrarEvento}>
               Cadastrar
             </Button>
-            <Button className="bg-gray-300 text-gray-800 w-full mt-2" onClick={() => setTelaCadastro(false)}>
+            <Button
+              className="bg-gray-300 text-gray-800 w-full mt-2"
+              onClick={() => setTelaCadastro(false)}
+            >
               Voltar
             </Button>
           </div>
+        ) : telaMeusEventos ? (
+          /* Tela "Meus Eventos" - mostra apenas eventosCriados */
+          <section>
+            <h2 className="text-2xl font-bold mb-6">Meus Eventos</h2>
+
+            {eventosCriados.length === 0 ? (
+              <div className="text-gray-600">Você ainda não criou nenhum evento.</div>
+            ) : (
+             <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
+                {eventosCriados.map((evento) => (
+                  <Card key={evento.id} className="border-2 border-pink-300 shadow-md rounded-xl overflow-hidden">
+                    <img src={evento.imagem} alt={evento.titulo} className="w-full h-40 object-cover" />
+                    <CardContent>
+                      <h3 className="font-bold text-lg text-gray-800">{evento.titulo}</h3>
+                      <p className="text-pink-600 font-semibold">{evento.data} • {evento.hora}</p>
+                      <p className="text-sm italic text-gray-600">{evento.tipo.toUpperCase()} - {evento.local}</p>
+                      <p className="mt-2 text-gray-700 text-sm">{evento.descricao}</p>
+                      <div className="flex gap-2 mt-4">
+                        <Button
+                          className="w-full bg-red-500 text-white"
+                          onClick={() => setEventoParaExcluir(evento)}
+                        >
+                          Excluir
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            )}
+          </section>
         ) : (
-          // Tela principal de eventos
-          <div>
+          /* Tela principal - feed de eventos (fixos + criados) */
+          <section>
             {/* Filtros */}
             <div className="flex gap-4 mb-6 justify-center">
               {["ao-vivo", "presencial", "remoto", "todos"].map((tipo) => (
@@ -318,81 +646,110 @@ export default function Eventos() {
               </div>
             </div>
 
-            {/* Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Cards (2 por linha) */}
+           <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
               {eventosFiltrados.map((evento) => (
                 <Card
                   key={evento.id}
                   className="border-2 border-pink-300 shadow-md rounded-xl overflow-hidden"
                 >
-                  <img
-                    src={evento.imagem}
-                    alt={evento.titulo}
-                    className="w-full h-40 object-cover"
-                  />
+                  <img src={evento.imagem} alt={evento.titulo} className="w-full h-40 object-cover" />
                   <CardContent>
                     <h3 className="font-bold text-lg text-gray-800">{evento.titulo}</h3>
-                    <p className="text-pink-600 font-semibold">
-                      {evento.data} • {evento.hora}
-                    </p>
-                    <p className="text-sm italic text-gray-600">
-                      {evento.tipo.toUpperCase()} - {evento.local}
-                    </p>
+                    <p className="text-pink-600 font-semibold">{evento.data} • {evento.hora}</p>
+                    <p className="text-sm italic text-gray-600">{evento.tipo.toUpperCase()} - {evento.local}</p>
                     <p className="mt-2 text-gray-700 text-sm">{evento.descricao}</p>
-                    <Button
-                      className="mt-4 w-full bg-pink-500 hover:bg-pink-600 text-white"
-                      onClick={() => setModalEvento(evento)}
-                    >
-                      Participar
-                    </Button>
+                    <div className="mt-4">
+                      <Button
+                        className="w-full bg-pink-500 hover:bg-pink-600 text-white"
+                        onClick={() => setModalEvento(evento)}
+                      >
+                        Participar
+                      </Button>
+                    </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
+          </section>
+        )}
 
-            {/* Modal */}
-            {modalEvento && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                <div className="bg-white p-8 rounded-2xl shadow-xl w-96 text-gray-800">
-                  <h2 className="text-xl font-bold mb-4">Confirme sua participação</h2>
-                  <p className="mb-2">{modalEvento.titulo}</p>
-                  <input
-                    type="text"
-                    placeholder="Nome completo"
-                    className="w-full mb-3 p-2 border rounded-lg text-gray-700"
-                    value={nome}
-                    onChange={(e) => setNome(e.target.value)}
-                  />
-                  <input
-                    type="email"
-                    placeholder="Email"
-                    className="w-full mb-3 p-2 border rounded-lg text-gray-700"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <div className="flex justify-between">
-                    <Button
-                      className="bg-gray-300 text-gray-800"
-                      onClick={() => setModalEvento(null)}
-                    >
-                      Cancelar
-                    </Button>
-                    <Button
-                      className="bg-pink-500 text-white hover:bg-pink-600"
-                      onClick={() => {
-                        alert(`Inscrição confirmada para ${nome} (${email}) no evento: ${modalEvento.titulo}`);
-                        setModalEvento(null);
-                      }}
-                    >
-                      Confirmar participação
-                    </Button>
-                  </div>
-                </div>
+        {/* Modal de inscrição (participação) */}
+        {modalEvento && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-8 rounded-2xl shadow-xl w-96 text-gray-800">
+              <h2 className="text-xl font-bold mb-4">Inscrição</h2>
+              <p className="mb-3 font-semibold">{modalEvento.titulo}</p>
+
+              <input
+                type="text"
+                placeholder="Nome completo"
+                className="w-full mb-2 p-2 border rounded-lg"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="CPF"
+                className="w-full mb-2 p-2 border rounded-lg"
+                value={cpf}
+                onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
+              />
+              <input
+                type="email"
+                placeholder="Email"
+                className="w-full mb-2 p-2 border rounded-lg"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Telefone"
+                className="w-full mb-2 p-2 border rounded-lg"
+                value={telefone}
+                onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
+              />
+              <input
+                type="text"
+                placeholder="Instituição de ensino (opcional)"
+                className="w-full mb-3 p-2 border rounded-lg"
+                value={instituicao}
+                onChange={(e) => setInstituicao(e.target.value)}
+              />
+
+              <div className="flex justify-between">
+                <Button className="bg-gray-300" onClick={() => setModalEvento(null)}>
+                  Cancelar
+                </Button>
+                <Button className="bg-pink-500 text-white" onClick={confirmarInscricao}>
+                  Confirmar inscrição
+                </Button>
               </div>
-            )}
+            </div>
           </div>
         )}
-      </div>
+
+        {/* Modal de confirmação de exclusão (usado tanto pela lateral quanto por Meus Eventos) */}
+        {eventoParaExcluir && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+            <div className="bg-white p-6 rounded-xl shadow-lg w-96">
+              <h3 className="font-bold text-lg mb-4">Confirmar Exclusão</h3>
+              <p>Deseja realmente excluir o evento <b>{eventoParaExcluir.titulo}</b>?</p>
+              <div className="flex justify-between mt-4">
+                <Button className="bg-gray-300" onClick={() => setEventoParaExcluir(null)}>
+                  Cancelar
+                </Button>
+                <Button
+                  className="bg-red-500 text-white"
+                  onClick={() => confirmarExcluirEvento()}
+                >
+                  Excluir
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </main>
     </div>
   );
 }
