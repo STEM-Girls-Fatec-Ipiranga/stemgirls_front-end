@@ -2,15 +2,21 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaUsers, FaComments, FaLaptopCode, FaHandPointer } from "react-icons/fa";
 import fundoSG from "../assets/img/FundoSGcolorido.jpg";
+import "../../src/index.css"; 
+import { CirclePlay } from 'lucide-react';
 
 import FotoTalita from "../assets/img/Foto_Talita.jpg";
 import FotoKauane from "../assets/img/Foto_Kauane.jpg";
 import FotoAna from "../assets/img/Foto_Ana.jpeg";
 import FotoLethicia from "../assets/img/Foto_lelet.jpg";
 
+import STEMGirls from "../assets/img/LogoSTEMGirls.png";
+import Reuniao from "../assets/img/meninasdigitaisreuniao.jpeg";
+import MeninasDigitais from "../assets/img/meninas digitais congresso.jpeg";
+
 export default function SobreNos() {
   const [current, setCurrent] = useState(0);
-  const fotos = ["/imagens/amelia.jpg", "/imagens/simone.jpg", "/imagens/ada-lovelace.jpg"];
+  const fotos = [STEMGirls, Reuniao, MeninasDigitais];
   const [flipped, setFlipped] = useState(null);
 
   const nextSlide = () => {
@@ -85,19 +91,19 @@ export default function SobreNos() {
   ];
 
   return (
-    <div className="max-w-full bg-pink-50 text-gray-800 py-16 font-sans">
-      {/* Seção Nossa Equipe */}
+    <div className="max-w-full bg-pink-50 text-black py-16">
+      {/* Seção STEM Girls */}
       <div className="max-w-6xl mx-auto mb-20">
-        <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">STEM Girls</h2>
+        <h2 className="text-3xl text-center mb-8 font-quicksand font-bold">STEM Girls</h2>
         <p className="m-10 text-[18px]">Em março de 2024 foi criada uma Equipe no Microsoft Teams da Fatec Ipiranga e divulgado para as alunas dos cursos de TI da Fatec, nomeada STEM Girls Fatec Ipiranga. Nessa equipe foi apresentado o projeto</p>
         <div className="flex flex-col md:flex-row items-center md:items-start md:space-x-12">
 
           {/* Carrossel */}
           <div className="relative w-full md:w-1/2 mb-8 md:mb-0">
-            <div className="w-full h-90 bg-gray-300 rounded-2xl overflow-hidden shadow-xl">
+            <div className="w-full h-[400px] bg-gray-300 rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={fotos[current]}
-                alt="Equipe"
+                alt="Equipe STEM Girls"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -121,6 +127,7 @@ export default function SobreNos() {
               A partir da criação do comitê gestor foram realizadas as seguintes atividades: cronograma de reuniões semanais ou quinzenais, proposta e escolha de outro nome, criação de um logo, elaboração do planos de trabalho para cada equipe.
             </p>
             <br />
+            <br />
             <p className="leading-relaxed">
               Reunião presencial para o fechamento do semestre e roda de conversa, na qual foram tratados temas importantes e definidas as próximas ações.
             </p>
@@ -131,7 +138,7 @@ export default function SobreNos() {
       {/* Seção de Objetivos */}
       <div className="max-w-6xl mx-auto">
         <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">Objetivos</h2>
-        <p className="text-center text-gray-500 mb-12">O que a nossa equipe pretende fazer?</p>
+        <p className="text-center text-[18px] mb-12">O que a nossa equipe pretende fazer?</p>
 
         <div className="grid md:grid-cols-3 gap-6">
           {cards.map((card, index) => (
@@ -172,9 +179,11 @@ export default function SobreNos() {
       </div>
 
       {/* Seção de vídeo */}
-      <div className="mt-[80px] h-[600px] justify-center mx-auto flex flex-col items-center">
-        <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-2">Apresentação</h2>
-        <div className="w-[70%] h-[70%] text-center bg-gray-300 rounded-[20px]">video</div>
+      <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
+        <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-10">Apresentação</h2>
+        <div className="w-[65%] h-[70%] text-center bg-gray-300 rounded-[20px] flex items-center justify-center">
+          <CirclePlay className="w-12 h-12 text-white" />
+        </div>
       </div>
 
 
@@ -216,45 +225,36 @@ export default function SobreNos() {
 
       <section className="bg-pink-50 py-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl font-bold mb-6">
             Nossa equipe de desenvolvimento
           </h2>
-          <p className="text-gray-700 mb-12 max-w-2xl mx-auto">
+          <p className="mb-12 max-w-2xl mx-auto text-[18px]">
             Para melhoras nossa conexão e nos aproximar, conheça um pouco mais
             sobre a equipe que desenvolveu a plataforma!
           </p>
 
           {/* Grid de membros */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-6 md:grid-cols-2 gap-12">
             {membros.map((membro, index) => (
               <div
                 key={index}
-                className="bg-white border border-purple-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center"
+                className="bg-pink-50 border border-pink-300 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 p-6 flex flex-col items-center"
               >
                 <img
                   src={membro.foto}
                   alt={membro.nome}
                   className="w-28 h-28 rounded-full object-cover mb-4 border-2 border-purple-400"
                 />
-                <h3 className="text-lg font-bold text-gray-900">
+                <h3 className="text-lg font-bold">
                   {membro.nome}
                 </h3>
-                <p className="text-sm text-gray-600">{membro.cargo}</p>
-                <p className="text-sm text-gray-500">{membro.descricao}</p>
+                <p className="text-sm font-bold text-pink-600">{membro.cargo}</p>
+                <p className="text-sm">{membro.descricao}</p>
               </div>
             ))}
           </div>
         </div>
       </section>
-
-      {/* <section>
-        <h2 className="text-3xl mb-12 font-bold text-center text-gray-800">
-          Equipe de desenvolvimento
-        </h2>
-
-
-
-      </section> */}
 
     </div>
   );

@@ -1,12 +1,11 @@
-import Styles from '../css/Login.module.css';
-//import Styles from '../css/Global.module.css';
+import Styles from '../css/LoginEmpresa.module.css';
 import LogoSG from '../assets/img/LogoSG.png';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
-function Login() {
+function LoginEmpresa() {
     const navigate = useNavigate();
 
     // Estado para o formulário de CADASTRO
@@ -99,7 +98,7 @@ function Login() {
         }
 
         try {
-            const response = await axios.post("http://localhost:8080/usuario/criar", {
+            const response = await axios.post("http://localhost:8080/api/auth/register", {
                 nomeCompleto: form.nomeCompleto,
                 nomeUsuario: form.nomeUsuario,
                 email: form.email,
@@ -173,7 +172,7 @@ function Login() {
                     </div>
                 </div>
                 <div className={Styles.segunda_coluna}>
-                    <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Crie sua conta</h2>
+                    <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Crie sua conta empresarial</h2>
                     {/* <div className={Styles.social_media}>
                         <a href="#"><i className="fi fi-brands-google"></i></a>
                         <a href="#"><i className="fi fi-brands-linkedin"></i></a>
@@ -182,19 +181,23 @@ function Login() {
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
                             <i className="far fa-user icon-modify"></i>
-                            <input type="text" name="nomeCompleto" placeholder="Digite seu nome completo" value={form.nomeCompleto} onChange={handleChange} required />
+                            <input type="text" name="nomeCompleto" placeholder="Digite o nome da empresa" value={form.nomeCompleto} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-br-at icon-modify"></i>
-                            <input type="text" name="nomeUsuario" placeholder="Digite o nome de usuário" value={form.nomeUsuario} onChange={handleChange} required />
+                            <input type="text" name="nomeUsuario" placeholder="Digite o CNPJ da empresa" value={form.nomeUsuario} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-rr-envelope icon-modify"></i>
-                            <input type="email" name="email" placeholder="Digite seu Email" value={form.email} onChange={handleChange} required />
+                            <input type="email" name="email" placeholder="Digite o email da empresa" value={form.email} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={form.senha} onChange={handleChange} required />
+                        </label>
+                        <label className={Styles.input_group}>
+                            <i className="fi fi-sr-lock icon-modify"></i>
+                            <input type="password" name="senha" placeholder="Digite o telefone da empresa" value={form.senha} onChange={handleChange} required />
                         </label>
 
                         {/* --- NOVA MENSAGEM DE FEEDBACK DA SENHA --- */}
@@ -219,11 +222,6 @@ function Login() {
                         </div>
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
-                        <br />
-
-                        <Link to="/login-empresa">
-                        <a href="/login-empresa">Sou uma empresa</a>
-                        </Link>
 
                     </form>
                 </div>
@@ -279,4 +277,4 @@ function Login() {
     );
 }
 
-export default Login;
+export default LoginEmpresa;
