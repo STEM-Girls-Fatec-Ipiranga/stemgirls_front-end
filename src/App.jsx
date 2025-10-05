@@ -12,6 +12,8 @@ import MiniMentes from "./componentes/minimentes/MiniMentes.jsx";
 import Eventos from "./componentes/Eventos.jsx";
 import LoginEmpresa from "./componentes/LoginEmpresa.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
+import Canais from "./componentes/Canais.jsx";
+import CriarCanal from "./componentes/CriarCanal.jsx";
 
 import React from 'react'
 //import CadastroEvento from "./componentes/CadastroEvento.jsx";
@@ -46,6 +48,8 @@ function App() {
         <Route path="/perfil" element={<PerfilUsuario />} />
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/minimentes" element={<MiniMentes />} />
+        <Route path="/canais" element={<Canais />} />
+        <Route path="/criar-canal" element={<CriarCanal />} />
 
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
