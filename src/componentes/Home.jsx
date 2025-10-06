@@ -55,10 +55,6 @@ export default function Home() {
   return (
     <div className="bg-pink-50 text-gray-800 font-sans min-h-screen">
       <div className="max-w-7xl mx-auto py-10">
-        <header className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-pink-600">Mulheres na Tecnologia</h1>
-          <p className="mt-2 text-gray-600">Conectando, inspirando e empoderando mulheres na área de TI.</p>
-        </header>
 
         {/* Carrossel Novo */}
         <section className="relative w-full max-w-6xl mx-auto overflow-hidden">
@@ -96,14 +92,13 @@ export default function Home() {
                         key={active} // 🔥 força recriação a cada slide
                         src={video.src}
                         controls
-                        autoPlay
-                        className="w-[600px] h-[350px] object-cover rounded-3xl shadow-xl"
+                        className="w-[600px] h-[350px] object-cover border-4 border-pink-400 shadow-xl"
                       />
                     ) : (
                       <img
                         src={video.thumbnail}
                         alt={video.title}
-                        className="w-[600px] h-[350px] object-cover rounded-3xl shadow-xl"
+                        className="w-[600px] h-[350px] object-cover shadow-xl"
                       />
                     )}
                   </motion.div>

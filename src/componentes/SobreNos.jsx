@@ -37,12 +37,12 @@ export default function SobreNos() {
     {
       nome: "Kauane Martins",
       cargo: "Scrum Master",
-      descricao: "Designer UX e Dev BD",
+      descricao: "Designer UX e Dev Full Stack",
       foto: FotoKauane,
     },
     {
       nome: "Ana Clara",
-      cargo: "Tester",
+      cargo: "Project Maker",
       descricao: "Analista de Qualidade",
       foto: FotoAna,
     },

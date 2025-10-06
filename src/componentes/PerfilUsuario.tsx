@@ -1,6 +1,7 @@
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+//import FotoPerfil from "../assets/img/perfil-sem-foto.jpg";
 
 import { useState } from "react";
 
@@ -24,7 +25,7 @@ export default function PerfilUsuario() {
         email: "",
         sobre: "",
         joinDate: formatDate,
-        profileImage: ""
+        //profileImage: FotoPerfil
       }
   });
 
@@ -95,7 +96,7 @@ export default function PerfilUsuario() {
                 <div className="space-y-6">
                   <div className="bg-gray-50 rounded-xl p-6">
                     <h3 className="text-lg font-semibold text-gray-900 mb-3">Sobre</h3>
-                    <p className="text-gray-700 leading-relaxed">{user.data.sobre || "-"}</p>
+                    <p className="text-gray-400 leading-relaxed">Digite aqui um pequeno texto sobre você!{/*{user.data.sobre || "-"}*/}</p>
                   </div>
                 </div>
 
@@ -107,7 +108,7 @@ export default function PerfilUsuario() {
                         <Calendar className="w-5 h-5 text-purple-600" />
                         <div>
                           <p className="text-sm text-gray-500">Membro desde</p>
-                          <p className="font-medium">{formatDate(user.data.joinDate)}</p>
+                          <p className="font-medium"> 17/09/2025{/* {formatDate(user.data.joinDate)}*/}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 text-gray-700">

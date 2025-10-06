@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { ArrowLeft } from 'lucide-react';
 
 // Banco de imagens pré-selecionadas
 const imagensDisponiveis = [
@@ -30,7 +31,7 @@ export default function Eventos() {
       tipo: "presencial",
       local: "Rio de Janeiro",
       descricao: "Discussão sobre inclusão de mulheres no mercado de tecnologia.",
-       imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+      imagem: "/src/assets/img/mulheres-tecnologia.jpg"
     },
     {
       id: 3,
@@ -50,7 +51,7 @@ export default function Eventos() {
       tipo: "presencial",
       local: "Belo Horizonte",
       descricao: "Evento presencial para networking e troca de experiências.",
-       imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+      imagem: "/src/assets/img/mulheres-tecnologia.jpg"
     },
     {
       id: 5,
@@ -60,7 +61,7 @@ export default function Eventos() {
       tipo: "remoto",
       local: "Online",
       descricao: "Sessão de mentoria com profissionais experientes do mercado.",
-       imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+      imagem: "/src/assets/img/mulheres-tecnologia.jpg"
     },
     {
       id: 6,
@@ -70,7 +71,7 @@ export default function Eventos() {
       tipo: "presencial",
       local: "Curitiba",
       descricao: "Competição de programação com foco em soluções inclusivas.",
-     imagem: "/src/assets/img/mulheres-tecnologia.jpg"
+      imagem: "/src/assets/img/mulheres-tecnologia.jpg"
     },
   ];
 
@@ -127,7 +128,7 @@ export default function Eventos() {
   const aplicarMascaraCPF = (valor) => {
     const cpfLimpo = valor.replace(/\D/g, "");
     let cpfFormatado = cpfLimpo;
-    
+
     if (cpfLimpo.length > 3) {
       cpfFormatado = cpfLimpo.substring(0, 3) + '.' + cpfLimpo.substring(3);
     }
@@ -137,7 +138,7 @@ export default function Eventos() {
     if (cpfLimpo.length > 9) {
       cpfFormatado = cpfFormatado.substring(0, 11) + '-' + cpfFormatado.substring(11);
     }
-    
+
     return cpfFormatado.substring(0, 14);
   };
 
@@ -145,65 +146,65 @@ export default function Eventos() {
   const aplicarMascaraTelefone = (valor) => {
     const telefoneLimpo = valor.replace(/\D/g, "");
     let telefoneFormatado = telefoneLimpo;
-    
+
     if (telefoneLimpo.length > 0) {
       telefoneFormatado = '(' + telefoneLimpo.substring(0, 2) + ') ' + telefoneLimpo.substring(2);
     }
     if (telefoneLimpo.length > 6) {
       telefoneFormatado = telefoneFormatado.substring(0, 10) + '-' + telefoneFormatado.substring(10);
     }
-    
+
     return telefoneFormatado.substring(0, 15);
   };
 
   // Função para validar CPF
   const validarCPF = (cpf) => {
     const cpfLimpo = cpf.replace(/\D/g, "");
-    
+
     // Verifica se tem 11 dígitos
     if (cpfLimpo.length !== 11) {
       return false;
     }
-    
+
     // Verifica se todos os dígitos são iguais (CPF inválido)
     if (/^(\d)\1+$/.test(cpfLimpo)) {
       return false;
     }
-    
+
     // Algoritmo de validação de CPF
     let soma = 0;
     let resto;
-    
+
     for (let i = 1; i <= 9; i++) {
-      soma = soma + parseInt(cpfLimpo.substring(i-1, i)) * (11 - i);
+      soma = soma + parseInt(cpfLimpo.substring(i - 1, i)) * (11 - i);
     }
-    
+
     resto = (soma * 10) % 11;
-    
+
     if ((resto === 10) || (resto === 11)) {
       resto = 0;
     }
-    
+
     if (resto !== parseInt(cpfLimpo.substring(9, 10))) {
       return false;
     }
-    
+
     soma = 0;
-    
+
     for (let i = 1; i <= 10; i++) {
-      soma = soma + parseInt(cpfLimpo.substring(i-1, i)) * (12 - i);
+      soma = soma + parseInt(cpfLimpo.substring(i - 1, i)) * (12 - i);
     }
-    
+
     resto = (soma * 10) % 11;
-    
+
     if ((resto === 10) || (resto === 11)) {
       resto = 0;
     }
-    
+
     if (resto !== parseInt(cpfLimpo.substring(10, 11))) {
       return false;
     }
-    
+
     return true;
   };
 
@@ -337,17 +338,17 @@ export default function Eventos() {
       alert("Preencha Nome, CPF, Email e Telefone para confirmar inscrição.");
       return;
     }
-    
+
     // Validação do CPF
     if (!validarCPF(cpf)) {
       alert("CPF inválido. Por favor, verifique o número digitado.");
       return;
     }
-    
+
     // aqui você pode enviar para API / backend se quiser
     alert(
       `Inscrição confirmada!\nEvento: ${modalEvento.titulo}\nNome: ${nome}\nCPF: ${cpf}\nEmail: ${email}\nTelefone: ${telefone}\nInstituição: ${instituicao ||
-        "—"}`
+      "—"}`
     );
 
     // limpa formulário e fecha modal
@@ -360,9 +361,9 @@ export default function Eventos() {
   };
 
   return (
-    <div className="flex min-h-screen bg-purple-50 text-gray-800">
+    <div className="flex min-h-screen bg-pink-50 text-gray-800">
       {/* Barra lateral (sem título "Menu") */}
-      <aside className="w-64 bg-purple-100 p-6 flex flex-col gap-4">
+      <aside className="w-64 bg-pink-100 p-6 flex flex-col gap-4">
         <Button
           className="bg-pink-500 text-white hover:bg-pink-600"
           onClick={() => {
@@ -420,10 +421,16 @@ export default function Eventos() {
 
       {/* Conteúdo principal */}
       <main className="flex-1 p-8">
+
+
         {/* Tela de cadastro */}
         {telaCadastro ? (
+
           <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
-            <h2 className="text-2xl font-bold mb-4">Cadastrar Evento</h2>
+            <div className="flex">
+              <ArrowLeft className="m-2" onClick={() => setTelaCadastro(false)} />
+              <h2 className="text-2xl font-bold mb-4">Cadastrar Evento</h2>
+            </div>
 
             <input
               type="text"
@@ -574,22 +581,18 @@ export default function Eventos() {
             <Button className="bg-pink-500 text-white w-full mt-3" onClick={cadastrarEvento}>
               Cadastrar
             </Button>
-            <Button
-              className="bg-gray-300 text-gray-800 w-full mt-2"
-              onClick={() => setTelaCadastro(false)}
-            >
-              Voltar
-            </Button>
+
           </div>
         ) : telaMeusEventos ? (
           /* Tela "Meus Eventos" - mostra apenas eventosCriados */
           <section>
+            <ArrowLeft className="m-2" onClick={() => setTelaMeusEventos(false)} />
             <h2 className="text-2xl font-bold mb-6">Meus Eventos</h2>
 
             {eventosCriados.length === 0 ? (
               <div className="text-gray-600">Você ainda não criou nenhum evento.</div>
             ) : (
-             <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
                 {eventosCriados.map((evento) => (
                   <Card key={evento.id} className="border-2 border-pink-300 shadow-md rounded-xl overflow-hidden">
                     <img src={evento.imagem} alt={evento.titulo} className="w-full h-40 object-cover" />
@@ -600,7 +603,7 @@ export default function Eventos() {
                       <p className="mt-2 text-gray-700 text-sm">{evento.descricao}</p>
                       <div className="flex gap-2 mt-4">
                         <Button
-                          className="w-full bg-red-500 text-white"
+                          className="m-auto w-[50%] bg-red-500 text-white"
                           onClick={() => setEventoParaExcluir(evento)}
                         >
                           Excluir
@@ -621,11 +624,10 @@ export default function Eventos() {
                 <Button
                   key={tipo}
                   onClick={() => setFiltro(tipo)}
-                  className={`${
-                    filtro === tipo
-                      ? "bg-pink-500 text-white"
-                      : "bg-white/40 backdrop-blur border border-gray-300 text-gray-700 hover:bg-white/60"
-                  }`}
+                  className={`${filtro === tipo
+                    ? "bg-pink-500 text-white"
+                    : "bg-white/40 backdrop-blur border border-gray-300 text-gray-700 hover:bg-white/60"
+                    }`}
                 >
                   {tipo === "ao-vivo" ? "Ao vivo" : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
                 </Button>
@@ -647,7 +649,7 @@ export default function Eventos() {
             </div>
 
             {/* Cards (2 por linha) */}
-           <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
+            <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
               {eventosFiltrados.map((evento) => (
                 <Card
                   key={evento.id}
