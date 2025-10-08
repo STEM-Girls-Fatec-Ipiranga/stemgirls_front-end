@@ -29,6 +29,19 @@ const MenuSuperior = () => {
 
   const user = localStorage.getItem("userData")
 
+    const [userProfile, setUser] = useState({
+      data: localStorage.getItem("userData")
+        ? JSON.parse(localStorage.getItem("userData") || "{}")
+        : {
+          nomeCompleto: "",
+          nomeUsuario: "",
+          email: "",
+          sobre: "",
+          joinDate: formatDate,
+          //profileImage: FotoPerfil
+        }
+    });
+
   return (
     <header className="w-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg" style={{
       background: 'linear-gradient(90deg, #af5fe4 0%, #f36ec0 100%)'
@@ -73,7 +86,8 @@ const MenuSuperior = () => {
 
           {/* Botão de perfil */}
           {user && (
-            <div>
+            <div className="flex flex-row items-center">
+              <p className="font-semibold text-white text-right">@{userProfile.data.nomeUsuario}</p>
               <Link to="/perfil">
                 <button className="px-6 py-2 text-white font-semibold hover:scale-105 transition-all duration-200">
                   <CircleUser size={45} />

@@ -31,7 +31,8 @@ function App() {
   const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil"];
   const mostrarMenu = !rotasSemMenu.some(rota => location.pathname.startsWith(rota));
 
-
+  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil"];
+  const mostrarRodape = !rotasSemRodape.some(rota => location.pathname.startsWith(rota));
 
   return (
     <GoogleOAuthProvider clientId="179230958964-5hk3dhg87p16157k6im78eu54j5k1bv6.apps.googleusercontent.com">
@@ -52,11 +53,10 @@ function App() {
         <Route path="/criar-canal" element={<CriarCanal />} />
 
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
-        <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
-     
+        <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />  
       </Routes>
 
-    <Rodape />
+      {mostrarRodape && <Rodape />}
   </GoogleOAuthProvider>
   );
 }

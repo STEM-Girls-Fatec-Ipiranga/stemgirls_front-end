@@ -248,6 +248,15 @@ function Login() {
                         {/* <a href="#"><i className="fi fi-brands-google"></i></a>
                         <a href="#"><i className="fi fi-brands-linkedin"></i></a>
                         <a href="#"><i className="fi fi-brands-github"></i></a> */}
+                        <GoogleLogin
+                            onSuccess={credentialResponse => {
+                                console.log("Login com o Google bem-sucedido!");
+                                console.log(credentialResponse);
+                            }}
+                            onError={() => {
+                                console.log('Erro no login com o Google');
+                            }}
+                        />
                     </div>
                     <form className={Styles.form} onSubmit={handleLoginSubmit}>
                         <label className={Styles.input_group}>
@@ -258,16 +267,6 @@ function Login() {
                             <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={loginForm.senha} onChange={handleLoginChange} required />
                         </label>
-
-                        <GoogleLogin
-                            onSuccess={credentialResponse => {
-                                console.log("Login com o Google bem-sucedido!");
-                                console.log(credentialResponse);
-                            }}
-                            onError={() => {
-                                console.log('Erro no login com o Google');
-                            }}
-                        />
                         <Link to="/esqueci-a-senha" className={`${Styles.password} ${Styles.back_link}`}>Esqueceu a senha?</Link>
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Entrar</button>

@@ -1,6 +1,7 @@
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
+import fundoSG from "../assets/img/FundoSG.jpg"
 //import FotoPerfil from "../assets/img/perfil-sem-foto.jpg";
 
 import { useState } from "react";
@@ -34,28 +35,19 @@ export default function PerfilUsuario() {
   const handleLogout = () => {
     localStorage.removeItem("userData");
     localStorage.removeItem("userToken");
-    navigate("/"); 
+    navigate("/");
   }
 
   return (
     <>
-      <div className="min-h-screen bg-pink-100 p-4 sm:p-6 lg:p-8">
-        <div className="absolute top-4 left-4">
-          <Link to="/" className="flex items-center text-gray-700 hover:text-gray-900">
-            <ArrowLeft size={24} className="mr-1" />
-            <span className="text-lg font-medium">Voltar</span>
-          </Link>
-        </div>
+      <div className="min-h-screen bg-pink-100 p-4 sm:p-6 lg:p-8" style={{
+        backgroundImage: `url(${fundoSG})`
+      }}
+      >
+        <div className="flex justify-center max-w-4xl mx-auto">
 
-        <div className="max-w-4xl mx-auto">
-          <div className="mb-8">
-            <h1 className="text-3xl sm:text-4xl font-bold text-black mb-2">Meu Perfil</h1>
-            <p className="text-black">Gerencie suas informações pessoais e configurações</p>
-          </div>
-
-          <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-xl overflow-hidden mt-[80px]">
             <div className="h-32 sm:h-40 bg-gradient-to-r from-purple-600 to-pink-500"></div>
-
             <div className="px-6 sm:px-8 pb-8">
               <div className="relative -mt-16 sm:-mt-20 mb-6 flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
                 <div className="relative">
@@ -82,13 +74,12 @@ export default function PerfilUsuario() {
                     Editar Perfil
                   </button>
 
-                  <button
-
+                  {/* <button
                     className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
                   >
                     <LogOut className="w-4 h-4" onClick={handleLogout} />
                     Sair
-                  </button>
+                  </button> */}
                 </div>
               </div>
 
@@ -122,6 +113,9 @@ export default function PerfilUsuario() {
                   </div>
                 </div>
               </div>
+                <Link to="/">
+                  <button className="w-18 h-12 bg-purple-500 ml-[93%] px-2 rounded-[7px] text-white font-bold">Fechar</button>
+                </Link>
             </div>
           </div>
         </div>
