@@ -1,9 +1,9 @@
 import React from 'react';
 import { Postagem, Comunidade } from '../types';
-import PostCard from './PostCard';
+import PostCard from './PostCard'; // Seu CartaoPostagem.tsx
 import PerfilComunidade from './PerfilComunidade';
 
-interface FeedProps {
+interface ConteudoProps { // Alterado de FeedProps para ConteudoProps para refletir seu uso
   postagens: Postagem[];
   comunidades: Comunidade[];
   comunidadeSelecionada: Comunidade | null;
@@ -18,7 +18,7 @@ interface FeedProps {
   barraLateralColapsada: boolean;
 }
 
-const Feed: React.FC<FeedProps> = ({
+const Conteudo: React.FC<ConteudoProps> = ({
   postagens,
   comunidades,
   comunidadeSelecionada,
@@ -39,34 +39,43 @@ const Feed: React.FC<FeedProps> = ({
           aoExcluirComunidade={aoExcluirComunidade}
           aoVoltar={aoVoltarParaFeed}
           aoEntrarNaComunidade={aoEntrarNaComunidade}
+          // Passamos a lista completa de comunidades para que o PostCard funcione dentro do PerfilComunidade
+          comunidades={comunidades} 
         />
       </div>
     );
   }
 
+  // Lógica de filtro para o feed geral - apenas postagens de comunidades que você é membro ou dono
+  const postagensFiltradas = postagens.filter(p => {
+    const comunidade = comunidades.find(c => c.id === p.comunidadeId);
+    return comunidade?.souMembro || !comunidade; // Se for membro, exibe. Se a comunidade não existir, também exibe por garantia (ou ajuste se quiser regras mais rígidas)
+  });
+
+
   return (
     <div className={`flex-1 transition-all duration-300 ${barraLateralColapsada ? 'ml-0' : 'ml-0'}`}>
-      <div className="max-w-2xl mx-auto p-6">
+      <div className="max-w-4xl mx-auto p-6 bg-[#FFF6FF]"> {/* Adicionei max-w e mx-auto para centralizar o conteúdo */}
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-black">
             Postagens
           </h1>
-          <div className="flex items-center space-x-2 mt-2">
+          <div className="flex items-center space-x-2 m-6 flex flex-row">
             <button
-              className="bg-transparent text-pink-600 px-4 rounded-lg border border-2 border-pink-600 text-sm font-bold hover:text-white hover:bg-pink-600 transition-all duration-200"
+              className="w-[90px] h-[40px] bg-transparent text-[#F33EC0] rounded-lg border border-2 border-[#F33EC0] font-bold hover:text-white hover:bg-[#F33EC0] transition-all duration-200"
             >
               Em alta
             </button>
             <button
-              className="bg-transparent text-pink-600 px-4 rounded-lg border border-2 border-pink-600 text-sm font-bold hover:text-white hover:bg-pink-600 transition-all duration-200"
+              className="w-[135px] h-[40px] bg-transparent text-[#F33EC0] rounded-lg border border-2 border-[#F33EC0] font-bold hover:text-white hover:bg-[#F33EC0] transition-all duration-200"
             >
               Mais recentes
             </button>
           </div>
-          <p className="text-gray-600 mt-1">Descubra conteúdos incríveis das comunidades Stem Girls</p>
+          <p className="text-gray-600 m-6">Descubra conteúdos incríveis das comunidades Stem Girls</p>
         </div>
 
-        {postagens.length === 0 ? (
+        {postagensFiltradas.length === 0 ? (
           <div className="text-center py-12">
             <div className="bg-gradient-to-r from-pink-100 to-purple-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
               <svg className="w-8 h-8 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -80,12 +89,12 @@ const Feed: React.FC<FeedProps> = ({
             </div>
             <h3 className="text-lg font-semibold text-gray-800 mb-2">Nenhuma postagem ainda</h3>
             <p className="text-gray-500">
-              As comunidades ainda não fizeram postagens. Volte mais tarde!
+              As comunidades que você participa ainda não fizeram postagens. Volte mais tarde!
             </p>
           </div>
         ) : (
           <div className="space-y-6">
-            {postagens.map(postagem => (
+            {postagensFiltradas.map(postagem => (
               <PostCard
                 key={postagem.id}
                 postagem={postagem}
@@ -101,4 +110,4 @@ const Feed: React.FC<FeedProps> = ({
   );
 };
 
-export default Feed;
+export default Conteudo;

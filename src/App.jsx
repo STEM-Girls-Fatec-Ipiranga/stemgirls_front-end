@@ -14,6 +14,7 @@ import LoginEmpresa from "./componentes/LoginEmpresa.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
 import Canais from "./componentes/Canais.jsx";
 import CriarCanal from "./componentes/CriarCanal.jsx";
+import Parceiros from "./componentes/Parceiros.tsx";
 
 import React from 'react'
 //import CadastroEvento from "./componentes/CadastroEvento.jsx";
@@ -51,6 +52,7 @@ function App() {
         <Route path="/minimentes" element={<MiniMentes />} />
         <Route path="/canais" element={<Canais />} />
         <Route path="/criar-canal" element={<CriarCanal />} />
+        <Route path="/parceiros" element={<Parceiros />} />
 
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />  

@@ -1,16 +1,16 @@
 // 📌 PostCard.tsx
 import React, { useState } from 'react';
-import { MoreHorizontal, Clock } from 'lucide-react';
+import { MoreHorizontal, Clock, Trash2 } from 'lucide-react';
 import { Postagem, Comunidade } from '../types';
 
-interface CartaoPostagemProps {
+interface PostCardProps { // <-- Corrigido para PostCardProps
   postagem: Postagem;
   aoEntrarNaComunidade?: (idComunidade: string) => void;
   aoExcluirPostagem?: (idPostagem: string) => void;
   comunidades: Comunidade[];
 }
 
-const CartaoPostagem: React.FC<CartaoPostagemProps> = ({ 
+const PostCard: React.FC<PostCardProps> = ({ // <-- Corrigido para PostCard
   postagem, 
   aoEntrarNaComunidade, 
   aoExcluirPostagem, 
@@ -20,10 +20,10 @@ const CartaoPostagem: React.FC<CartaoPostagemProps> = ({
   
   // 🔹 Busca os dados da comunidade
   const comunidade = comunidades.find(c => c.id === postagem.comunidadeId);
-  const podeExcluir = comunidade?.souDono;
+  // Permite excluir se for dono da comunidade e se a função foi passada
+  const podeExcluir = comunidade?.souDono && !!aoExcluirPostagem; 
   const ehMembro = comunidade?.souMembro;
 
-  // 🔹 Exibe o tempo relativo da postagem
   const formatarTempoAtras = (data: Date) => {
     const agora = new Date();
     const diffEmMinutos = Math.floor((agora.getTime() - data.getTime()) / (1000 * 60));
@@ -32,6 +32,13 @@ const CartaoPostagem: React.FC<CartaoPostagemProps> = ({
     if (diffEmMinutos < 1440) return `${Math.floor(diffEmMinutos / 60)}h`;
     return `${Math.floor(diffEmMinutos / 1440)}d`;
   };
+
+  const handleExcluir = () => {
+    if (podeExcluir && aoExcluirPostagem) {
+      aoExcluirPostagem(postagem.id);
+      setMostrarMenu(false);
+    }
+  }
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-pink-100 overflow-hidden hover:shadow-md transition-all duration-200">
@@ -62,57 +69,48 @@ const CartaoPostagem: React.FC<CartaoPostagemProps> = ({
             </button>
           )}
           
-          <div className="relative">
-            <button
-              onClick={() => setMostrarMenu(!mostrarMenu)}
-              className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
-            >
-              <MoreHorizontal className="h-4 w-4 text-gray-500" />
-            </button>
-            
-            {mostrarMenu && (
-              <div className="absolute right-0 top-10 bg-white border border-gray-200 rounded-lg shadow-lg py-2 z-10 min-w-32">
-                {podeExcluir && aoExcluirPostagem && (
-                  <button
-                    onClick={() => {
-                      aoExcluirPostagem(postagem.id);
-                      setMostrarMenu(false);
-                    }}
-                    className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-600 text-sm transition-colors duration-200"
-                  >
-                    Excluir
-                  </button>
-                )}
-                <button
-                  onClick={() => setMostrarMenu(false)}
-                  className="w-full text-left px-4 py-2 hover:bg-gray-50 text-gray-600 text-sm transition-colors duration-200"
-                >
-                  Denunciar
-                </button>
-              </div>
-            )}
-          </div>
+          {(podeExcluir || !ehMembro) && ( 
+            <div className="relative">
+              <button
+                onClick={() => setMostrarMenu(!mostrarMenu)}
+                className="p-2 hover:bg-gray-100 rounded-full transition-colors duration-200"
+              >
+                <MoreHorizontal className="h-4 w-4 text-gray-500" />
+              </button>
+
+              {mostrarMenu && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl z-20 border border-gray-100">
+                  {podeExcluir && (
+                    <button
+                      onClick={handleExcluir}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors duration-150"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Excluir Postagem
+                    </button>
+                  )}
+                  {/* Outras opções futuras, como Denunciar */}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Imagem */}
-      {postagem.imagem && (
-        <div className="px-4">
+      {/* Conteúdo */}
+      <div className="px-4 pb-4">
+        <h2 className="text-xl font-bold text-gray-800 mb-2">{postagem.titulo}</h2>
+        <p className="text-gray-700 mb-4 whitespace-pre-wrap">{postagem.conteudo}</p>
+        {postagem.imagem && (
           <img
             src={postagem.imagem}
-            alt="Postagem"
-            className="w-full h-64 object-cover rounded-lg"
+            alt="Imagem da postagem"
+            className="w-full max-h-80 object-cover rounded-lg border border-gray-100 mt-2"
           />
-        </div>
-      )}
-
-      {/* Conteúdo */}
-      <div className="p-4">
-        <h2 className="font-bold text-lg text-gray-800 mb-2">{postagem.titulo}</h2>
-        <p className="text-gray-600 leading-relaxed">{postagem.conteudo}</p>
+        )}
       </div>
     </div>
   );
 };
 
-export default CartaoPostagem;
+export default PostCard;

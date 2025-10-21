@@ -18,7 +18,7 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (nome.trim() && usuario.trim() && avatar) {
+    if (nome.trim() && usuario.trim()) { // Removi a checagem do avatar, pois ele pode ser opcional (com avatar padrão no componente Comunidades.tsx)
       aoCriar({
         nome: nome.trim(),
         usuario: usuario.startsWith("@") ? usuario : `@${usuario}`,
@@ -81,7 +81,7 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
           </div>
 
 
-          {/* <div>
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Foto da comunidade
             </label>
@@ -96,7 +96,7 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
                 className="w-full mt-2 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
               />
             </div>
-          </div> */}
+          </div>
           
 
           {avatar && (

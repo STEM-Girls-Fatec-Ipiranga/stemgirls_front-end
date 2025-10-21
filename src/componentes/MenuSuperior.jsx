@@ -23,8 +23,9 @@ const MenuSuperior = () => {
     { label: "História", path: "/historia" },
     { label: "Comunidades", path: "/comunidades" },
     { label: "Eventos", path: "/eventos" },
-    { label: "Canais", path: "/canais" }, // futura rota
-    { label: "MiniMentes", path: "/minimentes" } // futura rota
+    { label: "Canais", path: "/canais" },
+    { label: "MiniMentes", path: "/minimentes" },
+    { label: "Parceiros", path: "/parceiros" },
   ];
 
   const user = localStorage.getItem("userData")

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react';
-import { Comunidade } from '../types';
+import { Comunidade, Postagem } from '../types'; // Importado Postagem
 import CartaoPostagem from './PostCard';
 import CriarPostModal from './CriarPostModal';
 
@@ -11,6 +11,7 @@ interface PerfilComunidadeProps {
   aoExcluirComunidade: (comunidadeId: string) => void;
   aoVoltar: () => void;
   aoEntrarNaComunidade: (comunidadeId: string) => void;
+  comunidades: Comunidade[]; // Adicionado para passar aos PostCards
 }
 
 const PerfilComunidade: React.FC<PerfilComunidadeProps> = ({
@@ -19,10 +20,28 @@ const PerfilComunidade: React.FC<PerfilComunidadeProps> = ({
   aoExcluirPostagem,
   aoExcluirComunidade,
   aoVoltar,
-  aoEntrarNaComunidade
+  aoEntrarNaComunidade,
+  comunidades // Recebido
 }) => {
   const [mostrarCriarPostagem, setMostrarCriarPostagem] = useState(false);
   const [mostrarConfirmacaoExclusao, setMostrarConfirmacaoExclusao] = useState(false);
+
+  // Filtra as postagens pertencentes à comunidade
+  const postagensDaComunidade = comunidades
+    .find(c => c.id === comunidade.id)?.postagens || [];
+    
+  // Adiciona os dados da comunidade à postagem para que o PostCard funcione
+  const postagensFormatadas: Postagem[] = postagensDaComunidade.map(p => ({
+    ...p,
+    comunidadeNome: comunidade.nome,
+    comunidadeAvatar: comunidade.avatar,
+  })).sort((a, b) => new Date(b.dataCriacao).getTime() - new Date(a.dataCriacao).getTime());
+
+
+  const handleExcluirComunidade = () => {
+      aoExcluirComunidade(comunidade.id);
+      setMostrarConfirmacaoExclusao(false);
+  }
 
   return (
     <>
@@ -48,7 +67,7 @@ const PerfilComunidade: React.FC<PerfilComunidadeProps> = ({
               <div>
                 <h1 className="text-2xl font-bold text-gray-800">{comunidade.nome}</h1>
                 <p className="text-gray-600 mb-2">{comunidade.usuario}</p>
-                <p className="text-sm text-gray-500">{comunidade.postagens.length} postagens</p>
+                <p className="text-sm text-gray-500">{postagensFormatadas.length} postagens</p>
               </div>
             </div>
 
@@ -62,34 +81,34 @@ const PerfilComunidade: React.FC<PerfilComunidadeProps> = ({
                 </button>
               )}
 
-              {comunidade.souDono && (
-                <>
-                  <button
-                    onClick={() => setMostrarCriarPostagem(true)}
-                    className="bg-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105 flex items-center"
-                  >
-                    <Plus className="h-4 w-4 mr-2" />
-                    Fazer publicação
-                  </button>
+              {(comunidade.souMembro || comunidade.souDono) && ( // Membros e donos podem postar
+                <button
+                  onClick={() => setMostrarCriarPostagem(true)}
+                  className="bg-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105 flex items-center"
+                >
+                  <Plus className="h-4 w-4 mr-2" />
+                  Fazer publicação
+                </button>
+              )}
 
-                  <button
-                    onClick={() => setMostrarConfirmacaoExclusao(true)}
-                    className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105 flex items-center"
-                  >
-                    <Trash2 className="h-4 w-4 mr-2" />
-                    Excluir comunidade
-                  </button>
-                </>
+              {comunidade.souDono && (
+                <button
+                  onClick={() => setMostrarConfirmacaoExclusao(true)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-md transition-all duration-200 transform hover:scale-105 flex items-center"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Excluir comunidade
+                </button>
               )}
             </div>
           </div>
         </div>
 
         {/* Postagens */}
-        {/* <div>
+        <div>
           <h2 className="text-xl font-bold text-gray-800 mb-4">Postagens da comunidade</h2>
 
-          {comunidade.postagens.length === 0 ? (
+          {postagensFormatadas.length === 0 ? (
             <div className="text-center py-12 bg-white rounded-xl border border-pink-100">
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
                 {comunidade.souDono ? 'Você ainda não possui postagens' : 'Nenhuma postagem ainda'}
@@ -102,17 +121,17 @@ const PerfilComunidade: React.FC<PerfilComunidadeProps> = ({
             </div>
           ) : (
             <div className="space-y-6">
-              {comunidade.postagens.map(postagem => (
+              {postagensFormatadas.map(postagem => (
                 <CartaoPostagem
                   key={postagem.id}
                   postagem={postagem}
                   aoExcluirPostagem={aoExcluirPostagem}
-                  comunidades={[comunidade]}
+                  comunidades={comunidades} // Passa todas as comunidades
                 />
               ))}
             </div>
           )}
-        </div> */}
+        </div>
       </div>
 
       {/* Modal de Confirmação de Exclusão */}
@@ -131,7 +150,7 @@ const PerfilComunidade: React.FC<PerfilComunidadeProps> = ({
                 Cancelar
               </button>
               <button
-                onClick={() => aoExcluirComunidade(comunidade.id)}
+                onClick={handleExcluirComunidade}
                 className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
               >
                 Excluir
