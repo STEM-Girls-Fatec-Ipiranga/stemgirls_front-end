@@ -3,20 +3,22 @@ import { Search, Sun, Moon, Menu, X, CircleUser } from 'lucide-react';
 import LogoSG from '../assets/img/LogoSG.png';
 import { Link } from 'react-router-dom';
 
+
+function formatDate(date) {
+  const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  return new Date(date).toLocaleDateString("pt-BR", options);
+}
+
 const MenuSuperior = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // const toggleTheme = () => {
-  //   setIsDarkMode(!isDarkMode);
-  // };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Agora cada item tem label e path
   const navItems = [
     { label: "Início", path: "/" },
     { label: "Sobre nós", path: "/sobre-nos" },
@@ -30,18 +32,19 @@ const MenuSuperior = () => {
 
   const user = localStorage.getItem("userData")
 
-    const [userProfile, setUser] = useState({
-      data: localStorage.getItem("userData")
-        ? JSON.parse(localStorage.getItem("userData") || "{}")
-        : {
+  const [userProfile, setUser] = useState({
+    data: localStorage.getItem("userData")
+      ? JSON.parse(localStorage.getItem("userData") || "{}")
+      : {
           nomeCompleto: "",
           nomeUsuario: "",
           email: "",
           sobre: "",
-          joinDate: formatDate,
+          // ✅ Aqui agora a função existe e retorna a data atual formatada
+          joinDate: formatDate(new Date()),
           //profileImage: FotoPerfil
         }
-    });
+  });
 
   return (
     <header className="w-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg" style={{
