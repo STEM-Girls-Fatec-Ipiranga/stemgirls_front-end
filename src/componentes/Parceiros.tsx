@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { X, Sparkles, Target, Eye, Users, GraduationCap, Building2, School, User, Heart } from 'lucide-react';
-import FundoSGbranco from '../assets/img/fundologin.png';
 
 interface PartnershipType {
     id: string;
@@ -140,16 +139,13 @@ function Parceiros() {
 
     return (
         <div className="min-h-screen bg-[#FFF6FF]">
-            <section className="relative text-white py-24 px-6"
-                style={{
-                    backgroundImage: `url(${FundoSGbranco})`,
-                    boxShadow: '0 8px 10px -5px rgba(0, 0, 0, 0.21)',
-                }}>
+
+            <section className="relative py-24 px-6">
                 <div className="max-w-4xl mx-auto text-center">
-                    <h1 className="text-5xl md:text-6xl font-bold mb-6 text-purple-300">
+                    <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#F36EC0] via-pink-500 to-[#AF5FE4] text-transparent bg-clip-text inline-block">
                         Juntas, transformamos o futuro da tecnologia
                     </h1>
-                    <p className="text-xl md:text-2xl mb-10 text-purple-300">
+                    <p className="text-xl md:text-2xl mb-10 text-purple-600 font-bold">
                         Acreditamos no poder da colaboração entre empresas, escolas e pessoas que apoiam a presença feminina nas áreas STEM.
                     </p>
                     <button

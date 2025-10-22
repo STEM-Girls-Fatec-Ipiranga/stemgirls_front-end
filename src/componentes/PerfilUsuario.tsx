@@ -1,7 +1,6 @@
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X } from "lucide-react";
 import { ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
-import fundoSG from "../assets/img/FundoSG.jpg"
 //import FotoPerfil from "../assets/img/perfil-sem-foto.jpg";
 
 import { useState } from "react";
@@ -40,10 +39,7 @@ export default function PerfilUsuario() {
 
   return (
     <>
-      <div className="min-h-screen bg-pink-100 p-4 sm:p-6 lg:p-8" style={{
-        backgroundImage: `url(${fundoSG})`
-      }}
-      >
+      <div className="min-h-screen bg-pink-100 p-4 sm:p-6 lg:p-8">
         <div className="flex justify-center max-w-4xl mx-auto">
 
           <div className="bg-white rounded-2xl shadow-xl overflow-hidden mt-[80px]">
@@ -73,13 +69,6 @@ export default function PerfilUsuario() {
                     <Edit3 className="w-4 h-4" />
                     Editar Perfil
                   </button>
-
-                  {/* <button
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2"
-                  >
-                    <LogOut className="w-4 h-4" onClick={handleLogout} />
-                    Sair
-                  </button> */}
                 </div>
               </div>
 
