@@ -14,6 +14,7 @@ const MenuSuperior = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
 
 
   const toggleMobileMenu = () => {
@@ -47,12 +48,25 @@ const MenuSuperior = () => {
   });
 
     const navigate = useNavigate();
-  
-    const handleLogout = () => {
+
+    const handleClickLogout = () => {
+        setIsProfileOpen(false); // Fecha o dropdown antes de abrir o modal
+        setIsLogoutModalOpen(true); // Abre o modal
+    };
+
+    // 2. Função que executa o logout real (chamada pelo botão "Tenho certeza" do modal)
+    const handleConfirmLogout = () => {
       localStorage.removeItem("userData");
       localStorage.removeItem("userToken");
+      setIsLogoutModalOpen(false); // Fecha o modal após a ação
       navigate("/");
     }
+  
+    // const handleLogout = () => {
+    //   localStorage.removeItem("userData");
+    //   localStorage.removeItem("userToken");
+    //   navigate("/");
+    // }
 
   return (
     <header className="w-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg" style={{
@@ -97,10 +111,47 @@ const MenuSuperior = () => {
           </div>)}
 
           {/* Botão de perfil */}
-          {user && (
+
+
+            {user && (
             <div className="flex flex-row items-center relative">
               <p className="font-semibold text-white text-right">@{userProfile.data.nomeUsuario}</p>
-              {/* <Link to="/perfil"> */}
+
+              <button
+                className="px-6 py-2 text-white font-semibold hover:scale-105 transition-all duration-200"
+                aria-label="Menu do usuário"
+                onClick={() => setIsProfileOpen(!isProfileOpen)}
+              >
+                <CircleUser size={45} />
+              </button>
+
+              {isProfileOpen && (
+                <div className="absolute right-4 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 border border-[#af5fe4]"> {/* O border-opacity-4 foi removido aqui para manter o estilo da borda fina roxa */}
+                  <Link 
+                    to="/perfil" 
+                    className="flex items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
+                    onClick={() => setIsProfileOpen(false)} // Fecha ao navegar
+                  >
+                    <User size={19} /> Perfil 
+                  </Link>
+
+                  {/* CHAMA A FUNÇÃO QUE ABRE O MODAL */}
+                  <button 
+                    className="flex w-full items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors" 
+                    onClick={handleClickLogout} // AQUI ABRE O MODAL DE CONFIRMAÇÃO
+                  >
+                    <LogOut size={19} /> Sair
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+
+
+
+          {/* {user && (
+            <div className="flex flex-row items-center relative">
+              <p className="font-semibold text-white text-right">@{userProfile.data.nomeUsuario}</p>
 
                 <button
                   className="px-6 py-2 text-white font-semibold hover:scale-105 transition-all duration-200"
@@ -121,11 +172,10 @@ const MenuSuperior = () => {
                     </button>
                   </div>
                 )}
-
-
-              {/* </Link> */}
             </div>
-          )}
+          )} */}
+
+
 
           {/* Menu mobile button */}
           <button
@@ -214,6 +264,47 @@ const MenuSuperior = () => {
           </div>
         </div>
       )}
+
+      {/* MODAL DE CONFIRMAÇÃO DE SAÍDA (INLINE) */}
+      {user && isLogoutModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
+          
+          {/* Container do Popup Branco */}
+          <div 
+            className="bg-white rounded-xl p-8 max-w-sm mx-4 shadow-2xl"
+            style={{
+              border: '1px solid #AF5FE4', // Borda fina roxa
+              fontFamily: "Quicksand, sans-serif"
+            }}
+          >
+            <h3 className="text-xl font-bold text-gray-800 mb-4">
+              Confirmar Ação
+            </h3>
+            
+            <p className="text-gray-600 mb-6">
+              Tem certeza de que deseja sair da sua conta?
+            </p>
+            
+            {/* Botões de Ação */}
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setIsLogoutModalOpen(false)}
+                className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              >
+                Cancelar ação
+              </button>
+              <button
+                onClick={handleConfirmLogout} // Chama a função que faz o logout real
+                className="bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-600 transition-colors duration-200 shadow-md"
+              >
+                Tenho certeza
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
     </header>
   );
 };

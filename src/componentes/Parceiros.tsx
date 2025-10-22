@@ -41,7 +41,7 @@ function Parceiros() {
         {
             icon: <Users className="w-8 h-8 text-[#AF5FE4]" />,
             title: 'Conexão',
-            description: 'Acesso direto a talentos femininos e neurodivergentes em formação.'
+            description: 'Acesso direto a talentos femininos em formação.'
         },
         {
             icon: <GraduationCap className="w-8 h-8 text-[#AF5FE4]" />,
@@ -145,7 +145,7 @@ function Parceiros() {
                     <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#F36EC0] via-pink-500 to-[#AF5FE4] text-transparent bg-clip-text inline-block">
                         Juntas, transformamos o futuro da tecnologia
                     </h1>
-                    <p className="text-xl md:text-2xl mb-10 text-purple-600 font-bold">
+                    <p className="text-xl md:text-2xl mb-10 text-purple-600">
                         Acreditamos no poder da colaboração entre empresas, escolas e pessoas que apoiam a presença feminina nas áreas STEM.
                     </p>
                     <button
