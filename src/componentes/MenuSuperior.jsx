@@ -3,21 +3,23 @@ import { Search, Sun, Moon, Menu, X, CircleUser, LogOut, User} from 'lucide-reac
 import LogoSG from '../assets/img/LogoSG.png';
 import { Link, useNavigate } from 'react-router-dom';
 
+
+function formatDate(date) {
+  const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+  return new Date(date).toLocaleDateString("pt-BR", options);
+}
+
 const MenuSuperior = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
-  // const toggleTheme = () => {
-  //   setIsDarkMode(!isDarkMode);
-  // };
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Agora cada item tem label e path
   const navItems = [
     { label: "Início", path: "/" },
     { label: "Sobre nós", path: "/sobre-nos" },
@@ -39,7 +41,7 @@ const MenuSuperior = () => {
         nomeUsuario: "",
         email: "",
         sobre: "",
-        //joinDate: formatDate,
+        joinDate: formatDate(new Date()),
         //profileImage: FotoPerfil
       }
   });
