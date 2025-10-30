@@ -78,7 +78,7 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
             <p className="font-bold text-gray-800 text-sm">Feed Geral</p>
           </div>
 
-          {/* Busca */}
+          {/* Barra de pesquisa */}
           <div className="relative mb-6">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <input

@@ -19,6 +19,7 @@ const SidebarRight: React.FC = () => {
       {/* Toggle Button */}
       <button
         onClick={() => setIsMinimized(!isMinimized)}
+        
         className="absolute -left-3 top-4 bg-gradient-to-r from-purple-400 to-pink-400 text-white p-1 rounded-full shadow-lg hover:scale-110 transition-transform"
       >
         {isMinimized ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}

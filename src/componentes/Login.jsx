@@ -4,6 +4,7 @@ import LogoSG from '../assets/img/LogoSG.png';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 
 function Login() {
@@ -95,7 +96,7 @@ function Login() {
 
         if (!isPasswordValid) {
             alert('Por favor, crie uma senha que atenda a todos os critérios de segurança.');
-            return; 
+            return;
         }
 
         try {
@@ -159,6 +160,9 @@ function Login() {
 
     return (
         <div className={`${Styles.container} ${classeAtual}`}>
+            <Link to="/">
+                <button className="absolute top-4 left-0 w-24 flex flex-row justify-around"><ArrowLeft /> Voltar</button>
+            </Link>
             {/*-------------------------- PRIMEIRO ESTADO (CADASTRO) --------------------------*/}
             <div className={`${Styles.content} ${Styles.primeiro_content}`}>
                 <div className={Styles.primeira_coluna}>
@@ -222,7 +226,7 @@ function Login() {
                         <br />
 
                         <Link to="/login-empresa">
-                        <a href="/login-empresa">Sou uma empresa</a>
+                            <a href="/login-empresa">Sou uma empresa</a>
                         </Link>
 
                     </form>

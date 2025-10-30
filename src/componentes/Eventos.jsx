@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Search } from 'lucide-react';
 
 // Banco de imagens pré-selecionadas
 const imagensDisponiveis = [
@@ -361,34 +361,44 @@ export default function Eventos() {
   };
 
   return (
-    <div className="flex min-h-screen bg-pink-50 text-gray-800">
-      {/* Barra lateral (sem título "Menu") */}
-      <aside className="w-64 bg-pink-100 p-6 flex flex-col gap-4">
-        <Button
-          className="bg-pink-500 text-white hover:bg-pink-600"
-          onClick={() => {
-            setTelaCadastro(true);
-            setTelaMeusEventos(false);
-          }}
-        >
-          Cadastrar Evento
-        </Button>
+    <div className="flex min-h-screen bg-[#FFF6FF] text-gray-800">
 
-        <Button
-          className="bg-purple-500 text-white hover:bg-purple-600"
-          onClick={() => {
-            setTelaMeusEventos(true);
-            setTelaCadastro(false);
-          }}
-        >
-          Meus Eventos
-        </Button>
+      {/* Menu lateral */}
+      <aside className="w-[300px] bg-[#FFF6FF] p-6 flex flex-col gap-6 shadow-lg">
+
+        <div className="w-[80%] ml-4 flex items-center bg-[#FFF6FF]">
+          <h1 className="font-bold text-black text-[22px]">Eventos</h1>
+        </div>
+
+        {/* Barra de pesquisa */}
+        <div className="flex justify-center">
+          <div className="relative">
+            <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Pesquisar por localidade..."
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+              value={localidade}
+              onChange={(e) => setLocalidade(e.target.value)}
+            />
+          </div>
+        </div>
 
         <div className="mt-2">
-          <h4 className="font-semibold mb-2">Seus eventos</h4>
+          <div className="flex justify-between">
+            <h4 className="text-lg font-semibold mb-2">Meus eventos</h4>
+            <p className="text-pink-600 font-bold cursor-pointer text-sm"
+             onClick={() => {
+              setTelaCadastro(true);
+              setTelaMeusEventos(false);
+            }}>
+              Ver
+            </p>
+          </div>
+
           <div className="flex flex-col gap-2 max-h-64 overflow-auto pr-2">
             {eventosCriados.length === 0 ? (
-              <div className="text-sm text-gray-600">Você ainda não criou eventos.</div>
+              <div className="text-sm text-gray-400 mb-6 mt-4 ml-4">Você ainda não criou eventos.</div>
             ) : (
               eventosCriados.map((ev) => (
                 <div key={ev.id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
@@ -417,6 +427,17 @@ export default function Eventos() {
             )}
           </div>
         </div>
+
+        <Button
+          className="bg-[#F36EC0] text-white font-bold rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+          onClick={() => {
+            setTelaCadastro(true);
+            setTelaMeusEventos(false);
+          }}
+        >
+          + Publicar Evento
+        </Button>
+
       </aside>
 
       {/* Conteúdo principal */}
@@ -634,20 +655,6 @@ export default function Eventos() {
               ))}
             </div>
 
-            {/* Pesquisa por localidade */}
-            <div className="flex justify-center mb-6">
-              <div className="relative w-1/2">
-                <span className="absolute left-3 top-3 text-gray-500">🔍</span>
-                <input
-                  type="text"
-                  placeholder="Pesquisar por localidade..."
-                  className="w-full pl-10 p-3 rounded-xl border border-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 text-gray-700"
-                  value={localidade}
-                  onChange={(e) => setLocalidade(e.target.value)}
-                />
-              </div>
-            </div>
-
             {/* Cards (2 por linha) */}
             <div className="grid md:grid-cols-2 gap-6 w-full max-w-6xl mx-auto">
               {eventosFiltrados.map((evento) => (
@@ -663,7 +670,7 @@ export default function Eventos() {
                     <p className="mt-2 text-gray-700 text-sm">{evento.descricao}</p>
                     <div className="mt-4">
                       <Button
-                        className="w-full bg-pink-500 hover:bg-pink-600 text-white"
+                        className="w-full bg-[#F36EC0] hover:bg-pink-500 text-white"
                         onClick={() => setModalEvento(evento)}
                       >
                         Participar

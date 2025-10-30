@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Search } from 'lucide-react';
 
 export default function Canais() {
   const [canais, setCanais] = useState([]);
@@ -6,7 +7,7 @@ export default function Canais() {
   const [inscritos, setInscritos] = useState([]);
   const [canalSelecionado, setCanalSelecionado] = useState(null);
 
- 
+
   const canaisPadrao = [
     {
       id: 1,
@@ -46,7 +47,7 @@ export default function Canais() {
     },
   ];
 
- 
+
   useEffect(() => {
     const armazenados = JSON.parse(localStorage.getItem("canais")) || [];
     const todosCanais = mergeCanaisPadraoComPersonalizados(canaisPadrao, armazenados);
@@ -67,7 +68,7 @@ export default function Canais() {
     return () => window.removeEventListener("focus", atualizar);
   }, []);
 
- 
+
   const mergeCanaisPadraoComPersonalizados = (padrao, personalizados) => {
     const map = new Map();
     [...padrao, ...personalizados].forEach((c) => map.set(c.id, c));
@@ -108,7 +109,7 @@ export default function Canais() {
     }
   };
 
- 
+
   const excluirCanal = (id) => {
     if (window.confirm("Tem certeza que deseja excluir este canal?")) {
       const novos = canais.filter((c) => c.id !== id);
@@ -145,7 +146,7 @@ export default function Canais() {
     }
   };
 
-  
+
   const canaisFiltrados = canais.filter((c) =>
     c.nome.toLowerCase().includes(search.toLowerCase())
   );
@@ -154,26 +155,28 @@ export default function Canais() {
   const sugeridos = canais.filter((c) => !inscritos.includes(c.id));
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-pink-50 to-purple-50 text-black">
+    <div className="flex h-screen bg-[#FFF6FF] text-black">
       {/* LATERAL */}
-      <aside className="w-72 bg-white border-r border-pink-200 flex flex-col justify-between p-4">
+      <aside className="w-72 bg-[#FFF6FF] shadow-lg transition-all duration-30 flex flex-col p-4">
+
+        <div className="w-[80%] mb-[15px] mt-[15px] flex items-center bg-[#FFF6FF]">
+          <h1 className="font-bold text-black text-[22px]">Canais</h1>
+        </div>
+
         <div>
-          <button
-            onClick={() => window.open("/criar-canal", "_blank")}
-            className="bg-gradient-to-r from-pink-500 to-purple-500 text-white w-full py-2 rounded-xl font-semibold hover:opacity-90 transition"
-          >
-            Criar Canal
-          </button>
+          <div className="relative">
+            <Search className="absolute left-3 top-7 h-4 w-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Buscar canal..."
+              className="w-full pl-10 pr-4 py-2 mt-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
 
-          <input
-            type="text"
-            placeholder="🔍 Buscar canal..."
-            className="w-full mt-4 border border-gray-300 p-2 rounded-lg text-black"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
 
-          <h3 className="text-lg font-bold text-pink-600 mt-6 mb-2">
+          <h3 className="text-lg font-bold mt-6 mb-2">
             Meus Canais
           </h3>
           {meusCanais.length > 0 ? (
@@ -199,7 +202,14 @@ export default function Canais() {
             </p>
           )}
 
-          <h3 className="text-lg font-bold text-pink-600 mt-6 mb-2">
+          <button
+            onClick={() => window.open("/criar-canal", "_blank")}
+            className="bg-[#F36EC0] mt-8 text-white w-full py-2 rounded-lg font-semibold hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+          >
+            + Criar Canal
+          </button>
+
+          <h3 className="text-lg font-bold mt-6 mb-2">
             Sugeridos
           </h3>
           <ul className="space-y-2">
@@ -251,11 +261,10 @@ export default function Canais() {
               </div>
               <button
                 onClick={() => toggleInscricao(canalSelecionado.id)}
-                className={`ml-auto px-4 py-2 rounded-lg font-semibold ${
-                  inscritos.includes(canalSelecionado.id)
-                    ? "bg-gray-200 text-gray-700"
-                    : "bg-gradient-to-r from-pink-500 to-purple-500 text-white"
-                }`}
+                className={`ml-auto px-4 py-2 rounded-lg font-semibold ${inscritos.includes(canalSelecionado.id)
+                  ? "bg-gray-200 text-gray-700"
+                  : "bg-[#F36EC0] text-white"
+                  }`}
               >
                 {inscritos.includes(canalSelecionado.id)
                   ? "Inscrito"
@@ -300,9 +309,6 @@ export default function Canais() {
           </div>
         ) : (
           <>
-            <h2 className="text-2xl font-bold text-pink-600 mb-4">
-              Canais Recomendados
-            </h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {canaisFiltrados.map((canal) => (
                 <div
@@ -335,11 +341,10 @@ export default function Canais() {
                           e.stopPropagation();
                           toggleInscricao(canal.id);
                         }}
-                        className={`w-full py-2 rounded-lg font-semibold ${
-                          inscritos.includes(canal.id)
-                            ? "bg-gray-200 text-gray-700"
-                            : "bg-gradient-to-r from-pink-500 to-purple-500 text-white"
-                        }`}
+                        className={`w-full py-2 rounded-lg font-semibold ${inscritos.includes(canal.id)
+                          ? "bg-gray-200 text-gray-700"
+                          : "bg-[#F36EC0] text-white"
+                          }`}
                       >
                         {inscritos.includes(canal.id)
                           ? "Cancelar inscrição"

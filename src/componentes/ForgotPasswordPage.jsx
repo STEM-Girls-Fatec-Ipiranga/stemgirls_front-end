@@ -24,6 +24,7 @@ function ForgotPasswordPage() {
 
     return (
         <div className={Styles.container}>
+            
             <div className={Styles.form_container}>
                 <h2 className={`${Styles.titulo} ${Styles.segundo_titulo}`}>Esqueceu a senha?</h2>
                 <p className={Styles.form_description}>

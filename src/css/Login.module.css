@@ -41,6 +41,7 @@
     background-color: #ecf0f1;
     background-image: url(../assets/img/fundologin.png);
     color: black;
+    position: relative;
 }
 
 .content {

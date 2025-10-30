@@ -241,7 +241,8 @@ function Parceiros() {
                         <h3 className="text-3xl font-bold text-gray-800 mb-2">
                             Torne-se uma parceira da STEMGirls
                         </h3>
-                        <div className="mb-6 text-2xl">✨</div>
+                        <p className="text-black">Digite o nome da sua empresa e seu email para contato que vamos analisar sua solcitação!</p>
+                            <br />
                         <form onSubmit={handleContactSubmit}>
                             <div className="mb-6">
                                 <label className="block text-gray-700 font-semibold mb-2">
@@ -307,7 +308,7 @@ function Parceiros() {
                         >
                             <X className="w-6 h-6" />
                         </button>
-                        <div className="w-24 h-24 bg-gradient-to-br from-purple-500 to-blue-400 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <div className="w-24 h-24 bg-gradient-to-br from-[#AF5FE4] to-[#F36EC0] rounded-2xl flex items-center justify-center mx-auto mb-6">
                             <span className="text-5xl font-bold text-white">{selectedPartner.logo}</span>
                         </div>
                         <h3 className="text-3xl font-bold text-gray-800 mb-6 text-center">

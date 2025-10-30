@@ -2,7 +2,9 @@ import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
+import Tumb1 from "../assets/img/minha-historia-thumb.png"
+import Tumb2 from "../assets/img/mulheres-tecnologia-thumb.png"
+import Thumb3 from "../assets/img/super-dicas-thumb.png"
 
 
 
@@ -28,10 +30,10 @@ export default function Home() {
   // ========== CARROSSEL ==========
   const slides = [
     { id: 1, type: "video", src: "imagens/mulheres-tecnologia.mp4", alt: "Evolução" },
-    { id: 2, type: "video", src: "imagens/super-dicas.mp4", poster: "img/super-dicas-thumb.png", alt: "Super Dicas" },
-    { id: 3, type: "video", src: "imagens/mulheres-tecnologia.mp4", poster: "img/mulheres-tecnologia-thumb.png", alt: "Mulheres na Tecnologia" },
-    { id: 4, type: "video", src: "imagens/minha-historia.mp4", poster: "img/minha-historia-thumb.png", alt: "Minha História" },
-    { id: 5, type: "video", src: "imagens/super-dicas.mp4", alt: "Estudos" },
+    { id: 2, type: "video", src: "imagens/super-dicas.mp4", poster: Thumb3, alt: "Super Dicas" },
+    { id: 3, type: "video", src: "imagens/mulheres-tecnologia.mp4", poster: Tumb2, alt: "Mulheres na Tecnologia" },
+    { id: 4, type: "video", src: "imagens/minha-historia.mp4", poster: Tumb1, alt: "Minha História" },
+    { id: 5, type: "video", src: "imagens/super-dicas.mp4", poster: Thumb3, alt: "Estudos" },
   ];
 
   const centerIndex = Math.floor(slides.length / 2);

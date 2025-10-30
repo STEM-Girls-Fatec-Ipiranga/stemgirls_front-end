@@ -5,9 +5,9 @@ interface Quiz {
   id: number;
   title: string;
   description: string;
-  duration: string;
+  //duration: string;
   difficulty: 'Fácil' | 'Médio' | 'Difícil';
-  participants: number;
+  //participants: number;
   rating: number;
   videoThumbnail: string;
 }
@@ -50,24 +50,8 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 
         <p className="text-gray-600 text-xs mb-3 line-clamp-2">{quiz.description}</p>
 
-        {/* Stats */}
-        <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
-          <div className="flex items-center space-x-1">
-            <Clock className="h-3 w-3" />
-            <span>{quiz.duration}</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Users className="h-3 w-3" />
-            <span>{quiz.participants.toLocaleString()}</span>
-          </div>
-          <div className="flex items-center space-x-1">
-            <Star className="h-3 w-3 text-yellow-400" fill="currentColor" />
-            <span>{quiz.rating}</span>
-          </div>
-        </div>
-
         {/* Action Button */}
-        <button className="w-full bg-gradient-to-r from-purple-400 to-pink-400 text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-purple-500 hover:to-pink-500 transition-all duration-200 hover:shadow-md">
+        <button className="w-full bg-[#F36EC0] text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-purple-500 hover:to-pink-500 transition-all duration-200 hover:shadow-md">
           Começar Quiz
         </button>
       </div>
