@@ -1,8 +1,17 @@
 import React, { useState } from 'react';
 import { ChevronRight, ChevronLeft, Trophy, Target, TrendingUp, Heart, Star, Award } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+
+/**
+ * SidebarRight (fixa)
+ * - Fica fixa com top e bottom para não sobrepor header/rodapé.
+ * - Suporta minimização.
+ * - Oferece informações rápidas e direcionamentos.
+ */
 
 const SidebarRight: React.FC = () => {
   const [isMinimized, setIsMinimized] = useState(false);
+  const navigate = useNavigate();
 
   const motivationalQuotes = [
     "Você é incrível! 💖",
@@ -15,19 +24,23 @@ const SidebarRight: React.FC = () => {
   const [currentQuote] = useState(motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)]);
 
   return (
-    <div className={`bg-white shadow-lg transition-all duration-300 ${isMinimized ? 'w-16' : 'w-72'} h-full fixed right-0 top-16 z-40`}>
+    <div
+      className={`bg-white shadow-lg transition-all duration-300 ${isMinimized ? 'w-16' : 'w-72'}`}
+      style={{ position: 'absolute', right: 0, top: 239, bottom: 72, zIndex: 40 }}
+      aria-label="Barra lateral direita"
+    >
       {/* Toggle Button */}
       <button
         onClick={() => setIsMinimized(!isMinimized)}
-        
         className="absolute -left-3 top-4 bg-gradient-to-r from-purple-400 to-pink-400 text-white p-1 rounded-full shadow-lg hover:scale-110 transition-transform"
+        aria-label={isMinimized ? 'Expandir painel' : 'Minimizar painel'}
       >
         {isMinimized ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
       </button>
 
       {!isMinimized && (
-        <div className="p-4 space-y-6">
-          {/* Points Section */}
+        <div className="p-4 space-y-6 overflow-auto h-full">
+          {/* Seção de Pontos */}
           <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-4 rounded-xl border-2 border-purple-200">
             <div className="flex items-center space-x-2 mb-3">
               <Trophy className="h-5 w-5 text-purple-600" />
@@ -41,6 +54,10 @@ const SidebarRight: React.FC = () => {
                 ))}
               </div>
               <p className="text-sm text-purple-600">Nível: Programadora Junior</p>
+            </div>
+            {/* Link rápido para perfil / pontos */}
+            <div className="mt-3 text-center">
+              <button onClick={() => navigate('/perfil')} className="text-sm underline">Ver perfil</button>
             </div>
           </div>
 
@@ -113,10 +130,14 @@ const SidebarRight: React.FC = () => {
                 <span className="text-indigo-700">5 dias seguidos</span>
               </div>
             </div>
+            <div className="mt-3 text-center">
+              <button onClick={() => navigate('/conquistas')} className="text-sm underline">Ver todas</button>
+            </div>
           </div>
         </div>
       )}
 
+      {/* Versão minimizada */}
       {isMinimized && (
         <div className="p-4 space-y-4">
           <div className="text-center">

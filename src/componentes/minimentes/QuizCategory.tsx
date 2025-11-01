@@ -19,6 +19,9 @@ interface QuizCategoryProps {
   quizzes: Quiz[];
 }
 
+/**
+ * Exibe um bloco de categoria contendo vários QuizCard.
+ */
 const QuizCategory: React.FC<QuizCategoryProps> = ({ title, icon, color, quizzes }) => {
   return (
     <div className="mb-8">
@@ -28,7 +31,7 @@ const QuizCategory: React.FC<QuizCategoryProps> = ({ title, icon, color, quizzes
         </div>
         <h2 className="text-xl font-bold">{title}</h2>
       </div>
-      
+
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {quizzes.map((quiz) => (
           <QuizCard key={quiz.id} quiz={quiz} />
