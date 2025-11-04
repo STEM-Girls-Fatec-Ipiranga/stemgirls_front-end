@@ -136,7 +136,7 @@ function Rodape() {
                     </div> */}
                     </div>
                 </div>
-                <div className="w-full h-[10%] flex itens-center" style={{ background: 'linear-gradient(90deg, #5b3eeb 0%, #ff66c4 100%)' }}>
+                <div className="w-full h-[10%] flex itens-center" style={{ background: 'linear-gradient(90deg, #5b3eeb 0%, #c958d0 100%)' }}>
                     <p className="m-auto text-white font-bold">© 2025 STEM Girls. Todos os direitos reservados</p>
                 </div>
 
