@@ -16,6 +16,7 @@ import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
 import Canais from "./componentes/Canais.jsx";
 import CriarCanal from "./componentes/CriarCanal.jsx";
 import Parceiros from "./componentes/Parceiros.tsx";
+import Quiz from "./componentes/Quiz.jsx";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 import Rodape from "./componentes/Rodape.jsx";
@@ -50,6 +51,7 @@ function AppContent() {
         <Route path="/criar-canal" element={<CriarCanal />} />
         <Route path="/parceiros" element={<Parceiros />} />
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
+        <Route path="/quiz" element={<Quiz />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
       </Routes>
 
