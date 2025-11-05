@@ -264,7 +264,7 @@ function Login() {
                     </div>
                     <form className={Styles.form} onSubmit={handleLoginSubmit}>
                         <label className={Styles.input_group}>
-                            <i className="far fa-user icon-modify"></i>
+                            <i className="far fi-rr-envelope icon-modify"></i>
                             <input type="email" name="email" placeholder="Digite seu email" value={loginForm.email} onChange={handleLoginChange} required />
                         </label>
                         <label className={Styles.input_group}>

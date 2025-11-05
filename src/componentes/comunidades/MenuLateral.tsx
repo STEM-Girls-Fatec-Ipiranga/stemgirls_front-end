@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
-import { Search, Plus, ChevronLeft } from 'lucide-react';
+import { Search } from 'lucide-react';
 import { Comunidade } from '../types';
-import CriarComunidadesModal from './CriarComunidadesModal'; // nome do arquivo/plural
+import CriarComunidadesModal from './CriarComunidadesModal';
+import { useNavigate } from 'react-router-dom';
 
 interface MenuLateralProps {
   comunidades: Comunidade[];
   aoCriarComunidade: (dados: { nome: string; usuario: string; avatar: string }) => void;
   aoEntrarNaComunidade: (comunidadeId: string) => void;
-  aoSelecionarComunidade: (comunidade: Comunidade | null) => void; // Aceita null para voltar ao feed
+  aoSelecionarComunidade: (comunidade: Comunidade | null) => void;
   comunidadeSelecionada: Comunidade | null;
   colapsada: boolean;
-  // aoAlternarColapso: () => void; // Descomente se quiser usar o botão
 }
 
 const MenuLateral: React.FC<MenuLateralProps> = ({
@@ -20,12 +20,14 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
   aoSelecionarComunidade,
   comunidadeSelecionada,
   colapsada,
-  // aoAlternarColapso
 }) => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
 
-  // Adicionado um item "Feed Geral" para desselecionar a comunidade
+  const navigate = useNavigate();
+  const user = localStorage.getItem("userData");
+
   const aoSelecionar = (comunidade: Comunidade | null) => {
     aoSelecionarComunidade(comunidade);
   };
@@ -39,6 +41,15 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
     c.usuario.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  // Função para lidar com o clique em "Criar comunidade"
+  const handleCreateClick = () => {
+    if (!user) {
+      setShowLoginPopup(true);
+      return;
+    }
+    setShowCreateModal(true);
+  };
+
   return (
     <>
       <div
@@ -46,24 +57,13 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
           colapsada ? 'w-0 overflow-hidden' : 'w-80'
         } relative border-r border-pink-100`}
       >
-
-        {/* Botão de colapso */}
-        {/* {aoAlternarColapso && (
-            <button 
-                onClick={aoAlternarColapso} 
-                className={`absolute -right-4 top-6 z-10 bg-gradient-to-r from-pink-500 to-purple-500 text-white p-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105`} 
-            > 
-                <ChevronLeft className={`h-4 w-4 transition-transform duration-300 ${colapsada ? 'rotate-180' : ''}`} /> 
-            </button>
-        )} */}
-            
         <div className="w-[80%] h-[50px] m-auto mt-[15px] flex items-center bg-[#FFF6FF]">
           <h1 className="font-bold text-black text-[22px]">Comunidades</h1>
         </div>
 
         <div className="p-6 h-screen overflow-y-auto bg-[#FFF6FF]">
-          
-          {/* Item Feed Geral */}
+
+          {/* Feed Geral */}
           <div
             onClick={() => aoSelecionar(null)}
             className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-200 mb-4 ${
@@ -73,7 +73,9 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
             }`}
           >
             <span className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold text-lg mr-3">
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
             </span>
             <p className="font-bold text-gray-800 text-sm">Feed Geral</p>
           </div>
@@ -122,8 +124,8 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
             )}
 
             <button
-              onClick={() => setShowCreateModal(true)}
-              className="w-full bg-[#F36EC0] text-white font-semibold w-[150px] h-[40px] m-auto rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+              onClick={handleCreateClick}
+              className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] m-auto rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
             >
               + Criar comunidade
             </button>
@@ -202,11 +204,48 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
         </div>
       </div>
 
+      {/* Modal de criar comunidade */}
       <CriarComunidadesModal
         estaAberto={showCreateModal}
         aoFechar={() => setShowCreateModal(false)}
         aoCriar={aoCriarComunidade}
       />
+
+      {/* Popup de login */}
+      {showLoginPopup && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
+          <div
+            className="bg-white rounded-xl p-8 max-w-sm mx-4 shadow-2xl text-center"
+            style={{
+              border: '1px solid #AF5FE4',
+              fontFamily: 'Quicksand, sans-serif',
+            }}
+          >
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Ops! ✋</h3>
+            <p className="text-gray-600 mb-6">
+              Parece que você ainda não tem uma conta.
+              <br />
+              Para interagir de outras formas no site, clique em{' '}
+              <span className="font-semibold text-purple-600">Cadastrar-se</span>!
+            </p>
+
+            <div className="flex justify-center space-x-3">
+              <button
+                onClick={() => setShowLoginPopup(false)}
+                className="px-4 py-2 text-gray-600 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+              >
+                Fechar
+              </button>
+              <button
+                onClick={() => navigate('/login')}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-colors duration-200 shadow-md"
+              >
+                Cadastrar-se
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 };

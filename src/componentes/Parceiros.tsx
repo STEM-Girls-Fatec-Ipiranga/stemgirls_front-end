@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import { X, Sparkles, Target, Eye, Users, GraduationCap, Building2, School, User, Heart } from 'lucide-react';
+import emailjs from '@emailjs/browser';
+import fundoSG from "../assets/img/FundoSGcolorido.jpg";
 
 interface PartnershipType {
     id: string;
@@ -120,11 +122,33 @@ function Parceiros() {
         }
     ];
 
+
     const handleContactSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Form submitted:', formData);
-        setShowContactModal(false);
-        setFormData({ companyName: '', email: '' });
+
+        const templateParams = {
+            CompanyName: formData.companyName,
+            CompanyEmail: formData.email,
+        };
+
+        emailjs
+            .send(
+                'service_47hybdq',
+                'template_w41kuo7',
+                templateParams,
+                'bpF5OstB3DmjZqEow'
+            )
+            .then(
+                () => {
+                    alert('✅ Solicitação enviada com sucesso!');
+                    setShowContactModal(false);
+                    setFormData({ companyName: '', email: '' });
+                },
+                (error) => {
+                    console.error('Erro ao enviar:', error);
+                    alert('❌ Ocorreu um erro ao enviar o e-mail. Tente novamente.');
+                }
+            );
     };
 
     const openPartnershipModal = (partnership: PartnershipType) => {
@@ -139,7 +163,6 @@ function Parceiros() {
 
     return (
         <div className="min-h-screen bg-[#FFF6FF]">
-
             <section className="relative py-24 px-6">
                 <div className="max-w-4xl mx-auto text-center">
                     <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-[#F36EC0] via-pink-500 to-[#AF5FE4] text-transparent bg-clip-text inline-block">
@@ -157,12 +180,16 @@ function Parceiros() {
                 </div>
             </section>
 
-            <section className="py-20 px-6">
-                <div className="max-w-6xl mx-auto">
-                    <h2 className="text-4xl font-bold text-center text-gray-800 mb-16">
-                        Parceiras em destaque
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <section className="py-20 max-w-full">
+                
+                <h2 className="text-4xl font-bold text-center text-gray-800 mb-16">
+                    Parceiras em destaque
+                </h2>
+
+                <div className="max-w-full h-[600px] bg-cover bg-center flex items-center justify-center shadow-[inset_0_0_27px_4px_rgba(0,0,0,0.6)]"
+                    style={{ backgroundImage: `url(${fundoSG})` }}
+                >
+                    <div className="m-20 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                         {featuredPartners.map((partner) => (
                             <div
                                 key={partner.id}
@@ -175,7 +202,7 @@ function Parceiros() {
                                 <h3 className="text-xl font-bold text-gray-800 mb-3 text-center">
                                     {partner.name}
                                 </h3>
-                                <p className="text-gray-600 text-sm text-center">{partner.description}</p>
+                                <p className="text-gray-700 text-[17px] text-center">{partner.description}</p>
                             </div>
                         ))}
                     </div>
@@ -227,8 +254,6 @@ function Parceiros() {
                 </div>
             </section>
 
-
-
             {showContactModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
                     <div className="bg-white rounded-3xl p-8 max-w-md w-full relative animate-fadeIn">
@@ -241,8 +266,8 @@ function Parceiros() {
                         <h3 className="text-3xl font-bold text-gray-800 mb-2">
                             Torne-se uma parceira da STEMGirls
                         </h3>
-                        <p className="text-black">Digite o nome da sua empresa e seu email para contato que vamos analisar sua solcitação!</p>
-                            <br />
+                        <p className="text-black">Digite o nome da sua empresa e seu email para contato que vamos analisar sua solicitação!</p>
+                        <br />
                         <form onSubmit={handleContactSubmit}>
                             <div className="mb-6">
                                 <label className="block text-gray-700 font-semibold mb-2">
@@ -252,7 +277,7 @@ function Parceiros() {
                                     type="text"
                                     value={formData.companyName}
                                     onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                                     required
                                 />
                             </div>
@@ -264,7 +289,7 @@ function Parceiros() {
                                     type="email"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                                     required
                                 />
                             </div>

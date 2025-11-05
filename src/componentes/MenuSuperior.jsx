@@ -146,37 +146,7 @@ const MenuSuperior = () => {
               )}
             </div>
           )}
-
-
-
-          {/* {user && (
-            <div className="flex flex-row items-center relative">
-              <p className="font-semibold text-white text-right">@{userProfile.data.nomeUsuario}</p>
-
-                <button
-                  className="px-6 py-2 text-white font-semibold hover:scale-105 transition-all duration-200"
-                  aria-label="Menu do usuário"
-                  onClick={() => setIsProfileOpen(!isProfileOpen)}
-                >
-                  <CircleUser size={45} />
-                </button>
-
-                {isProfileOpen && (
-                  <div className="absolute right-4 top-full w-48 bg-white rounded-md shadow-lg py-1 z-20 border border-[#af5fe4] border-opacity-4">
-                    <Link to="/perfil" className="flex items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors">
-                      <User size={19} /> Perfil 
-                    </Link>
-
-                    <button className="flex w-full items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors" onClick={handleLogout}>
-                      <LogOut size={19} onClick={handleLogout} /> Sair
-                    </button>
-                  </div>
-                )}
-            </div>
-          )} */}
-
-
-
+          
           {/* Menu mobile button */}
           <button
             onClick={toggleMobileMenu}
