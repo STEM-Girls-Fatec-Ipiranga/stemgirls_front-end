@@ -46,11 +46,13 @@ const Conteudo: React.FC<ConteudoProps> = ({
     );
   }
 
-  // Lógica de filtro para o feed geral - apenas postagens de comunidades que você é membro ou dono
+  
   const postagensFiltradas = postagens.filter(p => {
     const comunidade = comunidades.find(c => c.id === p.comunidadeId);
     return comunidade?.souMembro || !comunidade; // Se for membro, exibe. Se a comunidade não existir, também exibe por garantia (ou ajuste se quiser regras mais rígidas)
   });
+
+  
 
 
   return (
@@ -107,6 +109,8 @@ const Conteudo: React.FC<ConteudoProps> = ({
         )}
       </div>
     </div>
+
+    
   );
 };
 

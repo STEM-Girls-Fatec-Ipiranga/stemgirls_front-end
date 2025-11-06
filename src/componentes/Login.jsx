@@ -206,7 +206,7 @@ function Login() {
                             <p style={{
                                 width: '100%',
                                 textAlign: 'left',
-                                color: isPasswordValid ? 'green' : '#e74c3c', // Verde se for válida, vermelho se não
+                                color: isPasswordValid ? 'green' : '#e74c3c', 
                                 fontSize: '0.8rem',
                                 marginTop: '5px',
                                 paddingLeft: '5px'
@@ -218,9 +218,9 @@ function Login() {
                         <div className={Styles.terms_container}>
                             <input className={Styles.input_terms} type="checkbox" name="terms" id="terms" required />
                             <label className={Styles.label_terms} htmlFor="terms">
-                                Li e aceito os <a href="#" target="_blank"> Termos de Uso</a>
+                                Li e aceito os <Link to="/termos-de-uso"><a target="_blank"> Termos de Uso</a></Link>
                             </label>
-                        </div>
+                        </div>           
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
                         <br />

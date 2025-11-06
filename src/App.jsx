@@ -17,6 +17,7 @@ import Canais from "./componentes/Canais.jsx";
 import CriarCanal from "./componentes/CriarCanal.jsx";
 import Parceiros from "./componentes/Parceiros.tsx";
 import Quiz from "./componentes/Quiz.jsx";
+import TermosDeUso from "./componentes/TermosDeUso.jsx";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 import Rodape from "./componentes/Rodape.jsx";
@@ -27,10 +28,10 @@ import "./App.css";
 function AppContent() {
   const location = useLocation();
 
-  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil"];
+  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
   const mostrarMenu = !rotasSemMenu.some((rota) => location.pathname.startsWith(rota));
 
-  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil"];
+  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
   const mostrarRodape = !rotasSemRodape.some((rota) => location.pathname.startsWith(rota));
 
   return (
@@ -40,6 +41,7 @@ function AppContent() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/termos-de-uso" element={<TermosDeUso />} />
         <Route path="/login-empresa" element={<LoginEmpresa />} />
         <Route path="/comunidades" element={<Comunidades />} />
         <Route path="/historia" element={<Historia />} />
