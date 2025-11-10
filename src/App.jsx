@@ -14,7 +14,6 @@ import Eventos from "./componentes/Eventos.jsx";
 import LoginEmpresa from "./componentes/LoginEmpresa.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
 import Canais from "./componentes/Canais.jsx";
-import CriarCanal from "./componentes/CriarCanal.jsx";
 import Parceiros from "./componentes/Parceiros.tsx";
 import Quiz from "./componentes/Quiz.jsx";
 import TermosDeUso from "./componentes/TermosDeUso.jsx";
@@ -50,7 +49,6 @@ function AppContent() {
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/minimentes" element={<MiniMentes />} />
         <Route path="/canais" element={<Canais />} />
-        <Route path="/criar-canal" element={<CriarCanal />} />
         <Route path="/parceiros" element={<Parceiros />} />
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
         <Route path="/quiz" element={<Quiz />} />
