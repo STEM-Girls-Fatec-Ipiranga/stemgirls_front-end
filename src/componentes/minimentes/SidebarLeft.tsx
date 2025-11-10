@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, Code, Calculator, Coffee, Palette, Music, Gamepad2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 
 /**
- * SidebarLeft (fixa)
- * - Fica fixa com top e bottom para não sobrepor header/rodapé.
- * - Suporta minimização.
- * - Categorias são clicáveis e usam navigate para ir para /category/:slug
+ * SidebarLeft (modificado)
+ * - Removei o navigate para rotas internas
+ * - Agora os botões fazem scroll suave para as seções da página (usamos slugify -> id)
+ * - Mantive a mesma largura (w-64) quando expandido para ficar igual ao SidebarRight
  */
 
 interface Category {
@@ -17,7 +16,6 @@ interface Category {
 
 const SidebarLeft: React.FC = () => {
   const [isMinimized, setIsMinimized] = useState(false);
-  const navigate = useNavigate();
 
   const categories: Category[] = [
     { name: 'Lógica de Programação', icon: <Code className="h-5 w-5" />, color: 'from-purple-400 to-purple-600' },
@@ -28,18 +26,25 @@ const SidebarLeft: React.FC = () => {
     { name: 'Jogos & Diversão', icon: <Gamepad2 className="h-5 w-5" />, color: 'from-green-400 to-green-600' },
   ];
 
-  // pequena função slug para rotas
+  // Cria ids compatíveis (mesma lógica usada para o alvo em QuizCategory)
   const slugify = (text: string) =>
     text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 
+  const scrollToSection = (name: string) => {
+    const id = slugify(name);
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
-    // nota: usamos estilos inline para top/bottom em px para garantir não sobrepor header/rodapé.
     <div
       className={`bg-white shadow-lg transition-all duration-300 ${isMinimized ? 'w-16' : 'w-64'}`}
       style={{ position: 'absolute', left: 0, top: 239, bottom: 72, zIndex: 40 }}
       aria-label="Barra lateral esquerda"
     >
-      {/* Toggle Button (fica "fora" da barra) */}
+      {/* Toggle */}
       <button
         onClick={() => setIsMinimized(!isMinimized)}
         className="absolute -right-3 top-4 bg-gradient-to-r from-purple-400 to-pink-400 text-white p-1 rounded-full shadow-lg hover:scale-110 transition-transform"
@@ -48,19 +53,18 @@ const SidebarLeft: React.FC = () => {
         {isMinimized ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
       </button>
 
-      {/* Header */}
       <div className="p-4 border-b border-gray-100">
         <h2 className={`font-bold text-gray-800 ${isMinimized ? 'hidden' : 'block'}`}>
           Categorias
         </h2>
       </div>
 
-      {/* Categories */}
-      <div className="p-2 space-y-2 overflow-auto h-full">
+      {/* Note: removi overflow-auto para garantir que a barra mostre todo o conteúdo quando expandida */}
+      <div className="p-2 space-y-2 h-full">
         {categories.map((category, index) => (
           <button
             key={index}
-            onClick={() => navigate(`/category/${slugify(category.name)}`)}
+            onClick={() => scrollToSection(category.name)}
             title={isMinimized ? category.name : ''}
             className={`w-full text-left group cursor-pointer rounded-xl p-3 hover:scale-105 transition-all duration-200 bg-gradient-to-r ${category.color} text-white shadow-md hover:shadow-lg flex items-center space-x-3`}
             aria-label={`Ir para ${category.name}`}
@@ -75,7 +79,6 @@ const SidebarLeft: React.FC = () => {
           </button>
         ))}
 
-        {/* Footer Tip - somente quando expandido */}
         {!isMinimized && (
           <div className="mt-4 p-3">
             <div className="bg-gradient-to-r from-purple-100 to-pink-100 p-3 rounded-lg border-2 border-dashed border-purple-300">

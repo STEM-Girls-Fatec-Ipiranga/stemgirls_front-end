@@ -109,16 +109,6 @@ function MiniMentes() {
         </main>
       </div>
 
-      {/* Mobile Responsive Message (fica sobre toda a página quando em telas pequenas) */}
-      <div className="lg:hidden fixed inset-0 bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center p-4 z-50">
-        <div className="bg-white rounded-2xl p-6 text-center max-w-sm">
-          <div className="text-4xl mb-4">📱</div>
-          <h2 className="text-xl font-bold text-gray-800 mb-2">Versão Mobile</h2>
-          <p className="text-gray-600 text-sm">
-            Para a melhor experiência, acesse o MiniMentes em um computador ou tablet!
-          </p>
-        </div>
-      </div>
     </div>
   );
 }

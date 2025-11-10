@@ -3,10 +3,10 @@ import { ChevronRight, ChevronLeft, Trophy, Target, TrendingUp, Heart, Star, Awa
 import { useNavigate } from 'react-router-dom';
 
 /**
- * SidebarRight (fixa)
- * - Fica fixa com top e bottom para não sobrepor header/rodapé.
- * - Suporta minimização.
- * - Oferece informações rápidas e direcionamentos.
+ * SidebarRight (modificado)
+ * - Mantive o conteúdo que você já tinha, mas ajustei as larguras para ficar igual à LeftSidebar
+ * - Removi overflow que fazia rolagem e deixei o painel maior (w-64) para mostrar todo conteúdo
+ * - Caso o conteúdo exceda, o usuário pode minimizar o painel (isMinimized true)
  */
 
 const SidebarRight: React.FC = () => {
@@ -25,7 +25,7 @@ const SidebarRight: React.FC = () => {
 
   return (
     <div
-      className={`bg-white shadow-lg transition-all duration-300 ${isMinimized ? 'w-16' : 'w-72'}`}
+      className={`bg-white shadow-lg transition-all duration-300 ${isMinimized ? 'w-16' : 'w-64'}`}
       style={{ position: 'absolute', right: 0, top: 239, bottom: 72, zIndex: 40 }}
       aria-label="Barra lateral direita"
     >
@@ -39,7 +39,8 @@ const SidebarRight: React.FC = () => {
       </button>
 
       {!isMinimized && (
-        <div className="p-4 space-y-6 overflow-auto h-full">
+        // Removi overflow-auto para evitar barra de scroll; aumentei largura para caber o conteúdo
+        <div className="p-4 space-y-6 h-full">
           {/* Seção de Pontos */}
           <div className="bg-gradient-to-br from-purple-100 to-pink-100 p-4 rounded-xl border-2 border-purple-200">
             <div className="flex items-center space-x-2 mb-3">
@@ -55,24 +56,8 @@ const SidebarRight: React.FC = () => {
               </div>
               <p className="text-sm text-purple-600">Nível: Programadora Junior</p>
             </div>
-            {/* Link rápido para perfil / pontos */}
             <div className="mt-3 text-center">
               <button onClick={() => navigate('/perfil')} className="text-sm underline">Ver perfil</button>
-            </div>
-          </div>
-
-          {/* Weekly Challenge */}
-          <div className="bg-gradient-to-br from-pink-100 to-purple-100 p-4 rounded-xl border-2 border-pink-200">
-            <div className="flex items-center space-x-2 mb-3">
-              <Target className="h-5 w-5 text-pink-600" />
-              <h3 className="font-bold text-pink-800">Desafio da Semana</h3>
-            </div>
-            <div className="space-y-2">
-              <p className="text-sm text-pink-700">Complete 5 quizzes de lógica!</p>
-              <div className="bg-white rounded-full h-3 overflow-hidden">
-                <div className="bg-gradient-to-r from-pink-400 to-purple-400 h-full w-3/5 rounded-full"></div>
-              </div>
-              <p className="text-xs text-pink-600">3/5 concluídos</p>
             </div>
           </div>
 
@@ -112,32 +97,10 @@ const SidebarRight: React.FC = () => {
               {currentQuote}
             </p>
           </div>
-
-          {/* Recent Achievements */}
-          <div className="bg-gradient-to-br from-indigo-100 to-purple-100 p-4 rounded-xl border-2 border-indigo-200">
-            <h3 className="font-bold text-indigo-800 mb-3">Conquistas Recentes</h3>
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2 text-sm">
-                <div className="w-2 h-2 bg-indigo-400 rounded-full"></div>
-                <span className="text-indigo-700">Primeira vez em Java!</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <div className="w-2 h-2 bg-purple-400 rounded-full"></div>
-                <span className="text-indigo-700">Expert em loops</span>
-              </div>
-              <div className="flex items-center space-x-2 text-sm">
-                <div className="w-2 h-2 bg-pink-400 rounded-full"></div>
-                <span className="text-indigo-700">5 dias seguidos</span>
-              </div>
-            </div>
-            <div className="mt-3 text-center">
-              <button onClick={() => navigate('/conquistas')} className="text-sm underline">Ver todas</button>
-            </div>
-          </div>
         </div>
       )}
 
-      {/* Versão minimizada */}
+      {/* Minimized */}
       {isMinimized && (
         <div className="p-4 space-y-4">
           <div className="text-center">

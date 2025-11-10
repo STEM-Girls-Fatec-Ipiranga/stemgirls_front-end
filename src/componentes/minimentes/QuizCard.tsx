@@ -1,5 +1,4 @@
 import React from 'react';
-import { Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface Quiz {
@@ -15,11 +14,6 @@ interface QuizCardProps {
   quiz: Quiz;
 }
 
-/**
- * Cartão de quiz.
- * - Botão "Começar Quiz" navega para /quiz/:id
- * - Ícone de play com acessibilidade
- */
 const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
   const navigate = useNavigate();
 
@@ -34,16 +28,9 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 
   return (
     <div className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden group hover:scale-105">
-      {/* Video Thumbnail */}
-      <div className="relative h-32 bg-gradient-to-br from-purple-200 to-pink-200 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black bg-opacity-10" />
-        <button
-          onClick={() => navigate(`/quiz/${quiz.id}`)}
-          className="relative z-10 bg-white bg-opacity-90 p-3 rounded-full shadow-lg group-hover:scale-110 transition-transform hover:bg-opacity-100"
-          aria-label={`Tocar vídeo do quiz ${quiz.title}`}
-        >
-          <Play className="h-6 w-6 text-purple-600 ml-0.5" />
-        </button>
+      {/* Thumbnail */}
+      <div className="relative h-32 bg-gray-200 flex items-center justify-center overflow-hidden rounded-t-xl">
+        <img src={quiz.videoThumbnail} alt={`Thumbnail do vídeo do quiz ${quiz.title}`} className="object-cover w-full h-full" />
         <div className="absolute top-2 right-2 bg-white bg-opacity-90 px-2 py-1 rounded-full text-xs font-medium text-purple-600">
           Vídeo
         </div>
@@ -60,13 +47,13 @@ const QuizCard: React.FC<QuizCardProps> = ({ quiz }) => {
 
         <p className="text-gray-600 text-xs mb-3 line-clamp-2">{quiz.description}</p>
 
-        {/* Botão - começa o quiz */}
+        {/* Botão Assistir */}
         <button
-          onClick={() => navigate(`/quiz/${quiz.id}`)}
+          onClick={() => navigate(`/video/${quiz.id}`)}
           className="w-full bg-[#F36EC0] text-white py-2 px-4 rounded-lg text-sm font-medium hover:from-purple-500 hover:to-pink-500 transition-all duration-200 hover:shadow-md"
-          aria-label={`Começar quiz ${quiz.title}`}
+          aria-label={`Assistir vídeo do quiz ${quiz.title}`}
         >
-          Começar Quiz
+          Assistir
         </button>
       </div>
     </div>
