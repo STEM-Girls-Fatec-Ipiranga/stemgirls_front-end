@@ -28,10 +28,10 @@ import "./App.css";
 function AppContent() {
   const location = useLocation();
 
-  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
+  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha/:token", "/perfil", "/termos-de-uso"];
   const mostrarMenu = !rotasSemMenu.some((rota) => location.pathname.startsWith(rota));
 
-  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
+  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha/:token", "/perfil", "/termos-de-uso"];
   const mostrarRodape = !rotasSemRodape.some((rota) => location.pathname.startsWith(rota));
 
   return (

@@ -1,8 +1,9 @@
 import Styles from '../css/LoginEmpresa.module.css';
-import LogoSG from '../assets/img/LogoSG.png';
+import LogoSG from '../assets/img/LogoSGbranco.png';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { ArrowLeft } from 'lucide-react';
 import axios from 'axios';
 
 function LoginEmpresa() {
@@ -158,6 +159,9 @@ function LoginEmpresa() {
 
     return (
         <div className={`${Styles.container} ${classeAtual}`}>
+            <Link to="/">
+                <button className="absolute top-4 left-0 w-24 flex flex-row justify-around"><ArrowLeft /> Voltar</button>
+            </Link>
             {/*-------------------------- PRIMEIRO ESTADO (CADASTRO) --------------------------*/}
             <div className={`${Styles.content} ${Styles.primeiro_content}`}>
                 <div className={Styles.primeira_coluna}>
@@ -173,11 +177,6 @@ function LoginEmpresa() {
                 </div>
                 <div className={Styles.segunda_coluna}>
                     <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Crie sua conta empresarial</h2>
-                    {/* <div className={Styles.social_media}>
-                        <a href="#"><i className="fi fi-brands-google"></i></a>
-                        <a href="#"><i className="fi fi-brands-linkedin"></i></a>
-                        <a href="#"><i className="fi fi-brands-github"></i></a>
-                    </div> */}
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
                             <i className="far fa-user icon-modify"></i>
@@ -223,6 +222,10 @@ function LoginEmpresa() {
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
 
+                        <Link className={Styles.sou_usuario} to="/login">
+                            <a  href="/login-empresa">Sou um usuário padrão</a>
+                        </Link>
+
                     </form>
                 </div>
             </div>
@@ -243,9 +246,15 @@ function LoginEmpresa() {
                 <div className={Styles.segunda_coluna}>
                     <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Entrar na sua conta</h2>
                     <div className={Styles.social_media}>
-                        {/* <a href="#"><i className="fi fi-brands-google"></i></a>
-                        <a href="#"><i className="fi fi-brands-linkedin"></i></a>
-                        <a href="#"><i className="fi fi-brands-github"></i></a> */}
+                        <GoogleLogin
+                            onSuccess={credentialResponse => {
+                                console.log("Login com o Google bem-sucedido!");
+                                console.log(credentialResponse);
+                            }}
+                            onError={() => {
+                                console.log('Erro no login com o Google');
+                            }}
+                        />
                     </div>
                     <form className={Styles.form} onSubmit={handleLoginSubmit}>
                         <label className={Styles.input_group}>
@@ -256,16 +265,7 @@ function LoginEmpresa() {
                             <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={loginForm.senha} onChange={handleLoginChange} required />
                         </label>
-
-                        <GoogleLogin
-                            onSuccess={credentialResponse => {
-                                console.log("Login com o Google bem-sucedido!");
-                                console.log(credentialResponse);
-                            }}
-                            onError={() => {
-                                console.log('Erro no login com o Google');
-                            }}
-                        />
+                        
                         <Link to="/esqueci-a-senha" className={`${Styles.password} ${Styles.back_link}`}>Esqueceu a senha?</Link>
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Entrar</button>

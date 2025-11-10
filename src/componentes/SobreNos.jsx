@@ -2,8 +2,8 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaUsers, FaComments, FaLaptopCode, FaHandPointer } from "react-icons/fa";
 import fundoSG from "../assets/img/FundoSGcolorido.jpg";
-import "../../src/index.css"; 
-import { CirclePlay } from 'lucide-react';
+import "../../src/index.css";
+import { CirclePlay, Instagram, Linkedin, Github } from 'lucide-react';
 
 import FotoTalita from "../assets/img/Foto_Talita.jpg";
 import FotoKauane from "../assets/img/Foto_Kauane.jpg";
@@ -33,24 +33,36 @@ export default function SobreNos() {
       cargo: "Product Owner",
       descricao: "Designer UX e Dev Full Stack",
       foto: FotoTalita,
+      instagram: "https://www.instagram.com/talita_.375/?hl=en",
+      linkedin: "https://www.linkedin.com/in/talita-vit%C3%B3ria-7b8442359/",
+      github: "https://github.com/Atila246",
     },
     {
       nome: "Kauane Martins",
       cargo: "Scrum Master",
       descricao: "Designer UX e Dev Full Stack",
       foto: FotoKauane,
+      instagram: "https://www.instagram.com/talita_.375/?hl=en",
+      linkedin: "https://www.linkedin.com/in/talita-vit%C3%B3ria-7b8442359/",
+      github: "https://github.com/Atila246"
     },
     {
       nome: "Ana Clara",
       cargo: "Project Maker",
       descricao: "Analista de Qualidade",
       foto: FotoAna,
+      instagram: "https://www.instagram.com/talita_.375/?hl=en",
+      linkedin: "https://www.linkedin.com/in/talita-vit%C3%B3ria-7b8442359/",
+      github: "https://github.com/Atila246"
     },
     {
       nome: "Lethicia Ribeiro",
-      cargo: "Tester",
-      descricao: "Analista de Documentação",
+      cargo: "Analista de Documentação",
+      descricao: "Analista de Qualidade",
       foto: FotoLethicia,
+      instagram: "https://www.instagram.com/_lethici4?igsh=MWIyZnRheDJwbmZubw==",
+      linkedin: "https://www.linkedin.com/in/lethicia-ribeiro-silva?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      github: "https://github.com/lethicia1306"
     },
   ];
 
@@ -250,9 +262,23 @@ export default function SobreNos() {
                 </h3>
                 <p className="text-sm font-bold text-pink-600">{membro.cargo}</p>
                 <p className="text-sm">{membro.descricao}</p>
+                <div className="w-[130px] h-6 mt-4 flex felx-row justify-around items-center">
+                  
+                    <a href={membro.instagram} target="_blank" rel="noopener noreferrer">
+                      <Instagram />
+                    </a>
+                    <a href={membro.linkedin} target="_blank" rel="noopener noreferrer">
+                      <Linkedin />
+                    </a>
+                    <a href={membro.github} target="_blank" rel="noopener noreferrer">
+                      <Github />
+                    </a>
+
+                </div>
               </div>
             ))}
           </div>
+
         </div>
       </section>
 

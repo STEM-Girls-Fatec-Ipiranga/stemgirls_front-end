@@ -39,7 +39,7 @@
     align-items: center;
     height: 100vh;
     background-color: #ecf0f1;
-    background-image: url(../assets/img/fundoSGcolorido.jpg);
+    background-image: url(../assets/img/fundoLogin.png);
     color: black;
 }
 
@@ -51,7 +51,7 @@
     border-radius: 15px;
     background-color: white;
     width: 870px;
-    height: 540px;
+    height: 560px;
     box-shadow: 0px 0px 30px 2px rgba(255, 255, 255, 0.275);
 }
 
@@ -136,7 +136,7 @@
 
 .primeiro_botao:hover {
     background-color: white;
-    color: #f36ec0;
+    color: #b754d5;
     border: 3px solid white;
 }
 
@@ -145,8 +145,8 @@
 }
 
 .segundo_titulo {
-    color: #f36ec0;
-    margin-bottom: 20px;
+    color: #b754d5;
+    margin-bottom: 15px;
 }
 
 .social_media {
@@ -230,7 +230,7 @@
 
 /* Efeito de foco para o grupo */
 .input_group:focus-within {
-    border-color: #f36ec0;
+    border-color: #b754d5;
 }
 
 /* Estilo para o ícone dentro do grupo */
@@ -270,19 +270,24 @@
 }
 
 .segundo_botao {
-    background-color: #f36ec0;
+    background-color: #b754d5;
     color: white;
     transition: background-color .5s;
-    border: 3px solid #f36ec0;
+    border: 3px solid #b754d5;
     box-sizing: border-box;
     margin-top: 10px;
 }
 
 .segundo_botao:hover {
     background-color: transparent;
-    border: 3px solid #f36ec0;
-    color: #f36ec0;
+    border: 3px solid #b754d5;
+    color: #b754d5;
     box-sizing: border-box;
+}
+
+.sou_usuario{
+    margin-bottom: 20px;
+    margin-top: 10px
 }
 
 /*------------------------------ SEGUNDA SESSÃO (CONTENT) - LOGIN ------------------------------*/

@@ -73,6 +73,11 @@ function Login() {
         setIsPasswordValid(true);
     };
 
+    // Handler para atualizar o estado do formulário de LOGIN 
+    const handleLoginChange = (e) => { 
+        const { name, value } = e.target;
+        setLoginForm((prev) => ({ ...prev, [name]: value })); };
+
     // Handler para atualizar o estado do formulário de CADASTRO (MODIFICADO)
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -85,14 +90,15 @@ function Login() {
     };
 
     // Handler para atualizar o estado do formulário de LOGIN
-    const handleLoginChange = (e) => {
-        const { name, value } = e.target;
-        setLoginForm((prev) => ({ ...prev, [name]: value }));
-    };
-
-    // --- FUNÇÃO DE SUBMISSÃO DO CADASTRO (MODIFICADO) ---
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
+
+        if (!termsAccepted) {
+            setTermsError('Você precisa aceitar os Termos de Uso para concluir o cadastro.');
+            return;
+        } else {
+            setTermsError(''); // limpa o erro se estiver tudo ok
+        }
 
         if (!isPasswordValid) {
             alert('Por favor, crie uma senha que atenda a todos os critérios de segurança.');
@@ -105,22 +111,52 @@ function Login() {
                 nomeUsuario: form.nomeUsuario,
                 email: form.email,
                 senha: form.senha,
-                joinDate: new Date() // Adiciona a data de cadastro
+                joinDate: new Date()
             });
             const user = response.data;
             if (response.status === 201) {
-                localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
-                alert("Login bem-sucedido!");
-                navigate("/");
+                localStorage.setItem("userData", JSON.stringify(user));
+                alert("Cadastro realizado com sucesso! Por favor, faça o login.");
+                setModo("signup");
             }
-            alert("Cadastro realizado com sucesso! Por favor, faça o login.");
-            setModo("signup");
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error("Erro no cadastro:", errorMessage);
             alert("Erro ao cadastrar: " + errorMessage);
         }
     };
+
+
+    // const handleRegisterSubmit = async (e) => {
+    //     e.preventDefault();
+
+    //     if (!isPasswordValid) {
+    //         alert('Por favor, crie uma senha que atenda a todos os critérios de segurança.');
+    //         return;
+    //     }
+
+    //     try {
+    //         const response = await axios.post("http://localhost:8080/usuario/criar", {
+    //             nomeCompleto: form.nomeCompleto,
+    //             nomeUsuario: form.nomeUsuario,
+    //             email: form.email,
+    //             senha: form.senha,
+    //             joinDate: new Date() // Adiciona a data de cadastro
+    //         });
+    //         const user = response.data;
+    //         if (response.status === 201) {
+    //             localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
+    //             alert("Login bem-sucedido!");
+    //             navigate("/");
+    //         }
+    //         alert("Cadastro realizado com sucesso! Por favor, faça o login.");
+    //         setModo("signup");
+    //     } catch (error) {
+    //         const errorMessage = error.response?.data || error.message;
+    //         console.error("Erro no cadastro:", errorMessage);
+    //         alert("Erro ao cadastrar: " + errorMessage);
+    //     }
+    // };
 
     // --- FUNÇÃO DE SUBMISSÃO DO LOGIN ---
     const handleLoginSubmit = async (e) => {
@@ -157,6 +193,11 @@ function Login() {
             setClasseAtual(Styles.loga);
         }
     }, [modo]);
+
+
+    // FUNÇÃO PARA TERMOS DE USO
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [termsError, setTermsError] = useState('');
 
     return (
         <div className={`${Styles.container} ${classeAtual}`}>
@@ -206,7 +247,7 @@ function Login() {
                             <p style={{
                                 width: '100%',
                                 textAlign: 'left',
-                                color: isPasswordValid ? 'green' : '#e74c3c', 
+                                color: isPasswordValid ? 'green' : '#e74c3c',
                                 fontSize: '0.8rem',
                                 marginTop: '5px',
                                 paddingLeft: '5px'
@@ -216,11 +257,35 @@ function Login() {
                         )}
 
                         <div className={Styles.terms_container}>
-                            <input className={Styles.input_terms} type="checkbox" name="terms" id="terms" required />
+                            <input
+                                className={Styles.input_terms}
+                                type="checkbox"
+                                name="terms"
+                                id="terms"
+                                checked={termsAccepted}
+                                onChange={(e) => {
+                                    setTermsAccepted(e.target.checked);
+                                    if (e.target.checked) setTermsError('');
+                                }}
+                            />
                             <label className={Styles.label_terms} htmlFor="terms">
-                                Li e aceito os <Link to="/termos-de-uso"><a target="_blank"> Termos de Uso</a></Link>
+                                Li e aceito os{" "}
+                                <Link to="/termos-de-uso" target="_blank">
+                                    Termos de Uso
+                                </Link>
                             </label>
-                        </div>           
+                        </div>
+                        {/* --- Mensagem de erro abaixo do checkbox --- */}
+                            {termsError && (
+                                <p style={{
+                                    color: '#e74c3c',
+                                    fontSize: '0.8rem',
+                                    marginTop: '4px',
+                                    paddingLeft: '4px'
+                                }}>
+                                    {termsError}
+                                </p>
+                            )}
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
                         <br />
