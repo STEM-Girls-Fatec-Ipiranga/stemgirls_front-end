@@ -9,7 +9,7 @@ import ForgotPasswordPage from "./componentes/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./componentes/ResetPasswordPage.jsx";
 import Historia from "./componentes/Historia.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
-import MiniMentes from "./componentes/minimentes/MiniMentes.tsx";
+import MiniMentes from "./componentes/MiniMentes.jsx";
 import Eventos from "./componentes/Eventos.jsx";
 import LoginEmpresa from "./componentes/LoginEmpresa.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
