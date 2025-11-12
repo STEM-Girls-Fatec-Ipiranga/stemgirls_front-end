@@ -9,27 +9,26 @@ import axios from 'axios';
 function LoginEmpresa() {
     const navigate = useNavigate();
 
-    // Estado para o formulário de CADASTRO
+    // ✅ reativado o estado 'form' (era o motivo do erro)
     const [form, setForm] = useState({
-        nomeCompleto: '',
-        nomeUsuario: '',
+        nomeEmpresa: '',
+        cnpj: '',
         email: '',
         senha: ''
     });
 
-    // Estado SEPARADO para o formulário de LOGIN
     const [loginForm, setLoginForm] = useState({
         email: '',
         senha: ''
     });
 
-    // --- NOVOS ESTADOS PARA VALIDAÇÃO DA SENHA ---
     const [passwordError, setPasswordError] = useState('');
     const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-    // --- NOVA FUNÇÃO PARA VALIDAR A SENHA ---
+    // 👉 estado novo só para mensagem de pendência
+    const [statusMessage, setStatusMessage] = useState('');
+
     const validatePassword = (senha) => {
-        // Critérios de senha forte
         const minLength = 8;
         const hasUpperCase = /[A-Z]/.test(senha);
         const hasLowerCase = /[a-z]/.test(senha);
@@ -67,94 +66,81 @@ function LoginEmpresa() {
             return;
         }
 
-        // Se passar por todas as regras
         setPasswordError('Senha forte!');
         setIsPasswordValid(true);
     };
 
-    // Handler para atualizar o estado do formulário de CADASTRO (MODIFICADO)
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
-
-        // Valida a senha em tempo real
-        if (name === 'senha') {
-            validatePassword(value);
-        }
+        if (name === 'senha') validatePassword(value);
     };
 
-    // Handler para atualizar o estado do formulário de LOGIN
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
         setLoginForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // --- FUNÇÃO DE SUBMISSÃO DO CADASTRO (MODIFICADO) ---
+    // 🟣 CADASTRO DE EMPRESA
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
 
         if (!isPasswordValid) {
             alert('Por favor, crie uma senha que atenda a todos os critérios de segurança.');
-            return; 
+            return;
         }
 
         try {
-            const response = await axios.post("http://localhost:8080/api/auth/register", {
-                nomeCompleto: form.nomeCompleto,
-                nomeUsuario: form.nomeUsuario,
+            const response = await axios.post("http://localhost:8080/empresa/criar", {
+                nomeEmpresa: form.nomeEmpresa,
+                cnpj: form.cnpj,
                 email: form.email,
                 senha: form.senha,
-                joinDate: new Date() // Adiciona a data de cadastro
+                telefone: "(11) 0000-0000",
+                status: "PENDENTE"
             });
-            const user = response.data;
-            if (response.status === 201) {
-                localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
-                alert("Login bem-sucedido!");
-                navigate("/");
+
+            if (response.status === 200) {
+                alert("Cadastro realizado! Nossa equipe está analisando seus dados. Você será notificado por e-mail quando for aprovado.");
+                setModo("signup");
             }
-            alert("Cadastro realizado com sucesso! Por favor, faça o login.");
-            setModo("signup");
         } catch (error) {
-            const errorMessage = error.response?.data || error.message;
-            console.error("Erro no cadastro:", errorMessage);
-            alert("Erro ao cadastrar: " + errorMessage);
+            console.error("Erro ao cadastrar:", error.response?.data || error.message);
+            alert("Erro ao cadastrar: " + (error.response?.data || error.message));
         }
     };
 
-    // --- FUNÇÃO DE SUBMISSÃO DO LOGIN ---
+    // 🟣 LOGIN DE EMPRESA
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
+        setStatusMessage('');
+
         try {
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
+            const response = await axios.post("http://localhost:8080/empresa/login", {
                 email: loginForm.email,
                 senha: loginForm.senha
             });
 
-            const { token, user } = response.data;
-            console.log(user);
-            if (token) {
-                localStorage.setItem("userToken", token);
-                localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
-                alert("Login bem-sucedido!");
-                navigate("/"); // redireciona pro perfil
+            if (typeof response.data === "string" && response.data.includes("análise")) {
+                setStatusMessage("Nossa equipe está analisando seus dados, você será notificado quando acabarmos.");
+                return;
             }
+
+            const { token, empresa } = response.data;
+            localStorage.setItem("empresaToken", token);
+            localStorage.setItem("empresaNome", empresa);
+            navigate("/");
         } catch (error) {
-            const errorMessage = error.response?.data || "Verifique suas credenciais.";
-            console.error("Erro no login:", errorMessage);
-            alert("Erro no login: " + errorMessage);
+            const errorMsg = error.response?.data || "Verifique suas credenciais.";
+            setStatusMessage(errorMsg);
         }
     };
 
-    //-------------- LÓGICA DA ANIMAÇÃO --------------
     const [modo, setModo] = useState("");
     const [classeAtual, setClasseAtual] = useState("");
     useEffect(() => {
-        if (modo === "signin") {
-            setClasseAtual(Styles.cadastra);
-        }
-        if (modo === "signup") {
-            setClasseAtual(Styles.loga);
-        }
+        if (modo === "signin") setClasseAtual(Styles.cadastra);
+        if (modo === "signup") setClasseAtual(Styles.loga);
     }, [modo]);
 
     return (
@@ -162,7 +148,8 @@ function LoginEmpresa() {
             <Link to="/">
                 <button className="absolute top-4 left-0 w-24 flex flex-row justify-around"><ArrowLeft /> Voltar</button>
             </Link>
-            {/*-------------------------- PRIMEIRO ESTADO (CADASTRO) --------------------------*/}
+
+            {/* CADASTRO */}
             <div className={`${Styles.content} ${Styles.primeiro_content}`}>
                 <div className={Styles.primeira_coluna}>
                     <figure className={Styles.logo_login}>
@@ -179,32 +166,23 @@ function LoginEmpresa() {
                     <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Crie sua conta empresarial</h2>
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
-                            <i className="far fa-user icon-modify"></i>
-                            <input type="text" name="nomeCompleto" placeholder="Digite o nome da empresa" value={form.nomeCompleto} onChange={handleChange} required />
+                            <input type="text" name="nomeEmpresa" placeholder="Digite o nome da empresa" value={form.nomeEmpresa} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
-                            <i className="fi fi-br-at icon-modify"></i>
-                            <input type="text" name="nomeUsuario" placeholder="Digite o CNPJ da empresa" value={form.nomeUsuario} onChange={handleChange} required />
+                            <input type="text" name="cnpj" placeholder="Digite o CNPJ da empresa" value={form.cnpj} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
-                            <i className="fi fi-rr-envelope icon-modify"></i>
                             <input type="email" name="email" placeholder="Digite o email da empresa" value={form.email} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
-                            <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={form.senha} onChange={handleChange} required />
                         </label>
-                        <label className={Styles.input_group}>
-                            <i className="fi fi-sr-lock icon-modify"></i>
-                            <input type="password" name="senha" placeholder="Digite o telefone da empresa" value={form.senha} onChange={handleChange} required />
-                        </label>
 
-                        {/* --- NOVA MENSAGEM DE FEEDBACK DA SENHA --- */}
                         {passwordError && (
                             <p style={{
                                 width: '100%',
                                 textAlign: 'left',
-                                color: isPasswordValid ? 'green' : '#e74c3c', // Verde se for válida, vermelho se não
+                                color: isPasswordValid ? 'green' : '#e74c3c',
                                 fontSize: '0.8rem',
                                 marginTop: '5px',
                                 paddingLeft: '5px'
@@ -223,14 +201,13 @@ function LoginEmpresa() {
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
 
                         <Link className={Styles.sou_usuario} to="/login">
-                            <a  href="/login-empresa">Sou um usuário padrão</a>
+                            <a href="/login-empresa">Sou um usuário padrão</a>
                         </Link>
-
                     </form>
                 </div>
             </div>
 
-            {/*-------------------------- SEGUNDO ESTADO (LOGIN) --------------------------*/}
+            {/* LOGIN */}
             <div className={`${Styles.content} ${Styles.segundo_content}`}>
                 <div className={Styles.primeira_coluna}>
                     <figure className={Styles.logo_login}>
@@ -258,18 +235,26 @@ function LoginEmpresa() {
                     </div>
                     <form className={Styles.form} onSubmit={handleLoginSubmit}>
                         <label className={Styles.input_group}>
-                            <i className="far fa-user icon-modify"></i>
                             <input type="email" name="email" placeholder="Digite seu email" value={loginForm.email} onChange={handleLoginChange} required />
                         </label>
                         <label className={Styles.input_group}>
-                            <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={loginForm.senha} onChange={handleLoginChange} required />
                         </label>
-                        
+
                         <Link to="/esqueci-a-senha" className={`${Styles.password} ${Styles.back_link}`}>Esqueceu a senha?</Link>
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Entrar</button>
 
+                        {statusMessage && (
+                            <p style={{
+                                color: '#e74c3c',
+                                fontSize: '0.9rem',
+                                marginTop: '8px',
+                                textAlign: 'center'
+                            }}>
+                                {statusMessage}
+                            </p>
+                        )}
                     </form>
                 </div>
             </div>

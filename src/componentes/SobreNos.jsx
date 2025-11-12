@@ -5,10 +5,10 @@ import fundoSG from "../assets/img/FundoSGcolorido.jpg";
 import "../../src/index.css";
 import { CirclePlay, Instagram, Linkedin, Github } from 'lucide-react';
 
-import FotoTalita from "../assets/img/Foto_Talita.jpg";
+import FotoTalita from "../assets/img/Foto_Talita.jpeg";
 import FotoKauane from "../assets/img/Foto_Kauane.jpg";
-import FotoAna from "../assets/img/Foto_Ana.jpeg";
-import FotoLethicia from "../assets/img/Foto_lelet.jpg";
+import FotoAna from "../assets/img/Foto_Ana.jpg";
+import FotoLethicia from "../assets/img/Foto_lelet.jpeg";
 
 import STEMGirls from "../assets/img/LogoSTEMGirls.png";
 import Reuniao from "../assets/img/meninasdigitaisreuniao.jpeg";
@@ -42,18 +42,18 @@ export default function SobreNos() {
       cargo: "Scrum Master",
       descricao: "Designer UX e Dev Full Stack",
       foto: FotoKauane,
-      instagram: "https://www.instagram.com/talita_.375/?hl=en",
-      linkedin: "https://www.linkedin.com/in/talita-vit%C3%B3ria-7b8442359/",
-      github: "https://github.com/Atila246"
+      instagram: "https://www.instagram.com/martins_kauane27?igsh=MW9mNjh3ZmNzenVheQ==",
+      linkedin: "https://www.linkedin.com/in/kauane-martins-46373b236?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      github: "https://github.com/K2bSoares"
     },
     {
       nome: "Ana Clara",
       cargo: "Project Maker",
       descricao: "Analista de Qualidade",
       foto: FotoAna,
-      instagram: "https://www.instagram.com/talita_.375/?hl=en",
-      linkedin: "https://www.linkedin.com/in/talita-vit%C3%B3ria-7b8442359/",
-      github: "https://github.com/Atila246"
+      instagram: "https://www.instagram.com/_ana_font_?igsh=YmhjODU1Z3hyNHhw",
+      linkedin: "https://www.linkedin.com/in/ana-clara-fontineles?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
+      github: "https://github.com/anaclarafontineles"
     },
     {
       nome: "Lethicia Ribeiro",
