@@ -9,6 +9,8 @@ const imagensDisponiveis = [
   { imagem: "/src/assets/img/mulheres-tecnologia.jpg" },
 ];
 
+const empresaToken = localStorage.getItem("empresaToken");
+
 export default function Eventos() {
   // Eventos iniciais (fixos)
   const eventosFixos = [
@@ -428,7 +430,7 @@ export default function Eventos() {
           </div>
         </div>
 
-        <Button
+        {/* <Button
           className="bg-[#F36EC0] text-white font-bold rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
           onClick={() => {
             setTelaCadastro(true);
@@ -436,7 +438,19 @@ export default function Eventos() {
           }}
         >
           + Publicar Evento
-        </Button>
+        </Button> */}
+
+        {empresaToken && (
+          <Button
+            className="bg-[#F36EC0] text-white font-bold rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+            onClick={() => {
+              setTelaCadastro(true);
+              setTelaMeusEventos(false);
+            }}
+          >
+            + Publicar Evento
+          </Button>
+        )}
 
       </aside>
 

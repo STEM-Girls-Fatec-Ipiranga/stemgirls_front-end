@@ -162,13 +162,13 @@ const MenuSuperior = () => {
                   <Link
                     to={
                       user
-                        ? "/perfil"   // se existir userData → usuário comum
+                        ? "/perfil"  
                         : empresaToken
-                          ? "/perfil-empresa"   // se existir empresaToken → empresa
-                          : "/login"           // fallback de segurança
+                          ? "/perfil-empresa"  
+                          : "/login"          
                     }
                     className="flex items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
-                    onClick={() => setIsProfileOpen(false)} // Fecha o menu ao navegar
+                    onClick={() => setIsProfileOpen(false)} 
                   >
                     <User size={19} /> Perfil
                   </Link>
