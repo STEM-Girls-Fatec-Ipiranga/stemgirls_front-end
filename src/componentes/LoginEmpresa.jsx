@@ -166,15 +166,19 @@ function LoginEmpresa() {
                     <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Crie sua conta empresarial</h2>
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
+                            <i className="far fa-user icon-modify"></i>
                             <input type="text" name="nomeEmpresa" placeholder="Digite o nome da empresa" value={form.nomeEmpresa} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
+                            <i className="fi fi-br-at icon-modify"></i>
                             <input type="text" name="cnpj" placeholder="Digite o CNPJ da empresa" value={form.cnpj} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
+                            <i className="fi fi-rr-envelope icon-modify"></i>
                             <input type="email" name="email" placeholder="Digite o email da empresa" value={form.email} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
+                            <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={form.senha} onChange={handleChange} required />
                         </label>
 
@@ -235,9 +239,11 @@ function LoginEmpresa() {
                     </div>
                     <form className={Styles.form} onSubmit={handleLoginSubmit}>
                         <label className={Styles.input_group}>
+                            <i className="fi fi-rr-envelope icon-modify"></i>
                             <input type="email" name="email" placeholder="Digite seu email" value={loginForm.email} onChange={handleLoginChange} required />
                         </label>
                         <label className={Styles.input_group}>
+                            <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={loginForm.senha} onChange={handleLoginChange} required />
                         </label>
 
