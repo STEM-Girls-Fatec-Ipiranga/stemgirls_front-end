@@ -65,84 +65,64 @@ const mulheres = [
     historia:
       "Amelia Earhart foi uma das primeiras mulheres a se destacar na aviação. Conquistou feitos históricos, como atravessar o Atlântico sozinha, e inspirou mulheres a desafiar limites. Seu desaparecimento durante um voo de circunavegação só aumentou o mistério e a lenda em torno de sua vida, tornando-a símbolo de coragem e exploração.",
   },
-  {
-    nome: "Amelia Earhart",
-    foto: "/imagens/amelia.jpg",
-    resumo:
-      "Aviadora pioneira, primeira mulher a atravessar o Atlântico sozinha e símbolo de coragem e exploração.",
-    historia:
-      "Amelia Earhart foi uma das primeiras mulheres a se destacar na aviação. Conquistou feitos históricos, como atravessar o Atlântico sozinha, e inspirou mulheres a desafiar limites. Seu desaparecimento durante um voo de circunavegação só aumentou o mistério e a lenda em torno de sua vida, tornando-a símbolo de coragem e exploração.",
-  },
 ];
 
 export default function App() {
   const [selecionada, setSelecionada] = useState(null);
 
   return (
-    <>
-      {/* Carrega as fontes sem depender de outros arquivos */}
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800&family=Quicksand:wght@400;600&display=swap');
-      `}</style>
-
-      <div
+    <div
         className="bg-gray-100 min-h-screen overflow-x-hidden pt-6"
         style={{ fontFamily: "'Quicksand', sans-serif" }}
       >
-        {/* TOPO PERSONALIZADO (igual à referência) */}
-        <section className="relative mx-auto max-w-6xl h-[520px] flex items-center justify-center">
-  {/* Fundo roxo centralizado */}
-  <img
-    src="/imagens/topo-fundo.png"
-    alt="Fundo tecnológico"
-    className="absolute left-1/2 -translate-x-1/2 h-full w-[70%] object-cover rounded-3xl z-0 pointer-events-none"
-  />
+        {/* TOPO */}
+        <section className="relative mx-auto max-w-6xl h-[500px] flex items-center justify-center overflow-hidden">
+          <img
+            src="/imagens/topo-fundo.png"
+            alt="Fundo tecnológico"
+            className="absolute left-1/2 -translate-x-1/2 h-full w-[70%] object-cover rounded-3xl z-0 pointer-events-none"
+          />
 
-  {/* Ilustração da mulher à direita */}
-  <img
-    src="/imagens/topo-mulher.png"
-    alt="Mulher usando notebook"
-    className="absolute right-10 bottom-0 h-[95%] max-h-[540px] object-contain z-20 pointer-events-none"
-  />
+          <img
+            src="/imagens/topo-mulher.png"
+            alt="Mulher usando notebook"
+            className="absolute right-10 bottom-0 h-[95%] max-h-[540px] object-contain z-20 pointer-events-none"
+          />
 
-  {/* Texto centralizado dentro do quadro */}
-  <div className="relative z-30 text-center text-white max-w-[520px] px-6">
-   <h1
-  className="text-6xl font-extrabold leading-tight tracking-tight"
-  style={{ fontFamily: "'Orbitron', sans-serif" }}
->
-  <span className="block bg-gradient-to-r from-pink-200 via-purple-200 to-indigo-200 bg-clip-text text-transparent drop-shadow-md">
-    Mulheres Pioneiras
-  </span>
-  <span className="block bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-md">
-    da Tecnologia
-  </span>
-</h1>
+          <div className="relative z-30 text-center text-white max-w-[520px] px-6">
+            <h1
+              className="text-6xl font-extrabold leading-tight tracking-tight"
+              style={{ fontFamily: "'Orbitron', sans-serif" }}
+            >
+              <span className="block bg-gradient-to-r from-pink-200 via-purple-200 to-indigo-200 bg-clip-text text-transparent drop-shadow-md">
+                Mulheres Pioneiras
+              </span>
+              <span className="block bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-md">
+                da Tecnologia
+              </span>
+            </h1>
 
+            <div className="mt-6 flex justify-center flex-wrap gap-4">
+              <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
+                Programação
+              </span>
+              <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
+                Inovação
+              </span>
+              <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
+                Ciência
+              </span>
+            </div>
 
-    <div className="mt-6 flex justify-center flex-wrap gap-4">
-      <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
-        Programação
-      </span>
-      <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
-        Inovação
-      </span>
-      <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
-        Ciência
-      </span>
-    </div>
+            <p className="mt-8 text-lg leading-relaxed font-quicksand">
+              Pioneiras, visionárias e corajosas mulheres que desafiaram
+              barreiras e mudaram para sempre o rumo da tecnologia.
+            </p>
+          </div>
+        </section>
 
-    <p className="mt-8 text-lg leading-relaxed font-quicksand">
-      Pioneiras, visionárias e corajosas mulheres que desafiaram barreiras e
-      mudaram para sempre o rumo da tecnologia.
-    </p>
-  </div>
-</section>
-
-
-
-        {/* Seção de mulheres (mantida) */}
-        <main className="p-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-36 mx-16">
+        {/* SEÇÃO MULHERES */}
+        <main className="p-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-28 mx-16 mb-16">
           {mulheres.map((mulher, index) => (
             <div
               key={index}
@@ -153,8 +133,8 @@ export default function App() {
                 alt={mulher.nome}
                 className="w-72 h-72 object-cover rounded-lg shadow-lg"
               />
-              {/* Card centralizado sobre a foto */}
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1/2 w-56 bg-white/90 rounded-xl p-4 shadow-md text-center">
+
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-[45%] w-56 bg-white/90 rounded-xl p-4 shadow-md text-center">
                 <h2 className="text-lg font-bold text-gray-900">
                   {mulher.nome}
                 </h2>
@@ -170,7 +150,7 @@ export default function App() {
           ))}
         </main>
 
-        {/* Pop-up (mantido) */}
+        {/* POP-UP */}
         {selecionada && (
           <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4">
             <div className="bg-white rounded-xl max-w-lg w-full p-6 relative shadow-2xl overflow-y-auto max-h-[80vh]">
@@ -188,6 +168,5 @@ export default function App() {
           </div>
         )}
       </div>
-    </>
   );
 }

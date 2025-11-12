@@ -1,15 +1,15 @@
 import { Routes, Route, useLocation } from "react-router-dom";
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { ArrowUp } from "lucide-react";
 
 import Home from "./componentes/Home.jsx";
 import Comunidades from "./componentes/comunidades/Comunidades.tsx";
-
 import Login from "./componentes/Login.jsx";
 import ForgotPasswordPage from "./componentes/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./componentes/ResetPasswordPage.jsx";
 import Historia from "./componentes/Historia.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
-import MiniMentes from "./componentes/minimentes/MiniMentes.tsx";
+import MiniMentes from "./componentes/MiniMentes.jsx";
 import Eventos from "./componentes/Eventos.jsx";
 import LoginEmpresa from "./componentes/LoginEmpresa.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
@@ -28,10 +28,22 @@ import "./App.css";
 function AppContent() {
   const location = useLocation();
 
-  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha/:token", "/perfil", "/termos-de-uso"];
+  // controla se o botão deve aparecer
+  const [mostrarBotao, setMostrarBotao] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setMostrarBotao(window.scrollY > 300); // aparece depois de 300px
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
   const mostrarMenu = !rotasSemMenu.some((rota) => location.pathname.startsWith(rota));
 
-  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha/:token", "/perfil", "/termos-de-uso"];
+  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
   const mostrarRodape = !rotasSemRodape.some((rota) => location.pathname.startsWith(rota));
 
   return (
@@ -57,10 +69,22 @@ function AppContent() {
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
       </Routes>
 
+      {/* Botão de voltar ao topo */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className={`fixed bottom-6 right-6 bg-pink-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg text-2xl hover:bg-pink-600 transition-opacity duration-300 ${
+          mostrarBotao ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        style={{ zIndex: 9999 }}
+      >
+        <ArrowUp size={22} strokeWidth={2.5} />
+      </button>
+
       {mostrarRodape && <Rodape />}
     </GoogleOAuthProvider>
   );
 }
+
 
 export default function App() {
   return <AppContent />;
