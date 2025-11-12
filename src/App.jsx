@@ -17,6 +17,7 @@ import Canais from "./componentes/Canais.jsx";
 import Parceiros from "./componentes/Parceiros.tsx";
 import Quiz from "./componentes/Quiz.jsx";
 import TermosDeUso from "./componentes/TermosDeUso.jsx";
+import PerfilEmpresa from "./componentes/PerfilEmpresa.tsx";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 import Rodape from "./componentes/Rodape.jsx";
@@ -46,6 +47,7 @@ function AppContent() {
         <Route path="/historia" element={<Historia />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
         <Route path="/perfil" element={<PerfilUsuario />} />
+        <Route path="/perfil-empresa" element={<PerfilEmpresa />} />
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/minimentes" element={<MiniMentes />} />
         <Route path="/canais" element={<Canais />} />
