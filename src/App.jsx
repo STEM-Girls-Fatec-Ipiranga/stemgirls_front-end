@@ -1,6 +1,6 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Import } from "lucide-react";
 
 import Home from "./componentes/Home.jsx";
 import Comunidades from "./componentes/comunidades/Comunidades.tsx";
@@ -9,16 +9,19 @@ import ForgotPasswordPage from "./componentes/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./componentes/ResetPasswordPage.jsx";
 import Historia from "./componentes/Historia.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
-import MiniMentes from "./componentes/MiniMentes.jsx";
+import MiniMentes from "./componentes/minimentes/MiniMentes.jsx";
 import Eventos from "./componentes/Eventos.jsx";
 import LoginEmpresa from "./componentes/LoginEmpresa.jsx";
 import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
-import Canais from "./componentes/Canais.jsx";
+import Canais from "./componentes/canais/Canais.jsx";
 import Parceiros from "./componentes/Parceiros.tsx";
-import Quiz from "./componentes/Quiz.jsx";
+import Quiz from "./componentes/minimentes/Quiz.jsx";
 import TermosDeUso from "./componentes/TermosDeUso.jsx";
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 import Rodape from "./componentes/Rodape.jsx";
+import CriarCanais from "./componentes/canais/CriarCanais.jsx";
+import PostarVideos from "./componentes/canais/PostarVideos.jsx";
+
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
@@ -63,6 +66,8 @@ function AppContent() {
         <Route path="/parceiros" element={<Parceiros />} />
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
         <Route path="/quiz" element={<Quiz />} />
+        <Route path="/criar-canais" element={<CriarCanais />} />
+        <Route path="/postar-videos" element={<PostarVideos />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
       </Routes>
 
