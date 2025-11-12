@@ -15,6 +15,12 @@ const MenuSuperior = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const handleSearchSubmit = (e) => {
+  if (e.key === 'Enter' && searchQuery.trim() !== '') {
+    navigate(`/busca?q=${encodeURIComponent(searchQuery.trim())}`);
+  }
+};
+
 
 
   const toggleMobileMenu = () => {
@@ -94,12 +100,14 @@ const MenuSuperior = () => {
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white w-5 h-5" />
               <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="| No que está pensando?"
-                className="w-full pl-12 pr-4 py-3 rounded-full bg-white bg-opacity-40 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
-              />
+  type="text"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  onKeyDown={handleSearchSubmit}
+  placeholder="| No que está pensando?"
+  className="w-full pl-12 pr-4 py-3 rounded-full bg-white bg-opacity-40 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
+/>
+
             </div>
           </div>
 
@@ -203,13 +211,15 @@ const MenuSuperior = () => {
         <div className="md:hidden mt-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="No que está pensando?"
-              className="w-full pl-12 pr-4 py-3 rounded-full bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
-            />
+           <input
+  type="text"
+  value={searchQuery}
+  onChange={(e) => setSearchQuery(e.target.value)}
+  onKeyDown={handleSearchSubmit}
+  placeholder="No que está pensando?"
+  className="w-full pl-12 pr-4 py-3 rounded-full bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
+/>
+
           </div>
         </div>
       </div>
