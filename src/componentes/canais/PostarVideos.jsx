@@ -39,55 +39,38 @@ export default function PostarVideos({
     reader.readAsDataURL(file);
   };
 
-  const publicar = () => {
-    if (!videoFile || !titulo.trim() || !canalDestino) {
-      setShowNotificacao("Escolha vídeo, título e canal");
+ const publicar = () => {
+  if (!videoFile || !titulo.trim() || !canalDestino) {
+    setShowNotificacao("Escolha vídeo, título e canal");
+    setTimeout(() => setShowNotificacao(null), 2000);
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("file", videoFile);
+  formData.append("title", titulo);
+  formData.append("desc", desc);
+  formData.append("canalId", canalDestino);
+  formData.append("owner", "me");
+
+  fetch("http://localhost:8080/api/videos", {
+    method: "POST",
+    body: formData,
+  })
+    .then(res => res.json())
+    .then(data => {
+      setShowNotificacao("✅ Vídeo enviado com sucesso!");
       setTimeout(() => setShowNotificacao(null), 2000);
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const base64Video = reader.result;
-
-      const novoVideo = {
-        title: titulo,
-        desc,
-        url: base64Video,
-        thumb: thumbPreview,
-        createdAt: Date.now(),
-        owner: "me",
-      };
-
-      const novosCanais = canais.map((c) =>
-        c.id === Number(canalDestino)
-          ? { ...c, videos: [novoVideo, ...(c.videos || [])] }
-          : c
-      );
-
-      setCanais(novosCanais);
-
-      if (canalSelecionado?.id === Number(canalDestino)) {
-        const canalAtualizado = novosCanais.find(
-          (c) => c.id === Number(canalDestino)
-        );
-        setCanalSelecionado(canalAtualizado);
-      }
-
-      // Limpar e fechar
-      setTitulo("");
-      setDesc("");
-      setVideoFile(null);
-      setVideoPreview(null);
-      setThumbPreview(null);
       onClose();
-
-      setShowNotificacao("✅ Vídeo publicado!");
+    })
+    .catch(err => {
+      console.error("Erro ao enviar vídeo:", err);
+      setShowNotificacao("Erro ao publicar vídeo");
       setTimeout(() => setShowNotificacao(null), 2000);
-    };
+    });
+};
 
-    reader.readAsDataURL(videoFile);
-  };
+
 
   return (
     <>
