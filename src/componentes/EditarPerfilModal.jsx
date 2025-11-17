@@ -1,6 +1,4 @@
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X } from "lucide-react";
-import { ArrowLeft } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
 import { useState, useCallback, useEffect } from "react";
 
 // URL de placeholder para imagem de perfil
@@ -14,6 +12,7 @@ const DEFAULT_PROFILE_IMAGE = "https://placehold.co/128x128/9D4EDD/ffffff?text=S
  * @param {function} props.onClose - Função para fechar o modal.
  * @param {function} props.onSave - Função chamada ao salvar as alterações.
  */
+
 export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
     // Estado local para armazenar as edições temporariamente
     const [editedUsername, setEditedUsername] = useState(initialData.nomeUsuario || '');
@@ -31,16 +30,8 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
 
     if (!isOpen) return null;
 
-    // Simula o clique no input de arquivo (para o explorador de arquivos)
     const handleImageClick = () => {
-        // Na vida real, você acionaria o input file hidden aqui.
-        // Simulando o clique no explorador de arquivos:
         console.log("Simulando abertura do explorador de arquivos para nova imagem.");
-        // Você adicionaria um <input type="file" style={{ display: 'none' }} />
-        // e chamaria inputRef.current.click();
-        
-        // Exemplo: Simular uma nova imagem de perfil após o upload
-        // setEditedProfileImage("https://placehold.co/128x128/FF6B81/ffffff?text=Nova");
     };
 
     const handleSave = () => {
@@ -83,8 +74,6 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                         <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <Camera className="w-6 h-6 text-white" />
                         </div>
-                        {/* Input file simulado, oculto */}
-                        {/* <input type="file" ref={inputRef} onChange={handleImageChange} accept="image/*" style={{ display: 'none' }} /> */}
                     </div>
                     <p className="text-sm text-gray-500 mt-2">Clique para alterar a foto</p>
                 </div>

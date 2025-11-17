@@ -107,7 +107,7 @@ function Rodape() {
                                 onChange={(e) =>
                                     setFeedbackData({ ...feedbackData, FeedbackEmail: e.target.value })
                                 }
-                                className="w-[80%] h-12 mb-4 bg-transparent border-[3px] rounded-[7px] pl-3 pt-2 placeholder:text-white placeholder:text-[18px] focus:outline-none focus:border-purple-200 focus:ring-2 focus:ring-purple-300 shadow-sm transition-all"
+                                className="w-[80%] h-12 mb-2 bg-transparent border-[3px] rounded-[7px] pl-3 pt-2 placeholder:text-white placeholder:text-[18px] focus:outline-none focus:border-purple-200 focus:ring-2 focus:ring-purple-300 shadow-sm transition-all"
                                 name="FeedbackEmail"
                                 placeholder="Digite seu email..."
                                 required

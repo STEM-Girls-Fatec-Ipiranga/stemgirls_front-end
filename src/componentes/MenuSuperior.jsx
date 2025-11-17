@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Search, Sun, Moon, Menu, X, CircleUser, LogOut, User } from 'lucide-react';
+import { Search, Sun, Moon, Menu, X, CircleUser, LogOut, User, Bell } from 'lucide-react';
 import LogoSG from '../assets/img/LogoSG.png';
+import Notificacoes from "../componentes/Notificacoes.jsx";
 import { Link, useNavigate } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 
 
 function formatDate(date) {
@@ -16,12 +18,12 @@ const MenuSuperior = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const handleSearchSubmit = (e) => {
-  if (e.key === 'Enter' && searchQuery.trim() !== '') {
-    navigate(`/busca?q=${encodeURIComponent(searchQuery.trim())}`);
-  }
-};
+    if (e.key === 'Enter' && searchQuery.trim() !== '') {
+      navigate(`/busca?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
-
+  const [mostrarNotificacoes, setMostrarNotificacoes] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -38,7 +40,7 @@ const MenuSuperior = () => {
     { label: "Parceiros", path: "/parceiros" },
   ];
 
-  const user = localStorage.getItem("userData")
+  const user = JSON.parse(localStorage.getItem("userData"))
   const empresaToken = localStorage.getItem("empresaToken");
   const empresaNome = localStorage.getItem("empresaNome");
 
@@ -100,13 +102,13 @@ const MenuSuperior = () => {
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white w-5 h-5" />
               <input
-  type="text"
-  value={searchQuery}
-  onChange={(e) => setSearchQuery(e.target.value)}
-  onKeyDown={handleSearchSubmit}
-  placeholder="| No que está pensando?"
-  className="w-full pl-12 pr-4 py-3 rounded-full bg-white bg-opacity-40 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
-/>
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleSearchSubmit}
+                placeholder="| No que está pensando?"
+                className="w-full pl-12 pr-4 py-3 rounded-full bg-white bg-opacity-40 text-white placeholder-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
+              />
 
             </div>
           </div>
@@ -126,65 +128,60 @@ const MenuSuperior = () => {
             </div>
           )}
 
-          {/* {!user && (<div className="hidden md:flex items-center gap-4">
-            <Link to="/login">
-              <button
-                className="px-6 py-2 bg-white text-pink-500 rounded-full font-quicksand font-semibold 
-                 hover:bg-opacity-90 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
-                style={{ color: '#f36ec0' }}
-              >
-                Cadastre-se
-              </button>
-            </Link>
-          </div>)} */}
-
-          {/* Botão de perfil */}
-          {/* {user && (
-            <div className="flex flex-row items-center relative">
-              <p className="font-semibold text-white text-right">@{userProfile.data.nomeUsuario}</p> */}
           {(user || empresaToken) && (
-            <div className="flex flex-row items-center relative">
-              <p className="font-semibold text-white text-right">
-                {user
-                  ? `@${userProfile.data.nomeUsuario}`
-                  : empresaNome || "Empresa"}
-              </p>
+            <div className="flex flex-row items-center relative justify-around w-[250px]">
 
-              <button
-                className="px-6 py-2 text-white font-semibold hover:scale-105 transition-all duration-200"
-                aria-label="Menu do usuário"
-                onClick={() => setIsProfileOpen(!isProfileOpen)}
-              >
-                <CircleUser size={45} />
-              </button>
+
+              {user?.role === "MODERADOR" && (
+                <button onClick={() => setMostrarNotificacoes(!mostrarNotificacoes)}>
+                  <Bell />
+                </button>
+              )}
+
+              <AnimatePresence>
+                {mostrarNotificacoes && (
+                  <Notificacoes fechar={() => setMostrarNotificacoes(false)} />
+                )}
+              </AnimatePresence>
+
+
+              <div className="flex flex-row items-center">
+                <p className="font-semibold text-white text-right">
+                  {user
+                    ? `@${userProfile.data.nomeUsuario}`
+                    : empresaNome || "Empresa"}
+                </p>
+
+                <button
+                  className="px-6 py-2 text-white font-semibold hover:scale-105 transition-all duration-200"
+                  aria-label="Menu do usuário"
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                >
+                  <CircleUser size={45} />
+                </button>
+              </div>
+
 
               {isProfileOpen && (
-                <div className="absolute right-4 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 border border-[#af5fe4]"> {/* O border-opacity-4 foi removido aqui para manter o estilo da borda fina roxa */}
-                  {/* <Link
-                    to="/perfil"
-                    className="flex items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
-                    onClick={() => setIsProfileOpen(false)} // Fecha ao navegar
-                  >
-                    <User size={19} /> Perfil
-                  </Link> */}
+                <div className="absolute right-4 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 border border-[#af5fe4]">
                   <Link
                     to={
                       user
-                        ? "/perfil"  
+                        ? "/perfil"
                         : empresaToken
-                          ? "/perfil-empresa"  
-                          : "/login"          
+                          ? "/perfil-empresa"
+                          : "/login"
                     }
                     className="flex items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
-                    onClick={() => setIsProfileOpen(false)} 
+                    onClick={() => setIsProfileOpen(false)}
                   >
                     <User size={19} /> Perfil
                   </Link>
 
-                  {/* CHAMA A FUNÇÃO QUE ABRE O MODAL */}
+                  {/* ABRE O MODAL */}
                   <button
                     className="flex w-full items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
-                    onClick={handleClickLogout} // AQUI ABRE O MODAL DE CONFIRMAÇÃO
+                    onClick={handleClickLogout}
                   >
                     <LogOut size={19} /> Sair
                   </button>
@@ -211,14 +208,14 @@ const MenuSuperior = () => {
         <div className="md:hidden mt-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-           <input
-  type="text"
-  value={searchQuery}
-  onChange={(e) => setSearchQuery(e.target.value)}
-  onKeyDown={handleSearchSubmit}
-  placeholder="No que está pensando?"
-  className="w-full pl-12 pr-4 py-3 rounded-full bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
-/>
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={handleSearchSubmit}
+              placeholder="No que está pensando?"
+              className="w-full pl-12 pr-4 py-3 rounded-full bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
+            />
 
           </div>
         </div>
@@ -261,7 +258,7 @@ const MenuSuperior = () => {
               {/* Botões mobile */}
               <div className="flex items-center justify-between pt-4 border-t border-white border-opacity-20">
                 {/* <button
-                  onClick={toggleTheme}
+                  // onClick={toggleTheme}
                   className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-200"
                   aria-label="Alternar tema"
                 >

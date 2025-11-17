@@ -89,7 +89,7 @@ function Login() {
         }
     };
 
-    // Handler para atualizar o estado do formulário de LOGIN
+    // Handler para atualizar o estado do formulário de CADASTRO
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
 
@@ -126,6 +126,8 @@ function Login() {
         }
     };
 
+    
+
 
     // const handleRegisterSubmit = async (e) => {
     //     e.preventDefault();
@@ -159,28 +161,59 @@ function Login() {
     // };
 
     // --- FUNÇÃO DE SUBMISSÃO DO LOGIN ---
-    const handleLoginSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
-                email: loginForm.email,
-                senha: loginForm.senha
-            });
 
-            const { token, user } = response.data;
-            console.log(user);
-            if (token) {
-                localStorage.setItem("userToken", token);
-                localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
-                alert("Login bem-sucedido!");
-                navigate("/"); // redireciona pro perfil
+    const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    try {
+        const response = await axios.post("http://localhost:8080/api/auth/login", {
+            email: loginForm.email,
+            senha: loginForm.senha
+        });
+
+        const { token, user } = response.data;
+
+        if (token) {
+            localStorage.setItem("userToken", token);
+            localStorage.setItem("userData", JSON.stringify(user));
+
+            alert("Login realizado com sucesso!");
+
+            // 🔥 Redirecionamento baseado no tipo de usuário
+            if (user.role === "MODERADOR") {
+                navigate("/minimentes"); // moderador
+            } else {
+                navigate("/"); // usuário comum
             }
-        } catch (error) {
-            const errorMessage = error.response?.data || "Verifique suas credenciais.";
-            console.error("Erro no login:", errorMessage);
-            alert("Erro no login: " + errorMessage);
         }
-    };
+    } catch (error) {
+        const errorMessage = error.response?.data || "Verifique suas credenciais.";
+        console.error("Erro no login:", errorMessage);
+        alert("Erro no login: " + errorMessage);
+    }
+};
+
+    // const handleLoginSubmit = async (e) => {
+    //     e.preventDefault();
+    //     try {
+    //         const response = await axios.post("http://localhost:8080/api/auth/login", {
+    //             email: loginForm.email,
+    //             senha: loginForm.senha
+    //         });
+
+    //         const { token, user } = response.data;
+    //         console.log(user);
+    //         if (token) {
+    //             localStorage.setItem("userToken", token);
+    //             localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
+    //             alert("Login bem-sucedido!");
+    //             navigate("/"); // redireciona pro perfil
+    //         }
+    //     } catch (error) {
+    //         const errorMessage = error.response?.data || "Verifique suas credenciais.";
+    //         console.error("Erro no login:", errorMessage);
+    //         alert("Erro no login: " + errorMessage);
+    //     }
+    // };
 
     //-------------- LÓGICA DA ANIMAÇÃO --------------
     const [modo, setModo] = useState("");
@@ -219,11 +252,6 @@ function Login() {
                 </div>
                 <div className={Styles.segunda_coluna}>
                     <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Crie sua conta</h2>
-                    {/* <div className={Styles.social_media}>
-                        <a href="#"><i className="fi fi-brands-google"></i></a>
-                        <a href="#"><i className="fi fi-brands-linkedin"></i></a>
-                        <a href="#"><i className="fi fi-brands-github"></i></a>
-                    </div> */}
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
                             <i className="far fa-user icon-modify"></i>

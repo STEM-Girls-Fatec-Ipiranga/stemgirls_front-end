@@ -9,10 +9,10 @@ import axios from 'axios';
 function LoginEmpresa() {
     const navigate = useNavigate();
 
-    // ✅ reativado o estado 'form' (era o motivo do erro)
     const [form, setForm] = useState({
         nomeEmpresa: '',
         cnpj: '',
+        telefone: '',
         email: '',
         senha: ''
     });
@@ -25,7 +25,6 @@ function LoginEmpresa() {
     const [passwordError, setPasswordError] = useState('');
     const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-    // 👉 estado novo só para mensagem de pendência
     const [statusMessage, setStatusMessage] = useState('');
 
     const validatePassword = (senha) => {
@@ -81,7 +80,7 @@ function LoginEmpresa() {
         setLoginForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // 🟣 CADASTRO DE EMPRESA
+    // CADASTRO DE EMPRESA
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
 
@@ -96,7 +95,7 @@ function LoginEmpresa() {
                 cnpj: form.cnpj,
                 email: form.email,
                 senha: form.senha,
-                telefone: "(11) 0000-0000",
+                telefone: form.telefone,
                 status: "PENDENTE"
             });
 
@@ -110,7 +109,7 @@ function LoginEmpresa() {
         }
     };
 
-    // 🟣 LOGIN DE EMPRESA
+    // LOGIN DE EMPRESA
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         setStatusMessage('');
@@ -172,6 +171,10 @@ function LoginEmpresa() {
                         <label className={Styles.input_group}>
                             <i className="fi fi-br-at icon-modify"></i>
                             <input type="text" name="cnpj" placeholder="Digite o CNPJ da empresa" value={form.cnpj} onChange={handleChange} required />
+                        </label>
+                        <label className={Styles.input_group}>
+                            <i className="fi fi-br-at icon-modify"></i>
+                            <input type="text" name="telefone" placeholder="Digite o telefone da empresa" value={form.telefone} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-rr-envelope icon-modify"></i>

@@ -2,7 +2,7 @@ import React from "react";
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { EditarPerfilModal } from "./EditarPerfilModal"; // ajuste o caminho se necessário
+import { EditarPerfilModal } from "./EditarPerfilModal"; 
 
 const DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/gST4tJ1/default-profile.png";
 
@@ -18,7 +18,6 @@ export default function PerfilUsuario() {
             })
             : "Data Indisponível";
 
-    // leitura segura do localStorage (evita JSON.parse("undefined"))
     const [userData, setUserData] = useState(() => {
         const storedData = localStorage.getItem("userData");
         const initialData = storedData && storedData !== "undefined"
