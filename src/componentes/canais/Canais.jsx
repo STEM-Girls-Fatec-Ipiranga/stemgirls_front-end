@@ -3,9 +3,9 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Search, Plus, CheckCircle } from "lucide-react";
 import CriarCanais from "./CriarCanais";
 import PostarVideos from "./PostarVideos";
+import PopupLoginAviso from "../PopupLoginAviso";
 
 export default function Canais() {
-  // --- estados principais ---
   const [canais, setCanais] = useState([]);
   const [search, setSearch] = useState("");
   const [inscritos, setInscritos] = useState([]);
@@ -15,6 +15,7 @@ export default function Canais() {
   const [showNotificacao, setShowNotificacao] = useState(null);
 
   const playableUrlCache = useRef(new Map());
+  const user = JSON.parse(localStorage.getItem("userData"));
 
   const canaisPadrao = [
     {
@@ -39,7 +40,6 @@ export default function Canais() {
     },
   ];
 
-  // --- carregar canais ---
   useEffect(() => {
     fetch("http://localhost:8080/api/canais")
       .then((res) => res.json())
@@ -77,21 +77,17 @@ export default function Canais() {
     return url;
   }, []);
 
-  // --- inscrições ---
   const toggleInscricao = (id) => {
     const ja = inscritos.includes(id);
     const novos = ja ? inscritos.filter((x) => x !== id) : [...inscritos, id];
     setInscritos(novos);
     setCanais((prev) =>
       prev.map((c) =>
-        c.id === id
-          ? { ...c, inscritos: ja ? c.inscritos - 1 : c.inscritos + 1 }
-          : c
+        c.id === id ? { ...c, inscritos: ja ? c.inscritos - 1 : c.inscritos + 1 } : c
       )
     );
   };
 
-  // --- feed geral ---
   const [videos, setVideos] = useState([]);
 
   useEffect(() => {
@@ -105,7 +101,6 @@ export default function Canais() {
     (a, b) => (b.createdAt || 0) - (a.createdAt || 0)
   );
 
-  // --- vídeos do canal selecionado ---
   const [videosCanal, setVideosCanal] = useState([]);
 
   useEffect(() => {
@@ -116,7 +111,6 @@ export default function Canais() {
       .catch((err) => console.error("Erro ao buscar vídeos do canal:", err));
   }, [canalSelecionado]);
 
-  // --- excluir canal ---
   const excluirCanal = (id) => {
     const canal = canais.find((c) => c.id === id);
     if (canal?.owner !== "me") {
@@ -147,36 +141,51 @@ export default function Canais() {
   const meusInscritos = canais.filter((c) => inscritos.includes(c.id));
   const sugeridos = canais.filter((c) => !inscritos.includes(c.id));
 
+  const isLogged = !!user;
+  const [showPopupLogin, setShowPopupLogin] = useState(false);
+
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-black">
 
-      {/* -------- SIDEBAR -------- */}
       <aside className="w-72 bg-[#FFF6FF] border-r border-pink-100 p-4 flex flex-col overflow-y-auto">
 
-        {/* Botão criar canal */}
-        <button
-          onClick={() => setAbrirCriarCanal(true)}
-          className="bg-[#f36ec0] text-white py-2 rounded-lg font-semibold mb-4 flex items-center justify-center"
-        >
-          <Plus className="w-4 h-4 mr-2" /> Criar Canal
-        </button>
+        {user?.role === "MODERADOR" && (
+          <button
+            onClick={() => setAbrirCriarCanal(true)}
+            className="bg-[#f36ec0] text-white py-2 rounded-lg font-semibold mb-4 flex items-center justify-center"
+          >
+            <Plus className="w-4 h-4 mr-2" /> Criar Canal
+          </button>
+        )}
 
-        {/* ---------- LINHA DIVISÓRIA ---------- */}
         <div className="w-full border-b border-pink-200 my-3"></div>
 
-        {/* Busca */}
+        {/* ------------------ BUSCA COM VERIFICAÇÃO DE LOGIN ------------------ */}
         <div className="relative mb-3">
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
+
           <input
             type="text"
             placeholder="Buscar canal..."
             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:ring-2 focus:ring-pink-500 shadow-inner bg-gray-100"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
+            onFocus={(e) => {
+              if (!isLogged) {
+                e.target.blur();
+                setShowPopupLogin(true);
+              }
+            }}
           />
         </div>
 
-        {/* Resultados */}
+        <PopupLoginAviso
+          isOpen={showPopupLogin}
+          onClose={() => setShowPopupLogin(false)}
+        />
+
+        {/* -------------------------------------------------------------------- */}
+
         {search.trim() && (
           <div className="mb-4">
             <h3 className="text-sm font-semibold mb-2">Resultados</h3>
@@ -202,10 +211,8 @@ export default function Canais() {
           </div>
         )}
 
-        {/* ---------- LINHA DIVISÓRIA ---------- */}
         <div className="w-full border-b border-pink-200 my-3"></div>
 
-        {/* Meus canais */}
         <h3 className="text-lg font-bold mb-2">Meus Canais</h3>
         {meusCanais.length ? (
           <ul className="space-y-2">
@@ -224,10 +231,8 @@ export default function Canais() {
           <p className="text-sm text-gray-500">Você ainda não criou canais.</p>
         )}
 
-        {/* ---------- LINHA DIVISÓRIA ---------- */}
         <div className="w-full border-b border-pink-200 my-3"></div>
 
-        {/* Inscritos */}
         <h3 className="text-lg font-bold mb-2">Canais inscritos</h3>
         {meusInscritos.length ? (
           <ul className="space-y-2">
@@ -246,10 +251,8 @@ export default function Canais() {
           <p className="text-sm text-gray-500">Você ainda não se inscreveu.</p>
         )}
 
-        {/* ---------- LINHA DIVISÓRIA ---------- */}
         <div className="w-full border-b border-pink-200 my-3"></div>
 
-        {/* Sugeridos */}
         <h3 className="text-lg font-bold mb-2">Sugeridos</h3>
         <ul className="space-y-2">
           {sugeridos.slice(0, 6).map((c) => (
@@ -265,9 +268,7 @@ export default function Canais() {
         </ul>
       </aside>
 
-      {/* -------- CONTEÚDO PRINCIPAL -------- */}
-      <main className="flex-1 p-6"> 
-        {/* removi overflow-y-auto pra NÃO ter scroll */}
+      <main className="flex-1 p-6">
 
         {canalSelecionado ? (
           <div>
@@ -295,7 +296,7 @@ export default function Canais() {
                 {inscritos.includes(canalSelecionado.id) ? "Inscrito" : "Inscrever-se"}
               </button>
             </div>
-            
+
             <div className="flex gap-2 mb-4">
               <button
                 onClick={() => setAbrirPostarVideo(true)}
@@ -314,7 +315,6 @@ export default function Canais() {
               )}
             </div>
 
-            {/* vídeos do canal */}
             <div>
               <h3 className="text-xl font-bold mb-3">Vídeos do Canal</h3>
               {videosCanal.length ? (
@@ -331,7 +331,6 @@ export default function Canais() {
                       />
 
                       <div className="p-4">
-
                         <div className="font-semibold">{v.title}</div>
                         <p className="text-sm text-gray-600 mb-3">{v.desc}</p>
 
@@ -394,7 +393,6 @@ export default function Canais() {
         )}
       </main>
 
-      {/* Modais */}
       {abrirCriarCanal && (
         <CriarCanais
           setCanais={setCanais}
@@ -415,7 +413,6 @@ export default function Canais() {
         />
       )}
 
-      {/* Notificação */}
       {showNotificacao && (
         <div className="fixed bottom-6 right-6 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2">
           <CheckCircle className="w-5 h-5" />

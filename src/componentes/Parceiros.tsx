@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { X, Sparkles, Target, Eye, Users, GraduationCap, Building2, School, User, Heart } from 'lucide-react';
 import emailjs from '@emailjs/browser';
 import fundoSG from "../assets/img/FundoSGcolorido.jpg";
+import PopupLoginAviso from "../componentes/PopupLoginAviso";
+
 
 interface PartnershipType {
     id: string;
@@ -28,6 +30,7 @@ function Parceiros() {
     const [selectedPartnership, setSelectedPartnership] = useState<PartnershipType | null>(null);
     const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
     const [formData, setFormData] = useState({ companyName: '', email: '' });
+    
 
     const benefits = [
         {
@@ -161,6 +164,8 @@ function Parceiros() {
         setShowPartnerModal(true);
     };
 
+    const [popupOpen, setPopupOpen] = useState(false);
+
     return (
         <div className="min-h-screen bg-[#FFF6FF]">
             <section className="relative py-24 px-6">
@@ -171,17 +176,38 @@ function Parceiros() {
                     <p className="text-xl md:text-2xl mb-10 text-purple-600">
                         Acreditamos no poder da colaboração entre empresas, escolas e pessoas que apoiam a presença feminina nas áreas STEM.
                     </p>
-                    <button
+                    {/* <button
                         onClick={() => setShowContactModal(true)}
                         className="bg-[#AF5FE4] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg"
                     >
                         Quero ser parceira da STEMGirls
+                    </button> */}
+
+                    <button
+                        onClick={() => {
+                            const userRole = localStorage.getItem("role");
+
+                            if (!userRole) {
+                                setPopupOpen(true); // abre o popup
+                                return;
+                            }
+
+                            // Se estiver logado → abre o modal normal
+                            setShowContactModal(true);
+                        }}
+                        className="bg-[#AF5FE4] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg"
+                    >
+                        Quero ser parceira da STEMGirls
                     </button>
+
+                    <PopupLoginAviso isOpen={popupOpen} onClose={() => setPopupOpen(false)} />
+
+
                 </div>
             </section>
 
             <section className="py-20 max-w-full">
-                
+
                 <h2 className="text-4xl font-bold text-center text-gray-800 mb-16">
                     Parceiras em destaque
                 </h2>

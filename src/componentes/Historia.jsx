@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import PopupLoginAviso from "../componentes/PopupLoginAviso";
 
 const mulheres = [
   {
@@ -67,106 +68,126 @@ const mulheres = [
   },
 ];
 
+
+
+
 export default function App() {
+  const [popupOpen, setPopupOpen] = useState(false);
   const [selecionada, setSelecionada] = useState(null);
 
   return (
     <div
-        className="bg-gray-100 min-h-screen overflow-x-hidden pt-6"
-        style={{ fontFamily: "'Quicksand', sans-serif" }}
-      >
-        {/* TOPO */}
-        <section className="relative mx-auto max-w-6xl h-[500px] flex items-center justify-center overflow-hidden">
-          <img
-            src="/imagens/topo-fundo.png"
-            alt="Fundo tecnológico"
-            className="absolute left-1/2 -translate-x-1/2 h-full w-[70%] object-cover rounded-3xl z-0 pointer-events-none"
-          />
+      className="bg-gray-100 min-h-screen overflow-x-hidden pt-6"
+      style={{ fontFamily: "'Quicksand', sans-serif" }}
+    >
+      {/* TOPO */}
+      <section className="relative mx-auto max-w-6xl h-[500px] flex items-center justify-center overflow-hidden">
+        <img
+          src="/imagens/topo-fundo.png"
+          alt="Fundo tecnológico"
+          className="absolute left-1/2 -translate-x-1/2 h-full w-[70%] object-cover rounded-3xl z-0 pointer-events-none"
+        />
 
-          <img
-            src="/imagens/topo-mulher.png"
-            alt="Mulher usando notebook"
-            className="absolute right-10 bottom-0 h-[95%] max-h-[540px] object-contain z-20 pointer-events-none"
-          />
+        <img
+          src="/imagens/topo-mulher.png"
+          alt="Mulher usando notebook"
+          className="absolute right-10 bottom-0 h-[95%] max-h-[540px] object-contain z-20 pointer-events-none"
+        />
 
-          <div className="relative z-30 text-center text-white max-w-[520px] px-6">
-            <h1
-              className="text-6xl font-extrabold leading-tight tracking-tight"
-              style={{ fontFamily: "'Orbitron', sans-serif" }}
-            >
-              <span className="block bg-gradient-to-r from-pink-200 via-purple-200 to-indigo-200 bg-clip-text text-transparent drop-shadow-md">
-                Mulheres Pioneiras
-              </span>
-              <span className="block bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-md">
-                da Tecnologia
-              </span>
-            </h1>
+        <div className="relative z-30 text-center text-white max-w-[520px] px-6">
+          <h1
+            className="text-6xl font-extrabold leading-tight tracking-tight"
+            style={{ fontFamily: "'Orbitron', sans-serif" }}
+          >
+            <span className="block bg-gradient-to-r from-pink-200 via-purple-200 to-indigo-200 bg-clip-text text-transparent drop-shadow-md">
+              Mulheres Pioneiras
+            </span>
+            <span className="block bg-gradient-to-r from-indigo-200 via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-md">
+              da Tecnologia
+            </span>
+          </h1>
 
-            <div className="mt-6 flex justify-center flex-wrap gap-4">
-              <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
-                Programação
-              </span>
-              <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
-                Inovação
-              </span>
-              <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
-                Ciência
-              </span>
-            </div>
-
-            <p className="mt-8 text-lg leading-relaxed font-quicksand">
-              Pioneiras, visionárias e corajosas mulheres que desafiaram
-              barreiras e mudaram para sempre o rumo da tecnologia.
-            </p>
+          <div className="mt-6 flex justify-center flex-wrap gap-4">
+            <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
+              Programação
+            </span>
+            <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
+              Inovação
+            </span>
+            <span className="bg-white/10 backdrop-blur px-6 py-2 rounded-full text-sm font-semibold">
+              Ciência
+            </span>
           </div>
-        </section>
 
-        {/* SEÇÃO MULHERES */}
-        <main className="p-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-28 mx-16 mb-16">
-          {mulheres.map((mulher, index) => (
-            <div
-              key={index}
-              className="relative cursor-pointer flex justify-center"
-            >
-              <img
-                src={mulher.foto}
-                alt={mulher.nome}
-                className="w-72 h-72 object-cover rounded-lg shadow-lg"
+          <p className="mt-8 text-lg leading-relaxed font-quicksand">
+            Pioneiras, visionárias e corajosas mulheres que desafiaram
+            barreiras e mudaram para sempre o rumo da tecnologia.
+          </p>
+        </div>
+      </section>
+
+      {/* SEÇÃO MULHERES */}
+      <main className="p-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-28 mx-16 mb-16">
+        {mulheres.map((mulher, index) => (
+          <div
+            key={index}
+            className="relative cursor-pointer flex justify-center"
+          >
+            <img
+              src={mulher.foto}
+              alt={mulher.nome}
+              className="w-72 h-72 object-cover rounded-lg shadow-lg"
+            />
+
+            <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-[45%] w-56 bg-white/90 rounded-xl p-4 shadow-md text-center">
+              <h2 className="text-lg font-bold text-gray-900">
+                {mulher.nome}
+              </h2>
+              <p className="text-gray-700 mt-2 text-sm">{mulher.resumo}</p>
+
+              <button
+                onClick={() => {
+                  const userRole = localStorage.getItem("role");
+
+                  if (!userRole) {
+                    setPopupOpen(true);
+                    return;
+                  }
+                  setSelecionada(mulher);
+                }}
+                className="mt-3 bg-pink-500 text-white px-4 py-2 rounded-full text-sm"
+              >
+                Saiba mais
+              </button>
+
+              
+
+            </div>
+          </div>
+        ))}
+      </main>
+      <PopupLoginAviso
+                isOpen={popupOpen}
+                onClose={() => setPopupOpen(false)}
               />
 
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-[45%] w-56 bg-white/90 rounded-xl p-4 shadow-md text-center">
-                <h2 className="text-lg font-bold text-gray-900">
-                  {mulher.nome}
-                </h2>
-                <p className="text-gray-700 mt-2 text-sm">{mulher.resumo}</p>
-                <button
-                  onClick={() => setSelecionada(mulher)}
-                  className="mt-3 bg-pink-500 text-white px-4 py-2 rounded-full text-sm"
-                >
-                  Saiba mais
-                </button>
-              </div>
-            </div>
-          ))}
-        </main>
-
-        {/* POP-UP */}
-        {selecionada && (
-          <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4">
-            <div className="bg-white rounded-xl max-w-lg w-full p-6 relative shadow-2xl overflow-y-auto max-h-[80vh]">
-              <button
-                onClick={() => setSelecionada(null)}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold"
-              >
-                &times;
-              </button>
-              <h2 className="text-2xl font-bold mb-4 text-gray-900">
-                {selecionada.nome}
-              </h2>
-              <p className="text-gray-700">{selecionada.historia}</p>
-            </div>
+      {/* POP-UP */}
+      {selecionada && (
+        <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4">
+          <div className="bg-white rounded-xl max-w-lg w-full p-6 relative shadow-2xl overflow-y-auto max-h-[80vh]">
+            <button
+              onClick={() => setSelecionada(null)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold"
+            >
+              &times;
+            </button>
+            <h2 className="text-2xl font-bold mb-4 text-gray-900">
+              {selecionada.nome}
+            </h2>
+            <p className="text-gray-700">{selecionada.historia}</p>
           </div>
-        )}
-      </div>
+        </div>
+      )}
+    </div>
   );
 }
