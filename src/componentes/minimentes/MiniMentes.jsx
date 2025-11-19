@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import Quiz from "./Quiz";
 import { Code, Calculator, Type, PenTool, Zap, Trash2, Edit2 } from "lucide-react";
+import Robo from "../Robo.jsx";
 
 export default function MiniMentes() {
   const initial = [
@@ -381,7 +382,7 @@ export default function MiniMentes() {
       <div className="max-w-7xl mx-auto flex gap-6">
         {/* LEFT SIDEBAR */}
         <aside className={`flex flex-col transition-all duration-300 ${leftCollapsed ? "w-16" : "w-64"}`}>
-          <div className="bg-white rounded-xl shadow p-4 sticky top-6">
+          <div className="bg-white rounded-xl shadow p-2 sticky top-6">
             <div className="flex items-center justify-between mb-3">
               {!leftCollapsed && <h3 className="text-sm font-bold text-black">Categorias</h3>}
               <div className="ml-auto">
@@ -389,21 +390,52 @@ export default function MiniMentes() {
               </div>
             </div>
 
-            <div className={`space-y-3 ${leftCollapsed ? "flex flex-col items-center" : ""}`}>
-              {data.map((c) => (
-                <button
-                  key={c.id}
-                  onClick={() => scrollToCategory(c.id)}
-                  className={`w-full flex items-center gap-3 p-2 rounded-lg transition hover:scale-[1.01] ${leftCollapsed ? "justify-center" : ""}`}
-                >
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center text-white bg-gradient-to-r ${c.colorFrom} ${c.colorTo}`}>
-                    <Icon name={c.id} className="w-5 h-5 text-white" />
-                  </div>
-                  {!leftCollapsed && <span className="text-sm font-medium text-black">{c.title}</span>}
-                </button>
-              ))}
-            </div>
-          </div>
+          <div className={`space-y-3 ${leftCollapsed ? "flex flex-col items-center" : ""}`}>
+  {data.map((c) => (
+    <button
+      key={c.id}
+      onClick={() => scrollToCategory(c.id)}
+      className={`w-full flex items-center rounded-lg transition hover:scale-[1.01] ${
+        leftCollapsed ? "justify-center" : "justify-start"
+      }`}
+      style={{
+        height: "52px",
+        padding: "0 12px",
+        gap: "14px",
+      }}
+    >
+      {/* Ícone sempre com largura fixa */}
+      <div
+        className={`flex items-center justify-center rounded-xl text-white bg-gradient-to-r ${c.colorFrom} ${c.colorTo}`}
+        style={{
+          width: "42px",
+          height: "42px",
+          flexShrink: 0,        // impede o ícone de reduzir
+        }}
+      >
+        <Icon name={c.id} className="w-5 h-5 text-white" />
+      </div>
+
+      {/* Texto sempre alinhado ao mesmo ponto */}
+      {!leftCollapsed && (
+        <span
+          className="text-sm font-medium text-black"
+          style={{
+            display: "flex",
+            alignItems: "center",
+            height: "42px",
+            lineHeight: "1",
+            whiteSpace: "nowrap", // impede quebra
+          }}
+        >
+          {c.title}
+        </span>
+      )}
+    </button>
+  ))}
+</div>
+
+</div>
         </aside>
 
         {/* CENTER */}
@@ -430,12 +462,21 @@ export default function MiniMentes() {
               </span>
             </div>
 
-            <div className="mt-6">
+           <div className="flex flex-col justify-center items-center mt-4 w-[30px] h-[300px] lg:w-[600px] lg:h-[250px]">
+          <div className="w-[380px]">
+            <Robo/>
+        </div>
+      </div>
+
+            
+            <div className="mt-2">
               <button onClick={() => { setEditing(null); setUploadForm({ title: "", description: "", category: data[0]?.id || "logica", difficulty: "Fácil", videoFile: null, thumbFile: null, quiz: [] }); setUploadPreview({ videoUrl: null, thumbUrl: null }); setShowUpload(true); }} className="px-6 py-2 rounded-full bg-pink-500 text-white font-semibold">
                 Postar Conteúdo
               </button>
             </div>
           </div>
+
+         
 
           {/* categories + cards */}
           <div className="mt-8 space-y-10">
@@ -618,10 +659,10 @@ export default function MiniMentes() {
                           Remover
                         </button>
                       </div>
-                      <input value={qq.question} onChange={(e) => updateQuizQuestion(qi, "question", e.target.value)} placeholder="Pergunta" className="p-2 mt-2 rounded border w-full" />
-                      <div className="grid grid-cols-1 gap-2 mt-2">
+                      <input value={qq.question} onChange={(e) => updateQuizQuestion(qi, "question", e.target.value)} placeholder="Pergunta" className="p-2 mt-2 rounded border w-full placeholder-white" />
+                      <div className="grid grid-cols-1 gap-2 mt-2 placeholder-white">
                         {qq.options.map((opt, oi) => (
-                          <input key={oi} value={opt} onChange={(e) => updateQuizOption(qi, oi, e.target.value)} placeholder={`Opção ${oi + 1}`} className="p-2 rounded border w-full" />
+                          <input key={oi} value={opt} onChange={(e) => updateQuizOption(qi, oi, e.target.value)} placeholder={`Opção ${oi + 1}`} className="p-2 rounded border w-full placeholder-white" />
                         ))}
                         <div className="flex items-center gap-2 mt-2">
                           <div className="text-xs">Resposta correta:</div>

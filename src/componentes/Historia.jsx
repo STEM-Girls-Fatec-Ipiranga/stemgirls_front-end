@@ -127,7 +127,7 @@ export default function App() {
       </section>
 
       {/* SEÇÃO MULHERES */}
-      <main className="p-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-28 mx-16 mb-16">
+      <main className="p-8 grid grid-cols-1 sm:grid-cols-3 gap-x-6 gap-y-40 mx-16 mb-16">
         {mulheres.map((mulher, index) => (
           <div
             key={index}
@@ -143,7 +143,7 @@ export default function App() {
               <h2 className="text-lg font-bold text-gray-900">
                 {mulher.nome}
               </h2>
-              <p className="text-gray-700 mt-2 text-sm">{mulher.resumo}</p>
+              <p className="text-gray-900 mt-2 text-sm">{mulher.resumo}</p>
 
               <button
                 onClick={() => {

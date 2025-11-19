@@ -19,6 +19,7 @@ import Parceiros from "./componentes/Parceiros.tsx";
 import Quiz from "./componentes/minimentes/Quiz.jsx";
 import TermosDeUso from "./componentes/TermosDeUso.jsx";
 import PerfilEmpresa from "./componentes/PerfilEmpresa.tsx";
+import Robo from "./componentes/Robo.jsx";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 import Rodape from "./componentes/Rodape.jsx";

@@ -207,11 +207,13 @@ export default function Eventos() {
 
   // ---------- Componentes básicos ----------
   const Card = ({ children, className = "" }) => (
-    <div className={`bg-white rounded-xl shadow-md ${className}`}>{children}</div>
+    // adicionei flex flex-col h-full aqui para garantir que o card estique e permita mt-auto no conteúdo
+    <div className={`bg-white rounded-xl shadow-md flex flex-col h-full ${className}`}>{children}</div>
   );
 
   const CardContent = ({ children, className = "" }) => (
-    <div className={`p-4 ${className}`}>{children}</div>
+    // flex-1 para ocupar o espaço interno e permitir que mt-auto funcione no botão
+    <div className={`p-4 flex flex-col flex-1 ${className}`}>{children}</div>
   );
 
   const Button = ({ children, className = "", ...props }) => (
@@ -244,10 +246,12 @@ export default function Eventos() {
 
         {/* Meus eventos */}
         <div className="mt-2 ml-4">
-          <div className="flex justify-between">
+          <div className="flex justify-between items-center">
             <h4 className="text-lg font-semibold">Meus eventos</h4>
+
+            {/* Botão VER */}
             <p
-              className="text-pink-600 font-bold cursor-pointer text-sm"
+              className="px-2 py-1 text-sm rounded-md bg-pink-200 hover:bg-pink-300 text-pink-700 cursor-pointer transition"
               onClick={() => {
                 setTelaMeusEventos(true);
                 setTelaCadastro(false);
@@ -320,19 +324,22 @@ export default function Eventos() {
             {eventosCriados.length === 0 ? (
               <div>Nenhum evento criado.</div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-6">
+              <div className="grid md:grid-cols-2 gap-6 items-stretch">
                 {eventosCriados.map((ev) => (
                   <Card key={ev.id} className="border-2 border-pink-300">
-                    <img src={ev.imagem} className="w-full h-40 object-cover" />
+                    <img
+                      src={ev.imagem}
+                      className="w-full h-40 object-cover rounded-t-xl"
+                    />
                     <CardContent>
-                      <h3 className="font-bold text-lg">{ev.titulo}</h3>
+                      <h3 className="font-bold text-lg break-words">{ev.titulo}</h3>
                       <p className="text-pink-600">
                         {ev.data} • {ev.hora}
                       </p>
-                      <p className="text-sm italic text-gray-600">
+                      <p className="text-sm italic text-gray-600 break-words">
                         {(ev.tipo || "").toUpperCase()} - {(ev.local || "")}
                       </p>
-                      <p className="mt-2 text-sm">{ev.descricao}</p>
+                      <p className="mt-2 text-sm break-words">{ev.descricao}</p>
 
                       <div className="flex gap-2 mt-4">
                         <button className="bg-yellow-400 px-3 py-2 rounded" onClick={() => setEventoEditando(ev)}>
@@ -354,6 +361,7 @@ export default function Eventos() {
         ) : (
           <>
             {/* filtros */}
+            
             <div className="flex gap-4 mb-6 justify-center">
               {["ao-vivo", "presencial", "remoto", "todos"].map((tipo) => (
                 <Button
@@ -366,26 +374,48 @@ export default function Eventos() {
               ))}
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 items-stretch">
               {eventosFiltrados.map((ev) => (
                 <Card key={ev.id} className="border-2 border-pink-300">
-                  <img src={ev.imagem} className="w-full h-40 object-cover" />
+                  {/* IMG ajustada */}
+                  <img
+                    src={ev.imagem}
+                    className="w-full h-40 object-cover rounded-t-xl"
+                  />
+
                   <CardContent>
-                    <h3 className="font-bold text-lg">{ev.titulo}</h3>
+                    <h3 className="font-bold text-lg break-words">{ev.titulo}</h3>
+
                     <p className="text-pink-600">{ev.data} • {ev.hora}</p>
 
-                    <p className="text-sm italic text-gray-600">
+                    <p className="text-sm italic text-gray-600 break-words">
                       {(ev.tipo || "").toUpperCase()} - {(ev.local || "")}
                     </p>
 
-                    <p className="mt-2 text-sm">{ev.descricao}</p>
+                    <p className="mt-2 text-sm break-words">{ev.descricao}</p>
 
-                    <button
-                      className="mt-4 w-full bg-[#F36EC0] text-white px-4 py-2 rounded"
-                      onClick={() => setModalEvento(ev)}
-                    >
-                      Participar
-                    </button>
+                 {/* BOTÃO PARTICIPAR */}
+{/* BOTÃO PARTICIPAR */}
+<div className="mt-auto pt-4 flex justify-center">
+  <Button
+    className="bg-[#F36EC0] text-white font-semibold px-6 py-2 rounded-full hover:bg-[#e055a8] transition"
+    onClick={() => {
+      // Apenas abre o modal, sem chamar backend aqui
+      setModalEvento(ev);
+
+      // Se quiser pré-preencher nome-email do usuário logado:
+      const user = JSON.parse(localStorage.getItem("user"));
+      if (user) {
+        setNome(user.nome || "");
+        setEmail(user.email || "");
+      }
+    }}
+  >
+    Participar
+  </Button>
+</div>
+
+
                   </CardContent>
                 </Card>
               ))}
@@ -393,38 +423,103 @@ export default function Eventos() {
           </>
         )}
 
-        {/* Modal de inscrição */}
-        {modalEvento && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-            <div className="bg-white p-6 rounded-xl w-96">
-              <h2 className="text-xl font-bold">Inscrição</h2>
-              <p className="font-semibold mb-2">{modalEvento.titulo}</p>
+      {/* Modal de inscrição */}
+{modalEvento && (
+  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+    <div className="bg-white p-6 rounded-xl w-96">
 
-              <input className="w-full p-2 border rounded mb-2" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} />
-              <input className="w-full p-2 border rounded mb-2" placeholder="CPF" value={cpf} onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))} />
-              <input className="w-full p-2 border rounded mb-2" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-              <input className="w-full p-2 border rounded mb-2" placeholder="Telefone" value={telefone} onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))} />
-              <input className="w-full p-2 border rounded mb-3" placeholder="Instituição" value={instituicao} onChange={(e) => setInstituicao(e.target.value)} />
+      <h2 className="text-xl font-bold">Inscrição</h2>
+      <p className="font-semibold mb-2">{modalEvento.titulo}</p>
 
-              <div className="flex justify-between">
-                <button className="bg-gray-300 px-4 py-2 rounded" onClick={() => setModalEvento(null)}>
-                  Cancelar
-                </button>
-                <button
-                  className="bg-pink-500 text-white px-4 py-2 rounded"
-                  onClick={() => {
-                    if (!nome || !cpf || !email || !telefone) return alert("Preencha todos os dados!");
-                    if (!validarCPF(cpf)) return alert("CPF inválido!");
-                    alert("Inscrição realizada!");
-                    setModalEvento(null);
-                  }}
-                >
-                  Confirmar
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+      <input
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Nome"
+        value={nome}
+        onChange={(e) => setNome(e.target.value)}
+      />
+
+      <input
+        className="w-full p-2 border rounded mb-2"
+        placeholder="CPF"
+        value={cpf}
+        onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
+      />
+
+      <input
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+      />
+
+      <input
+        className="w-full p-2 border rounded mb-2"
+        placeholder="Telefone"
+        value={telefone}
+        onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
+      />
+
+      <input
+        className="w-full p-2 border rounded mb-3"
+        placeholder="Instituição"
+        value={instituicao}
+        onChange={(e) => setInstituicao(e.target.value)}
+      />
+
+      <div className="flex justify-between">
+        <button
+          className="bg-gray-300 px-4 py-2 rounded"
+          onClick={() => setModalEvento(null)}
+        >
+          Cancelar
+        </button>
+
+        <button
+          className="bg-pink-500 text-white px-4 py-2 rounded"
+          onClick={async () => {
+            if (!nome || !cpf || !email || !telefone || !instituicao) {
+              return alert("Preencha todos os dados!");
+            }
+            if (!validarCPF(cpf)) {
+              return alert("CPF inválido!");
+            }
+
+            try {
+              const resposta = await fetch("http://localhost:8080/inscricoes", {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  eventoId: String(modalEvento._id ?? modalEvento.id),
+                  nome,
+                  cpf,
+                  email,
+                  telefone,
+                  instituicao,
+                }),
+              });
+
+              if (!resposta.ok) {
+                throw new Error("Erro ao enviar inscrição");
+              }
+
+              alert("Inscrição realizada com sucesso!");
+              setModalEvento(null);
+
+            } catch (erro) {
+              console.error("ERRO NO BACK-END:", erro);
+              alert("Erro ao realizar inscrição. Verifique o backend.");
+            }
+          }}
+        >
+          Confirmar
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
         {/* Modal excluir */}
         {eventoParaExcluir && (
