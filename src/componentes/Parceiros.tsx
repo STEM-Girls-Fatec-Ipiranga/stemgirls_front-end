@@ -176,14 +176,14 @@ function Parceiros() {
                     <p className="text-xl md:text-2xl mb-10 text-purple-600">
                         Acreditamos no poder da colaboração entre empresas, escolas e pessoas que apoiam a presença feminina nas áreas STEM.
                     </p>
-                    {/* <button
+                    <button
                         onClick={() => setShowContactModal(true)}
                         className="bg-[#AF5FE4] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg"
                     >
                         Quero ser parceira da STEMGirls
-                    </button> */}
+                    </button>
 
-                    <button
+                    {/* <button
                         onClick={() => {
                             const userRole = localStorage.getItem("role");
 
@@ -198,7 +198,7 @@ function Parceiros() {
                         className="bg-[#AF5FE4] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg"
                     >
                         Quero ser parceira da STEMGirls
-                    </button>
+                    </button> */}
 
                     <PopupLoginAviso isOpen={popupOpen} onClose={() => setPopupOpen(false)} />
 

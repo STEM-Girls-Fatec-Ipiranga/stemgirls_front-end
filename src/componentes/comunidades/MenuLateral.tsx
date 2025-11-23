@@ -102,7 +102,7 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <input
               type="text"
-              placeholder="Buscar comunidades..."
+              placeholder="Buscar comunidade..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               onClick={handleSearchClick} // 🟣 ALTERAÇÃO

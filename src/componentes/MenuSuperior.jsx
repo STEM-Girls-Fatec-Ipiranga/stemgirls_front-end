@@ -65,13 +65,6 @@ const MenuSuperior = () => {
     setIsLogoutModalOpen(true);
   };
 
-  // const handleConfirmLogout = () => {
-  //   localStorage.removeItem("userData");
-  //   localStorage.removeItem("userToken");
-  //   setIsLogoutModalOpen(false);
-  //   navigate("/");
-  // }
-
   const handleConfirmLogout = () => {
     localStorage.removeItem("userData");
     localStorage.removeItem("userToken");

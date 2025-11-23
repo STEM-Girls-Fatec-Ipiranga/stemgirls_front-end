@@ -30,7 +30,6 @@ function Login() {
 
     // --- NOVA FUNÇÃO PARA VALIDAR A SENHA ---
     const validatePassword = (senha) => {
-        // Critérios de senha forte
         const minLength = 8;
         const hasUpperCase = /[A-Z]/.test(senha);
         const hasLowerCase = /[a-z]/.test(senha);
@@ -68,22 +67,21 @@ function Login() {
             return;
         }
 
-        // Se passar por todas as regras
         setPasswordError('Senha forte!');
         setIsPasswordValid(true);
     };
 
     // Handler para atualizar o estado do formulário de LOGIN 
-    const handleLoginChange = (e) => { 
+    const handleLoginChange = (e) => {
         const { name, value } = e.target;
-        setLoginForm((prev) => ({ ...prev, [name]: value })); };
+        setLoginForm((prev) => ({ ...prev, [name]: value }));
+    };
 
     // Handler para atualizar o estado do formulário de CADASTRO (MODIFICADO)
     const handleChange = (e) => {
         const { name, value } = e.target;
         setForm((prev) => ({ ...prev, [name]: value }));
 
-        // Valida a senha em tempo real
         if (name === 'senha') {
             validatePassword(value);
         }
@@ -97,7 +95,7 @@ function Login() {
             setTermsError('Você precisa aceitar os Termos de Uso para concluir o cadastro.');
             return;
         } else {
-            setTermsError(''); // limpa o erro se estiver tudo ok
+            setTermsError('');
         }
 
         if (!isPasswordValid) {
@@ -111,13 +109,29 @@ function Login() {
                 nomeUsuario: form.nomeUsuario,
                 email: form.email,
                 senha: form.senha,
-                joinDate: new Date()
+                joinDate: new Date(),
+                role: "USUARIO"
             });
+
             const user = response.data;
-            if (response.status === 201) {
-                localStorage.setItem("userData", JSON.stringify(user));
-                alert("Cadastro realizado com sucesso! Por favor, faça o login.");
-                setModo("signup");
+
+            if (response.status === 200 || response.status === 201) {
+
+                const userDataFormatado = {
+                    nomeCompleto: user.nomeCompleto || user.nome || "",
+                    nomeUsuario: user.nomeUsuario || user.username || "",
+                    email: user.email || "",
+                    joinDate: user.joinDate || new Date(),
+                    profileImage: user.profileImage || null
+                };
+
+                localStorage.setItem("userData", JSON.stringify(userDataFormatado));
+
+                setShowSuccessPopup(true);
+
+                setTimeout(() => {
+                    navigate("/");
+                }, 900);
             }
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
@@ -126,94 +140,45 @@ function Login() {
         }
     };
 
-    
-
-
-    // const handleRegisterSubmit = async (e) => {
-    //     e.preventDefault();
-
-    //     if (!isPasswordValid) {
-    //         alert('Por favor, crie uma senha que atenda a todos os critérios de segurança.');
-    //         return;
-    //     }
-
-    //     try {
-    //         const response = await axios.post("http://localhost:8080/usuario/criar", {
-    //             nomeCompleto: form.nomeCompleto,
-    //             nomeUsuario: form.nomeUsuario,
-    //             email: form.email,
-    //             senha: form.senha,
-    //             joinDate: new Date() // Adiciona a data de cadastro
-    //         });
-    //         const user = response.data;
-    //         if (response.status === 201) {
-    //             localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
-    //             alert("Login bem-sucedido!");
-    //             navigate("/");
-    //         }
-    //         alert("Cadastro realizado com sucesso! Por favor, faça o login.");
-    //         setModo("signup");
-    //     } catch (error) {
-    //         const errorMessage = error.response?.data || error.message;
-    //         console.error("Erro no cadastro:", errorMessage);
-    //         alert("Erro ao cadastrar: " + errorMessage);
-    //     }
-    // };
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
+    const [showSuccessLoginPopup, setShowSuccessLoginPopup] = useState(false);
 
     // --- FUNÇÃO DE SUBMISSÃO DO LOGIN ---
-
     const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    try {
-        const response = await axios.post("http://localhost:8080/api/auth/login", {
-            email: loginForm.email,
-            senha: loginForm.senha
-        });
+        e.preventDefault();
+        try {
+            const response = await axios.post("http://localhost:8080/api/auth/login", {
+                email: loginForm.email,
+                senha: loginForm.senha
+            });
 
-        const { token, user } = response.data;
+            const { token, user } = response.data;
 
-        if (token) {
-            localStorage.setItem("userToken", token);
-            localStorage.setItem("userData", JSON.stringify(user));
+            if (token) {
+                localStorage.setItem("userToken", token);
 
-            alert("Login realizado com sucesso!");
+                const userDataFormatado = {
+                    nomeCompleto: user.nomeCompleto || user.nome || "",
+                    nomeUsuario: user.nomeUsuario || user.username || "",
+                    email: user.email || "",
+                    joinDate: user.joinDate || user.dataCriacao || new Date(),
+                    profileImage: user.profileImage || null,
+                    role: user.role || "USUARIO"
+                };
 
-            // 🔥 Redirecionamento baseado no tipo de usuário
-            if (user.role === "MODERADOR") {
-                navigate("/minimentes"); // moderador
-            } else {
-                navigate("/"); // usuário comum
+                localStorage.setItem("userData", JSON.stringify(userDataFormatado));
+
+                setShowSuccessLoginPopup(true);
+                setTimeout(() => {
+                    navigate("/");  
+                }, 1500);
             }
+        } catch (error) {
+            const errorMessage = error.response?.data || "Verifique suas credenciais.";
+            console.error("Erro no login:", errorMessage);
+            alert("Erro no login: " + errorMessage);
         }
-    } catch (error) {
-        const errorMessage = error.response?.data || "Verifique suas credenciais.";
-        console.error("Erro no login:", errorMessage);
-        alert("Erro no login: " + errorMessage);
-    }
-};
-
-    // const handleLoginSubmit = async (e) => {
-    //     e.preventDefault();
-    //     try {
-    //         const response = await axios.post("http://localhost:8080/api/auth/login", {
-    //             email: loginForm.email,
-    //             senha: loginForm.senha
-    //         });
-
-    //         const { token, user } = response.data;
-    //         console.log(user);
-    //         if (token) {
-    //             localStorage.setItem("userToken", token);
-    //             localStorage.setItem("userData", JSON.stringify(user)); // 👈 salva o usuário
-    //             alert("Login bem-sucedido!");
-    //             navigate("/"); // redireciona pro perfil
-    //         }
-    //     } catch (error) {
-    //         const errorMessage = error.response?.data || "Verifique suas credenciais.";
-    //         console.error("Erro no login:", errorMessage);
-    //         alert("Erro no login: " + errorMessage);
-    //     }
-    // };
+    };
 
     //-------------- LÓGICA DA ANIMAÇÃO --------------
     const [modo, setModo] = useState("");
@@ -227,13 +192,52 @@ function Login() {
         }
     }, [modo]);
 
-
     // FUNÇÃO PARA TERMOS DE USO
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [termsError, setTermsError] = useState('');
 
+    // POP-UP de sucesso
+    const SuccessPopup = () => (
+        <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: '#4caf50',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+            zIndex: 9999,
+            fontSize: '1rem',
+            fontWeight: 'bold'
+        }}>
+            Cadastro efetuado com sucesso! 🎉
+        </div>
+    );
+
+        const SuccessLoginPopup = () => (
+        <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: '#4caf50',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+            zIndex: 9999,
+            fontSize: '1rem',
+            fontWeight: 'bold'
+        }}>
+            Login efetuado com sucesso! 🎉
+        </div>
+    );
+
     return (
         <div className={`${Styles.container} ${classeAtual}`}>
+            {showSuccessPopup && <SuccessPopup />}
+            {showSuccessLoginPopup && <SuccessLoginPopup />}
+
             <Link to="/">
                 <button className="absolute top-4 left-0 w-24 flex flex-row justify-around"><ArrowLeft /> Voltar</button>
             </Link>
@@ -269,8 +273,6 @@ function Login() {
                             <i className="fi fi-sr-lock icon-modify"></i>
                             <input type="password" name="senha" placeholder="Digite sua senha" value={form.senha} onChange={handleChange} required />
                         </label>
-
-                        {/* --- NOVA MENSAGEM DE FEEDBACK DA SENHA --- */}
                         {passwordError && (
                             <p style={{
                                 width: '100%',
@@ -303,24 +305,22 @@ function Login() {
                                 </Link>
                             </label>
                         </div>
-                        {/* --- Mensagem de erro abaixo do checkbox --- */}
-                            {termsError && (
-                                <p style={{
-                                    color: '#e74c3c',
-                                    fontSize: '0.8rem',
-                                    marginTop: '4px',
-                                    paddingLeft: '4px'
-                                }}>
-                                    {termsError}
-                                </p>
-                            )}
+                        {termsError && (
+                            <p style={{
+                                color: '#e74c3c',
+                                fontSize: '0.8rem',
+                                marginTop: '4px',
+                                paddingLeft: '4px',
+                                fontWeight: '600',
+                            }}>
+                                {termsError}
+                            </p>
+                        )}
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
                         <br />
 
-                        <Link to="/login-empresa">
-                            <a href="/login-empresa">Sou uma empresa</a>
-                        </Link>
+                        <Link to="/login-empresa">Sou uma empresa</Link>
 
                     </form>
                 </div>
@@ -342,9 +342,6 @@ function Login() {
                 <div className={Styles.segunda_coluna}>
                     <h2 className={`${Styles.segundo_titulo} ${Styles.titulo}`}>Entrar na sua conta</h2>
                     <div className={Styles.social_media}>
-                        {/* <a href="#"><i className="fi fi-brands-google"></i></a>
-                        <a href="#"><i className="fi fi-brands-linkedin"></i></a>
-                        <a href="#"><i className="fi fi-brands-github"></i></a> */}
                         <GoogleLogin
                             onSuccess={credentialResponse => {
                                 console.log("Login com o Google bem-sucedido!");

@@ -131,7 +131,6 @@ export default function PerfilUsuario() {
                 </div>
             </div>
 
-            {/* Modal de Edição - passo ambas convenções de props para compatibilidade */}
             <EditarPerfilModal
                 isOpen={isModalOpen}
                 onClose={toggleModal}

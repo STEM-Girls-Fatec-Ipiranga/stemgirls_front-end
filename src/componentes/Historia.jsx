@@ -72,6 +72,7 @@ const mulheres = [
 
 
 export default function App() {
+
   const [popupOpen, setPopupOpen] = useState(false);
   const [selecionada, setSelecionada] = useState(null);
 
@@ -145,14 +146,9 @@ export default function App() {
               </h2>
               <p className="text-gray-900 mt-2 text-sm">{mulher.resumo}</p>
 
+
               <button
                 onClick={() => {
-                  const userRole = localStorage.getItem("role");
-
-                  if (!userRole) {
-                    setPopupOpen(true);
-                    return;
-                  }
                   setSelecionada(mulher);
                 }}
                 className="mt-3 bg-pink-500 text-white px-4 py-2 rounded-full text-sm"
@@ -160,16 +156,15 @@ export default function App() {
                 Saiba mais
               </button>
 
-              
 
             </div>
           </div>
         ))}
       </main>
       <PopupLoginAviso
-                isOpen={popupOpen}
-                onClose={() => setPopupOpen(false)}
-              />
+        isOpen={popupOpen}
+        onClose={() => setPopupOpen(false)}
+      />
 
       {/* POP-UP */}
       {selecionada && (

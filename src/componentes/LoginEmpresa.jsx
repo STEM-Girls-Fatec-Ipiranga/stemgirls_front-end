@@ -80,9 +80,19 @@ function LoginEmpresa() {
         setLoginForm((prev) => ({ ...prev, [name]: value }));
     };
 
+    const [termsAccepted, setTermsAccepted] = useState(false);
+    const [termsError, setTermsError] = useState('');
+
     // CADASTRO DE EMPRESA
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
+
+        if (!termsAccepted) {
+            setTermsError('Você precisa aceitar os Termos de Uso para concluir o cadastro.');
+            return;
+        } else {
+            setTermsError('');
+        }
 
         if (!isPasswordValid) {
             alert('Por favor, crie uma senha que atenda a todos os critérios de segurança.');
@@ -96,7 +106,8 @@ function LoginEmpresa() {
                 email: form.email,
                 senha: form.senha,
                 telefone: form.telefone,
-                status: "PENDENTE"
+                status: "PENDENTE",
+                role: "EMPRESA"
             });
 
             if (response.status === 200) {
@@ -108,6 +119,8 @@ function LoginEmpresa() {
             alert("Erro ao cadastrar: " + (error.response?.data || error.message));
         }
     };
+
+    const [showSuccessLoginPopup, setShowSuccessLoginPopup] = useState(false);
 
     // LOGIN DE EMPRESA
     const handleLoginSubmit = async (e) => {
@@ -129,6 +142,11 @@ function LoginEmpresa() {
             localStorage.setItem("empresaToken", token);
             localStorage.setItem("empresaNome", empresa);
             navigate("/");
+
+            setShowSuccessLoginPopup(true);
+            setTimeout(() => {
+                navigate("/");
+            }, 3000);
         } catch (error) {
             const errorMsg = error.response?.data || "Verifique suas credenciais.";
             setStatusMessage(errorMsg);
@@ -142,8 +160,27 @@ function LoginEmpresa() {
         if (modo === "signup") setClasseAtual(Styles.loga);
     }, [modo]);
 
+    const SuccessLoginPopup = () => (
+        <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: '#4caf50',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+            zIndex: 9999,
+            fontSize: '1rem',
+            fontWeight: 'bold'
+        }}>
+            Login efetuado com sucesso! 🎉
+        </div>
+    );
+
     return (
         <div className={`${Styles.container} ${classeAtual}`}>
+            {showSuccessLoginPopup && <SuccessLoginPopup />}
             <Link to="/">
                 <button className="absolute top-4 left-0 w-24 flex flex-row justify-around"><ArrowLeft /> Voltar</button>
             </Link>
@@ -199,11 +236,26 @@ function LoginEmpresa() {
                         )}
 
                         <div className={Styles.terms_container}>
-                            <input className={Styles.input_terms} type="checkbox" name="terms" id="terms" required />
+                            <input className={Styles.input_terms} type="checkbox" name="terms" id="terms" required checked={termsAccepted}
+                                onChange={(e) => {
+                                    setTermsAccepted(e.target.checked);
+                                    if (e.target.checked) setTermsError('');
+                                }} />
                             <label className={Styles.label_terms} htmlFor="terms">
                                 Li e aceito os <a href="#" target="_blank"> Termos de Uso</a>
                             </label>
                         </div>
+                        {termsError && (
+                            <p style={{
+                                color: '#e74c3c',
+                                fontSize: '0.8rem',
+                                marginTop: '4px',
+                                paddingLeft: '4px',
+                                fontWeight: '600',
+                            }}>
+                                {termsError}
+                            </p>
+                        )}
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
 

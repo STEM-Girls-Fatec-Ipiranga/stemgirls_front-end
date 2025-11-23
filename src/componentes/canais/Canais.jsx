@@ -161,14 +161,7 @@ export default function Canais() {
       <aside className="w-80 bg-[#FFF6FF] border-r border-pink-100 p-6 flex flex-col overflow-y-auto shadow-lg">
         <h2 className="text-2xl font-bold text-black text-[22px] mb-4">Canais</h2>
 
-        {user?.role === "MODERADOR" && (
-          <button
-            onClick={() => setAbrirCriarCanal(true)}
-            className="bg-pink-500 text-white py-3 rounded-2xl font-semibold mb-5 flex items-center justify-center text-lg shadow hover:opacity-95"
-          >
-            <Plus className="w-5 h-5 mr-2" /> Criar Canal
-          </button>
-        )}
+        
 
         {/* Search */}
         <div className="relative mb-6">
@@ -241,6 +234,15 @@ export default function Canais() {
           </ul>
         ) : (
           <p className="text-sm text-gray-500 mb-4">Você ainda não criou canais.</p>
+        )}
+
+        {user?.role === "MODERADOR" && (
+          <button
+            onClick={() => setAbrirCriarCanal(true)}
+            className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+          >
+          + Criar Canal
+          </button>
         )}
 
         <div className="w-full border-b border-pink-400 my-4"></div>
