@@ -24,14 +24,17 @@ function PopupAprovarReprovar({ notif, fechar, removerNotificacao }) {
             animate={{ opacity: 1 }}
             className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
         >
-            <div className="bg-white h-[500px] rounded-xl shadow-xl w-[600px] flex flex-col p-8">
+            <div className="bg-white h-[420px] rounded-xl shadow-xl w-[600px] flex flex-col p-8">
                 <h2 className="text-[24px] font-bold mb-6 text-center">Dados da Empresa</h2>
 
                 {empresa ? (
                     <div className="text-[18px] m-4">
                         <p><b>Nome:</b> {empresa.nomeEmpresa}</p>
+                        <br />
                         <p><b>Email:</b> {empresa.email}</p>
+                        <br />
                         <p><b>CNPJ:</b> {empresa.cnpj}</p>
+                        <br />
                         <p><b>Telefone:</b> {empresa.telefone}</p>
                     </div>
                 ) : (
@@ -53,14 +56,12 @@ function PopupAprovarReprovar({ notif, fechar, removerNotificacao }) {
                 {confirmar && (
                     <PopupConfirmar
                         fechar={fechar}
-                        //removerNotificacao={removerNotificacao}
                     />
                 )}
 
                 {reprovar && (
                     <PopupReprovar
                         fechar={fechar}
-                        //onReprovar={removerNotificacao}
                     />
                 )}
             </div>

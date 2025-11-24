@@ -102,7 +102,6 @@ export default function Canais() {
       .catch(() => setVideos([]));
   }, []);
 
-  // don't mutate state with sort: copy array first
   const feedVideos = [...videos].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
   const [videosCanal, setVideosCanal] = useState([]);
@@ -153,7 +152,6 @@ export default function Canais() {
   const sugeridos = canais.filter((c) => !inscritos.includes(c.id));
 
   const isLogged = !!user;
-  //"min-h-screen bg-gradient-to-br from-purple-50 to-pink-50" style="font-family: Quicksand, sans-serif;">
 
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-black to-pink-50">
@@ -161,7 +159,7 @@ export default function Canais() {
       <aside className="w-80 bg-[#FFF6FF] border-r border-pink-100 p-6 flex flex-col overflow-y-auto shadow-lg">
         <h2 className="text-2xl font-bold text-black text-[22px] mb-4">Canais</h2>
 
-        
+
 
         {/* Search */}
         <div className="relative mb-6">
@@ -212,40 +210,44 @@ export default function Canais() {
           </div>
         ) : null}
 
-        <div className="w-full border-b border-pink-400 my-4"></div>
+
 
         {/* Meus Canais */}
-        <h3 className="text-xl font-semibold mb-3 text-gray-800">Meus Canais</h3>
-        {meusCanais.length ? (
-          <ul className="space-y-3 mb-4">
-            {meusCanais.map((c) => (
-              <li
-                key={c.id}
-                className="flex items-center gap-3 p-3 hover:bg-pink-50 rounded-xl cursor-pointer"
-                onClick={() => setCanalSelecionado(c)}
-              >
-                <img src={c.fotoPerfil} alt={c.nome} className="w-12 h-12 rounded-full shadow" />
-                <div>
-                  <div className="text-lg font-semibold">{c.nome}</div>
-                  <div className="text-xs text-gray-500">{c.inscritos ?? 0} inscritos</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-gray-500 mb-4">Você ainda não criou canais.</p>
-        )}
+        {["MODERADOR"].includes(user?.role?.toUpperCase()) && (
+          <>
+            <div className="w-full border-b border-pink-400 my-4"></div>
+            <h3 className="text-xl font-semibold mb-3 text-gray-800">Meus Canais</h3>
 
-        {user?.role === "MODERADOR" && (
-          <button
-            onClick={() => setAbrirCriarCanal(true)}
-            className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
-          >
-          + Criar Canal
-          </button>
-        )}
+            {meusCanais.length ? (
+              <ul className="space-y-3 mb-4">
+                {meusCanais.map((c) => (
+                  <li
+                    key={c.id}
+                    className="flex items-center gap-3 p-3 hover:bg-pink-50 rounded-xl cursor-pointer"
+                    onClick={() => setCanalSelecionado(c)}
+                  >
+                    <img src={c.fotoPerfil} alt={c.nome} className="w-12 h-12 rounded-full shadow" />
+                    <div>
+                      <div className="text-lg font-semibold">{c.nome}</div>
+                      <div className="text-xs text-gray-500">{c.inscritos ?? 0} inscritos</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-gray-500 mb-4">Você ainda não criou canais.</p>
+            )}
 
-        <div className="w-full border-b border-pink-400 my-4"></div>
+            <button
+              onClick={() => setAbrirCriarCanal(true)}
+              className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+            >
+              + Criar Canal
+            </button>
+
+            <div className="w-full border-b border-pink-400 my-4"></div>
+          </>
+        )}
 
         {/* Canais inscritos */}
         <h3 className="text-xl font-semibold mb-3 text-gray-800">Canais inscritos</h3>
@@ -291,166 +293,165 @@ export default function Canais() {
       </aside>
 
       {/* MAIN */}
-<main className="flex-1 p-6">
-  {canalSelecionado ? (
-    <div className="animate-fadeIn">
+      <main className="flex-1 p-6">
+        {canalSelecionado ? (
+          <div className="animate-fadeIn">
 
-      <button
-        onClick={() => setCanalSelecionado(null)}
-        className="text-pink-600 mb-6 font-semibold hover:underline"
-      >
-        ← Voltar
-      </button>
+            <button
+              onClick={() => setCanalSelecionado(null)}
+              className="text-pink-600 mb-6 font-semibold hover:underline"
+            >
+              ← Voltar
+            </button>
 
-      <img
-        src={canalSelecionado.banner}
-        alt={canalSelecionado.nome}
-        className="w-full h-52 rounded-2xl object-cover shadow-md mb-6"
-      />
+            <img
+              src={canalSelecionado.banner}
+              alt={canalSelecionado.nome}
+              className="w-full h-52 rounded-2xl object-cover shadow-md mb-6"
+            />
 
-      <div className="flex items-center gap-5 mb-6 bg-white p-4 rounded-2xl shadow border border-pink-100">
-        <img
-          src={canalSelecionado.fotoPerfil}
-          alt={canalSelecionado.nome}
-          className="w-20 h-20 rounded-full object-cover shadow"
-        />
+            <div className="flex items-center gap-5 mb-6 bg-white p-4 rounded-2xl shadow border border-pink-100">
+              <img
+                src={canalSelecionado.fotoPerfil}
+                alt={canalSelecionado.nome}
+                className="w-20 h-20 rounded-full object-cover shadow"
+              />
 
-        <div className="flex flex-col">
-          <h2 className="text-2xl font-bold text-gray-800">{canalSelecionado.nome}</h2>
-          <p className="text-gray-600">{canalSelecionado.inscritos ?? 0} inscritos</p>
-        </div>
+              <div className="flex flex-col">
+                <h2 className="text-2xl font-bold text-gray-800">{canalSelecionado.nome}</h2>
+                <p className="text-gray-600">{canalSelecionado.inscritos ?? 0} inscritos</p>
+              </div>
 
-        <button
-          onClick={() => toggleInscricao(canalSelecionado.id)}
-          className={`ml-auto px-5 py-2.5 rounded-xl font-semibold transition-all shadow ${
-            inscritos.includes(canalSelecionado.id)
-              ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-              : "bg-pink-500 text-white hover:bg-pink-600"
-          }`}
-        >
-          {inscritos.includes(canalSelecionado.id) ? "Inscrito" : "Inscrever-se"}
-        </button>
-      </div>
-
-      <div className="flex gap-3 mb-6">
-        <button
-          onClick={() => setAbrirPostarVideo(true)}
-          className="bg-pink-500 text-white px-5 py-2.5 rounded-xl font-semibold shadow hover:bg-pink-600 transition-all"
-        >
-          Publicar Vídeo
-        </button>
-
-        {canalSelecionado.owner === "me" && (
-          <button
-            onClick={() => excluirCanal(canalSelecionado.id)}
-            className="bg-red-500 text-white px-4 py-2.5 rounded-xl font-semibold shadow hover:bg-red-600 transition-all"
-          >
-            Excluir Canal
-          </button>
-        )}
-      </div>
-
-      <div>
-        <h3 className="text-xl font-bold mb-4 text-gray-800">Vídeos do Canal</h3>
-
-        {videosCanal.length ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {videosCanal.map((v) => (
-              <article
-                key={v.id || v.title}
-                className="bg-white rounded-xl shadow-lg border border-pink-100 overflow-hidden hover:shadow-xl transition-all"
+              <button
+                onClick={() => toggleInscricao(canalSelecionado.id)}
+                className={`ml-auto px-5 py-2.5 rounded-xl font-semibold transition-all shadow ${inscritos.includes(canalSelecionado.id)
+                  ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : "bg-pink-500 text-white hover:bg-pink-600"
+                  }`}
               >
-                {v.thumb ? (
-                  <img
-                    src={v.thumb}
-                    alt={v.title}
-                    className="w-full h-48 object-cover"
-                  />
-                ) : (
-                  <video
-                    src={getPlayableUrl(v.url)}
-                    controls
-                    className="w-full h-48 object-cover"
-                  />
-                )}
+                {inscritos.includes(canalSelecionado.id) ? "Inscrito" : "Inscrever-se"}
+              </button>
+            </div>
 
-                <div className="p-5 flex flex-col">
-                  <div className="font-semibold text-lg text-gray-800">{v.title}</div>
-                  <p className="text-sm text-gray-600 my-2">{v.desc}</p>
+            <div className="flex gap-3 mb-6">
+              <button
+                onClick={() => setAbrirPostarVideo(true)}
+                className="bg-pink-500 text-white px-5 py-2.5 rounded-xl font-semibold shadow hover:bg-pink-600 transition-all"
+              >
+                Publicar Vídeo
+              </button>
 
-                  {canalSelecionado.owner === "me" && (
-                    <button
-                      onClick={() => {
-                        if (!window.confirm("Deseja excluir este vídeo?")) return;
+              {canalSelecionado.owner === "me" && (
+                <button
+                  onClick={() => excluirCanal(canalSelecionado.id)}
+                  className="bg-red-500 text-white px-4 py-2.5 rounded-xl font-semibold shadow hover:bg-red-600 transition-all"
+                >
+                  Excluir Canal
+                </button>
+              )}
+            </div>
 
-                        fetch(`http://localhost:8080/api/videos/${v.id}`, {
-                          method: "DELETE",
-                        })
-                          .then((res) => {
-                            if (!res.ok) throw new Error("Erro ao excluir vídeo");
-                            setVideosCanal((prev) =>
-                              prev.filter((vid) => vid.id !== v.id)
-                            );
-                            setShowNotificacao("Vídeo excluído com sucesso!");
-                            setTimeout(() => setShowNotificacao(null), 2000);
-                          })
-                          .catch(() => {
-                            setShowNotificacao("Erro ao excluir vídeo");
-                            setTimeout(() => setShowNotificacao(null), 2000);
-                          });
-                      }}
-                      className="justify-center mx-auto bg-red-500 text-white text-xs px-4 py-1.5 rounded-lg shadow hover:bg-red-600 transition-all w-3xl text-center "
+            <div>
+              <h3 className="text-xl font-bold mb-4 text-gray-800">Vídeos do Canal</h3>
+
+              {videosCanal.length ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {videosCanal.map((v) => (
+                    <article
+                      key={v.id || v.title}
+                      className="bg-white rounded-xl shadow-lg border border-pink-100 overflow-hidden hover:shadow-xl transition-all"
                     >
-                      Excluir
-                    </button>
-                  )}
+                      {v.thumb ? (
+                        <img
+                          src={v.thumb}
+                          alt={v.title}
+                          className="w-full h-48 object-cover"
+                        />
+                      ) : (
+                        <video
+                          src={getPlayableUrl(v.url)}
+                          controls
+                          className="w-full h-48 object-cover"
+                        />
+                      )}
+
+                      <div className="p-5 flex flex-col">
+                        <div className="font-semibold text-lg text-gray-800">{v.title}</div>
+                        <p className="text-sm text-gray-600 my-2">{v.desc}</p>
+
+                        {canalSelecionado.owner === "me" && (
+                          <button
+                            onClick={() => {
+                              if (!window.confirm("Deseja excluir este vídeo?")) return;
+
+                              fetch(`http://localhost:8080/api/videos/${v.id}`, {
+                                method: "DELETE",
+                              })
+                                .then((res) => {
+                                  if (!res.ok) throw new Error("Erro ao excluir vídeo");
+                                  setVideosCanal((prev) =>
+                                    prev.filter((vid) => vid.id !== v.id)
+                                  );
+                                  setShowNotificacao("Vídeo excluído com sucesso!");
+                                  setTimeout(() => setShowNotificacao(null), 2000);
+                                })
+                                .catch(() => {
+                                  setShowNotificacao("Erro ao excluir vídeo");
+                                  setTimeout(() => setShowNotificacao(null), 2000);
+                                });
+                            }}
+                            className="justify-center mx-auto bg-red-500 text-white text-xs px-4 py-1.5 rounded-lg shadow hover:bg-red-600 transition-all w-3xl text-center "
+                          >
+                            Excluir
+                          </button>
+                        )}
+                      </div>
+                    </article>
+                  ))}
                 </div>
-              </article>
-            ))}
+              ) : (
+                <p className="text-gray-500 text-sm">Nenhum vídeo publicado neste canal.</p>
+              )}
+            </div>
           </div>
         ) : (
-          <p className="text-gray-500 text-sm">Nenhum vídeo publicado neste canal.</p>
-        )}
-      </div>
-    </div>
-  ) : (
-    <section className="animate-fadeIn">
-      <h2 className="text-2xl font-bold text-pink-600 mb-6">Feed de Vídeos</h2>
+          <section className="animate-fadeIn">
+            <h2 className="text-2xl font-bold text-pink-600 mb-6">Feed de Vídeos</h2>
 
-      {feedVideos.length ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {feedVideos.map((v) => (
-            <article
-              key={v.id || v.title}
-              className="bg-white rounded-xl shadow-lg border border-pink-100 overflow-hidden hover:shadow-xl transition-all"
-            >
-              {v.thumb ? (
-                <img
-                  src={v.thumb}
-                  alt={v.title}
-                  className="w-full h-48 object-cover"
-                />
-              ) : (
-                <video
-                  src={getPlayableUrl(v.url)}
-                  controls
-                  className="w-full h-48 object-cover"
-                />
-              )}
+            {feedVideos.length ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {feedVideos.map((v) => (
+                  <article
+                    key={v.id || v.title}
+                    className="bg-white rounded-xl shadow-lg border border-pink-100 overflow-hidden hover:shadow-xl transition-all"
+                  >
+                    {v.thumb ? (
+                      <img
+                        src={v.thumb}
+                        alt={v.title}
+                        className="w-full h-48 object-cover"
+                      />
+                    ) : (
+                      <video
+                        src={getPlayableUrl(v.url)}
+                        controls
+                        className="w-full h-48 object-cover"
+                      />
+                    )}
 
-              <div className="p-5">
-                <div className="font-semibold text-lg text-gray-800">{v.title}</div>
-                <p className="text-sm text-gray-600 mt-1">{v.desc}</p>
+                    <div className="p-5">
+                      <div className="font-semibold text-lg text-gray-800">{v.title}</div>
+                      <p className="text-sm text-gray-600 mt-1">{v.desc}</p>
+                    </div>
+                  </article>
+                ))}
               </div>
-            </article>
-          ))}
-        </div>
-      ) : (
-        <p className="text-gray-500">Nenhum vídeo publicado ainda.</p>
-      )}
-    </section>
-  )}
-</main>
+            ) : (
+              <p className="text-gray-500">Nenhum vídeo publicado ainda.</p>
+            )}
+          </section>
+        )}
+      </main>
 
 
       {/* MODAIS */}

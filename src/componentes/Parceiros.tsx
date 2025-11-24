@@ -30,7 +30,7 @@ function Parceiros() {
     const [selectedPartnership, setSelectedPartnership] = useState<PartnershipType | null>(null);
     const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
     const [formData, setFormData] = useState({ companyName: '', email: '' });
-    
+
 
     const benefits = [
         {
@@ -166,6 +166,10 @@ function Parceiros() {
 
     const [popupOpen, setPopupOpen] = useState(false);
 
+    const empresaToken = localStorage.getItem("empresaToken");
+    const moderadorToken = localStorage.getItem("moderadorToken");
+    const user = localStorage.getItem("userData");
+
     return (
         <div className="min-h-screen bg-[#FFF6FF]">
             <section className="relative py-24 px-6">
@@ -177,34 +181,22 @@ function Parceiros() {
                         Acreditamos no poder da colaboração entre empresas, escolas e pessoas que apoiam a presença feminina nas áreas STEM.
                     </p>
                     <button
-                        onClick={() => setShowContactModal(true)}
+                        onClick={() => {
+                            if (user || empresaToken || moderadorToken) {
+                                setShowContactModal(true);
+                            } else {
+                                setPopupOpen(true);
+                            }
+                        }}
                         className="bg-[#AF5FE4] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg"
                     >
                         Quero ser parceira da STEMGirls
                     </button>
 
-                    {/* <button
-                        onClick={() => {
-                            const userRole = localStorage.getItem("role");
-
-                            if (!userRole) {
-                                setPopupOpen(true); // abre o popup
-                                return;
-                            }
-
-                            // Se estiver logado → abre o modal normal
-                            setShowContactModal(true);
-                        }}
-                        className="bg-[#AF5FE4] text-white px-8 py-4 rounded-full text-lg font-semibold hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg"
-                    >
-                        Quero ser parceira da STEMGirls
-                    </button> */}
-
-                    <PopupLoginAviso isOpen={popupOpen} onClose={() => setPopupOpen(false)} />
 
 
                 </div>
-            </section>
+            </section >
 
             <section className="py-20 max-w-full">
 
@@ -280,106 +272,118 @@ function Parceiros() {
                 </div>
             </section>
 
-            {showContactModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
-                    <div className="bg-white rounded-3xl p-8 max-w-md w-full relative animate-fadeIn">
-                        <button
-                            onClick={() => setShowContactModal(false)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
-                        <h3 className="text-3xl font-bold text-gray-800 mb-2">
-                            Torne-se uma parceira da STEMGirls
-                        </h3>
-                        <p className="text-black">Digite o nome da sua empresa e seu email para contato que vamos analisar sua solicitação!</p>
-                        <br />
-                        <form onSubmit={handleContactSubmit}>
-                            <div className="mb-6">
-                                <label className="block text-gray-700 font-semibold mb-2">
-                                    Nome da empresa
-                                </label>
-                                <input
-                                    type="text"
-                                    value={formData.companyName}
-                                    onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-6">
-                                <label className="block text-gray-700 font-semibold mb-2">
-                                    E-mail empresarial
-                                </label>
-                                <input
-                                    type="email"
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                                    className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                                    required
-                                />
-                            </div>
+            {
+                showContactModal && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
+                        <div className="bg-white rounded-3xl p-8 max-w-md w-full relative animate-fadeIn">
                             <button
-                                type="submit"
-                                className="w-full bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+                                onClick={() => setShowContactModal(false)}
+                                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
                             >
-                                Enviar
+                                <X className="w-6 h-6" />
                             </button>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {showPartnershipModal && selectedPartnership && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
-                    <div className="bg-white rounded-3xl p-8 max-w-2xl w-full relative animate-fadeIn">
-                        <button
-                            onClick={() => setShowPartnershipModal(false)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
-                        <div className="flex justify-center mb-6">{selectedPartnership.icon}</div>
-                        <h3 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-                            {selectedPartnership.title}
-                        </h3>
-                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                            {selectedPartnership.detailedInfo}
-                        </p>
-                    </div>
-                </div>
-            )}
-
-            {showPartnerModal && selectedPartner && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
-                    <div className="bg-white rounded-3xl p-8 max-w-2xl w-full relative animate-fadeIn">
-                        <button
-                            onClick={() => setShowPartnerModal(false)}
-                            className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
-                        >
-                            <X className="w-6 h-6" />
-                        </button>
-                        <div className="w-24 h-24 bg-gradient-to-br from-[#AF5FE4] to-[#F36EC0] rounded-2xl flex items-center justify-center mx-auto mb-6">
-                            <span className="text-5xl font-bold text-white">{selectedPartner.logo}</span>
+                            <h3 className="text-3xl font-bold text-gray-800 mb-2">
+                                Torne-se uma parceira da STEMGirls
+                            </h3>
+                            <p className="text-black">Digite o nome da sua empresa e seu email para contato que vamos analisar sua solicitação!</p>
+                            <br />
+                            <form onSubmit={handleContactSubmit}>
+                                <div className="mb-6">
+                                    <label className="block text-gray-700 font-semibold mb-2">
+                                        Nome da empresa
+                                    </label>
+                                    <input
+                                        type="text"
+                                        value={formData.companyName}
+                                        onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                        required
+                                    />
+                                </div>
+                                <div className="mb-6">
+                                    <label className="block text-gray-700 font-semibold mb-2">
+                                        E-mail empresarial
+                                    </label>
+                                    <input
+                                        type="email"
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                        required
+                                    />
+                                </div>
+                                <button
+                                    type="submit"
+                                    className="w-full bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors"
+                                >
+                                    Enviar
+                                </button>
+                            </form>
                         </div>
-                        <h3 className="text-3xl font-bold text-gray-800 mb-6 text-center">
-                            {selectedPartner.name}
-                        </h3>
-                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
-                            {selectedPartner.fullDescription}
-                        </p>
-                        <a
-                            href={selectedPartner.website}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block w-full bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors text-center"
-                        >
-                            Visitar site da parceira
-                        </a>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+
+            {
+                showPartnershipModal && selectedPartnership && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
+                        <div className="bg-white rounded-3xl p-8 max-w-2xl w-full relative animate-fadeIn">
+                            <button
+                                onClick={() => setShowPartnershipModal(false)}
+                                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                            <div className="flex justify-center mb-6">{selectedPartnership.icon}</div>
+                            <h3 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                                {selectedPartnership.title}
+                            </h3>
+                            <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                                {selectedPartnership.detailedInfo}
+                            </p>
+                        </div>
+                    </div>
+                )
+            }
+
+            {
+                showPartnerModal && selectedPartner && (
+                    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-6">
+                        <div className="bg-white rounded-3xl p-8 max-w-2xl w-full relative animate-fadeIn">
+                            <button
+                                onClick={() => setShowPartnerModal(false)}
+                                className="absolute top-6 right-6 text-gray-400 hover:text-gray-600"
+                            >
+                                <X className="w-6 h-6" />
+                            </button>
+                            <div className="w-24 h-24 bg-gradient-to-br from-[#AF5FE4] to-[#F36EC0] rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <span className="text-5xl font-bold text-white">{selectedPartner.logo}</span>
+                            </div>
+                            <h3 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+                                {selectedPartner.name}
+                            </h3>
+                            <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                                {selectedPartner.fullDescription}
+                            </p>
+                            <a
+                                href={selectedPartner.website}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block w-full bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition-colors text-center"
+                            >
+                                Visitar site da parceira
+                            </a>
+                        </div>
+                    </div>
+                )
+            }
+
+            <PopupLoginAviso
+                isOpen={popupOpen}
+                onClose={() => setPopupOpen(false)}
+            />
+
+        </div >
     );
 }
 

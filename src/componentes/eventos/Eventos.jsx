@@ -11,7 +11,7 @@ const imagensDisponiveis = [
   "/src/assets/img/mulheres-tecnologia.jpg",
 ];
 
-const empresaToken = localStorage.getItem("empresaToken");
+const user = JSON.parse(localStorage.getItem("userData"));
 const BACKEND_BASE = "http://localhost:8080";
 
 export default function Eventos() {
@@ -245,62 +245,70 @@ export default function Eventos() {
         </div>
 
         {/* Meus eventos */}
-        <div className="mt-2 ml-4">
-          <div className="flex justify-between items-center">
-            <h4 className="text-lg font-semibold">Meus eventos</h4>
+        {["EMPRESA", "MODERADOR"].includes(user?.role?.toUpperCase()) && (
+          <>
+            {/* Meus eventos */}
+            <div className="mt-2 ml-4">
+              <div className="flex justify-between items-center">
+                <h4 className="text-lg font-semibold">Meus eventos</h4>
 
-            {/* Botão VER */}
-            <p
-              className="px-2 py-1 text-sm rounded-md bg-pink-200 hover:bg-pink-300 text-pink-700 cursor-pointer transition"
+                {/* Botão VER */}
+                <p
+                  className="px-2 py-1 text-sm rounded-md bg-pink-200 hover:bg-pink-300 text-pink-700 cursor-pointer transition"
+                  onClick={() => {
+                    setTelaMeusEventos(true);
+                    setTelaCadastro(false);
+                  }}
+                >
+                  Ver
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-2 max-h-64 overflow-auto pr-2 mt-4">
+                {eventosCriados.length === 0 ? (
+                  <div className="text-sm text-gray-400">Você ainda não criou eventos.</div>
+                ) : (
+                  eventosCriados.map((ev) => (
+                    <div key={ev.id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                      <div className="truncate text-sm">{ev.titulo}</div>
+                      <div className="flex gap-1">
+                        <button
+                          className="px-2 py-1 text-xs bg-yellow-400 rounded"
+                          onClick={() => {
+                            setTelaCadastro(true);
+                            setEventoEditando(ev);
+                          }}
+                        >
+                          Editar
+                        </button>
+                        <button
+                          className="px-2 py-1 text-xs bg-red-500 text-white rounded"
+                          onClick={() => setEventoParaExcluir(ev)}
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+
+            {/* Botão Publicar */}
+            <Button
+              className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
               onClick={() => {
-                setTelaMeusEventos(true);
-                setTelaCadastro(false);
+                setTelaCadastro(true);
+                setEventoEditando(null);
               }}
             >
-              Ver
-            </p>
-          </div>
+              + Publicar Evento
+            </Button>
+          </>
+        )}
 
-          <div className="flex flex-col gap-2 max-h-64 overflow-auto pr-2 mt-4">
-            {eventosCriados.length === 0 ? (
-              <div className="text-sm text-gray-400">Você ainda não criou eventos.</div>
-            ) : (
-              eventosCriados.map((ev) => (
-                <div key={ev.id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
-                  <div className="truncate text-sm">{ev.titulo}</div>
-                  <div className="flex gap-1">
-                    <button
-                      className="px-2 py-1 text-xs bg-yellow-400 rounded"
-                      onClick={() => {
-                        setTelaCadastro(true);
-                        setEventoEditando(ev);
-                      }}
-                    >
-                      Editar
-                    </button>
-                    <button
-                      className="px-2 py-1 text-xs bg-red-500 text-white rounded"
-                      onClick={() => setEventoParaExcluir(ev)}
-                    >
-                      Excluir
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-       
-          <Button
-            className="bg-[#F36EC0] text-white font-bold mt-4"
-            onClick={() => {
-              setTelaCadastro(true);
-              setEventoEditando(null);
-            }}
-          >
-            + Publicar Evento
-          </Button>
-  
+
+
       </aside>
 
       {/* Conteúdo */}
@@ -360,7 +368,7 @@ export default function Eventos() {
         ) : (
           <>
             {/* filtros */}
-            
+
             <div className="flex gap-4 mb-6 justify-center">
               {["ao-vivo", "presencial", "remoto", "todos"].map((tipo) => (
                 <Button
@@ -393,26 +401,26 @@ export default function Eventos() {
 
                     <p className="mt-2 text-sm break-words">{ev.descricao}</p>
 
-                 {/* BOTÃO PARTICIPAR */}
-{/* BOTÃO PARTICIPAR */}
-<div className="mt-auto pt-4 flex justify-center">
-  <Button
-    className="bg-[#F36EC0] text-white font-semibold px-6 py-2 rounded-full hover:bg-[#e055a8] transition"
-    onClick={() => {
-      // Apenas abre o modal, sem chamar backend aqui
-      setModalEvento(ev);
+                    {/* BOTÃO PARTICIPAR */}
+                    {/* BOTÃO PARTICIPAR */}
+                    <div className="mt-auto pt-4 flex justify-center">
+                      <Button
+                        className="bg-[#F36EC0] text-white font-semibold px-6 py-2 rounded-full hover:bg-[#e055a8] transition"
+                        onClick={() => {
+                          // Apenas abre o modal, sem chamar backend aqui
+                          setModalEvento(ev);
 
-      // Se quiser pré-preencher nome-email do usuário logado:
-      const user = JSON.parse(localStorage.getItem("user"));
-      if (user) {
-        setNome(user.nome || "");
-        setEmail(user.email || "");
-      }
-    }}
-  >
-    Participar
-  </Button>
-</div>
+                          // Se quiser pré-preencher nome-email do usuário logado:
+                          const user = JSON.parse(localStorage.getItem("user"));
+                          if (user) {
+                            setNome(user.nome || "");
+                            setEmail(user.email || "");
+                          }
+                        }}
+                      >
+                        Participar
+                      </Button>
+                    </div>
 
 
                   </CardContent>
@@ -422,102 +430,102 @@ export default function Eventos() {
           </>
         )}
 
-      {/* Modal de inscrição */}
-{modalEvento && (
-  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-    <div className="bg-white p-6 rounded-xl w-96">
+        {/* Modal de inscrição */}
+        {modalEvento && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-xl w-96">
 
-      <h2 className="text-xl font-bold">Inscrição</h2>
-      <p className="font-semibold mb-2">{modalEvento.titulo}</p>
+              <h2 className="text-xl font-bold">Inscrição</h2>
+              <p className="font-semibold mb-2">{modalEvento.titulo}</p>
 
-      <input
-        className="w-full p-2 border rounded mb-2"
-        placeholder="Nome"
-        value={nome}
-        onChange={(e) => setNome(e.target.value)}
-      />
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Nome"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
+              />
 
-      <input
-        className="w-full p-2 border rounded mb-2"
-        placeholder="CPF"
-        value={cpf}
-        onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
-      />
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="CPF"
+                value={cpf}
+                onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
+              />
 
-      <input
-        className="w-full p-2 border rounded mb-2"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-      <input
-        className="w-full p-2 border rounded mb-2"
-        placeholder="Telefone"
-        value={telefone}
-        onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
-      />
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Telefone"
+                value={telefone}
+                onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
+              />
 
-      <input
-        className="w-full p-2 border rounded mb-3"
-        placeholder="Instituição"
-        value={instituicao}
-        onChange={(e) => setInstituicao(e.target.value)}
-      />
+              <input
+                className="w-full p-2 border rounded mb-3"
+                placeholder="Instituição"
+                value={instituicao}
+                onChange={(e) => setInstituicao(e.target.value)}
+              />
 
-      <div className="flex justify-between">
-        <button
-          className="bg-gray-300 px-4 py-2 rounded"
-          onClick={() => setModalEvento(null)}
-        >
-          Cancelar
-        </button>
+              <div className="flex justify-between">
+                <button
+                  className="bg-gray-300 px-4 py-2 rounded"
+                  onClick={() => setModalEvento(null)}
+                >
+                  Cancelar
+                </button>
 
-        <button
-          className="bg-pink-500 text-white px-4 py-2 rounded"
-          onClick={async () => {
-            if (!nome || !cpf || !email || !telefone || !instituicao) {
-              return alert("Preencha todos os dados!");
-            }
-            if (!validarCPF(cpf)) {
-              return alert("CPF inválido!");
-            }
+                <button
+                  className="bg-pink-500 text-white px-4 py-2 rounded"
+                  onClick={async () => {
+                    if (!nome || !cpf || !email || !telefone || !instituicao) {
+                      return alert("Preencha todos os dados!");
+                    }
+                    if (!validarCPF(cpf)) {
+                      return alert("CPF inválido!");
+                    }
 
-            try {
-              const resposta = await fetch("http://localhost:8080/inscricoes", {
-                method: "POST",
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                  eventoId: String(modalEvento._id ?? modalEvento.id),
-                  nome,
-                  cpf,
-                  email,
-                  telefone,
-                  instituicao,
-                }),
-              });
+                    try {
+                      const resposta = await fetch("http://localhost:8080/inscricoes", {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          eventoId: String(modalEvento._id ?? modalEvento.id),
+                          nome,
+                          cpf,
+                          email,
+                          telefone,
+                          instituicao,
+                        }),
+                      });
 
-              if (!resposta.ok) {
-                throw new Error("Erro ao enviar inscrição");
-              }
+                      if (!resposta.ok) {
+                        throw new Error("Erro ao enviar inscrição");
+                      }
 
-              alert("Inscrição realizada com sucesso!");
-              setModalEvento(null);
+                      alert("Inscrição realizada com sucesso!");
+                      setModalEvento(null);
 
-            } catch (erro) {
-              console.error("ERRO NO BACK-END:", erro);
-              alert("Erro ao realizar inscrição. Verifique o backend.");
-            }
-          }}
-        >
-          Confirmar
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+                    } catch (erro) {
+                      console.error("ERRO NO BACK-END:", erro);
+                      alert("Erro ao realizar inscrição. Verifique o backend.");
+                    }
+                  }}
+                >
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
 
         {/* Modal excluir */}

@@ -225,7 +225,7 @@ export default function Home() {
         <section className="max-w-6xl mx-auto py-10">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-3xl font-bold text-gray-800">Comunidades</h2>
-            <Button onClick={() => navigate("/comunidades")} className="rounded-full text-sm">
+            <Button onClick={() => navigate("/comunidades")} className="rounded-full text-sm bg-[#F36EC0]">
               Saiba mais
             </Button>
           </div>
@@ -272,7 +272,7 @@ export default function Home() {
         <section className="max-w-6xl mx-auto py-10">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-3xl font-bold text-gray-800">Eventos</h2>
-            <Button onClick={() => navigate("/eventos")} className="rounded-full text-sm">
+            <Button onClick={() => navigate("/eventos")} className="rounded-full text-sm bg-[#F36EC0]">
               Saiba mais
             </Button>
           </div>
@@ -331,7 +331,7 @@ export default function Home() {
 
   <Button
     onClick={() => navigate("/canais")}
-    className="rounded-full text-sm"
+    className="rounded-full text-sm bg-[#F36EC0]"
   >
     Saiba mais
   </Button>
@@ -406,7 +406,7 @@ export default function Home() {
               <p className="text-gray-700 mb-6 leading-relaxed text-lg">
                 Aqui você tem atividades interativas, quizzes, vídeos educativos, e uma experiência de aprendizado incrível!!
               </p>
-              <Button onClick={() => navigate("/minimentes")} className="rounded-full text-sm">Saiba mais</Button>
+              <Button onClick={() => navigate("/minimentes")} className="rounded-full text-sm bg-[#F36EC0]">Saiba mais</Button>
             </div>
             <div className="md:w-1/3 flex justify-center">
 
@@ -426,7 +426,7 @@ export default function Home() {
         <section className="max-w-6xl mx-auto py-10">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-3xl font-bold text-gray-800">Sobre nós</h2>
-            <Button onClick={() => navigate("/sobre-nos")} className="rounded-full text-sm">Saiba mais</Button>
+            <Button onClick={() => navigate("/sobre-nos")} className="rounded-full text-sm bg-[#F36EC0]">Saiba mais</Button>
           </div>
           <p className="text-gray-700 mb-6">
             Conheça nossa equipe apaixonada por tecnologia, diversidade e inclusão. Nosso objetivo é inspirar e empoderar mulheres na área de TI.
@@ -496,7 +496,7 @@ export default function Home() {
       inspiração para o futuro da ciência e da engenharia!
     </p>
 
-    <Button onClick={() => navigate("/historia")} className="rounded-full px-6 py-3">
+    <Button onClick={() => navigate("/historia")} className="rounded-full px-6 py-3 bg-[#F36EC0]">
       Saiba mais
     </Button>
   </div>
@@ -525,7 +525,7 @@ export default function Home() {
         <section className="max-w-6xl mx-auto py-10 text-center">
           <div className="flex justify-between items-center mb-8">
             <h2 className="text-3xl font-bold ">Parceiros</h2>
-            <Button onClick={() => navigate("/parceiros")} className="rounded-full text-sm bg-pink-500 text-white hover:bg-pink-700">
+            <Button onClick={() => navigate("/parceiros")} className="rounded-full text-sm bg-[#F36EC0] text-white hover:bg-pink-700">
               Saiba mais
             </Button>
           </div>

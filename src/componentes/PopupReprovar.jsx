@@ -26,11 +26,11 @@ function PopupReprovar({ fechar }) {
             <div className="bg-white p-6 rounded-xl shadow-lg w-[400px]">
                 <h2 className="text-xl font-semibold mb-4">Confirmar Reprovação</h2>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <input
                         type="email"
                         placeholder="Digite o e-mail da empresa"
-                        className="text-white border rounded-lg px-2 py-1"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
@@ -38,7 +38,7 @@ function PopupReprovar({ fechar }) {
                     <input
                         type="text"
                         placeholder="Digite o CNPJ"
-                        className="text-white border rounded-lg px-2 py-1"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-7001"
                         value={cnpj}
                         onChange={(e) => setCnpj(e.target.value)}
                     />

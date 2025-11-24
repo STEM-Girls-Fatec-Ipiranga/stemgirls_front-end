@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search, Sun, Moon, Menu, X, CircleUser, LogOut, User, Bell } from 'lucide-react';
 import LogoSG from '../assets/img/LogoSG.png';
 import Notificacoes from "../componentes/Notificacoes.jsx";
 import { Link, useNavigate } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
-
 
 function formatDate(date) {
   const options = { day: "2-digit", month: "2-digit", year: "numeric" };
@@ -40,23 +39,36 @@ const MenuSuperior = () => {
     { label: "Parceiros", path: "/parceiros" },
   ];
 
-  const user = JSON.parse(localStorage.getItem("userData"))
   const empresaToken = localStorage.getItem("empresaToken");
-  const empresaNome = localStorage.getItem("empresaNome");
+  const userToken = localStorage.getItem("userToken");
 
-
-  const [userProfile, setUser] = useState({
-    data: localStorage.getItem("userData")
-      ? JSON.parse(localStorage.getItem("userData") || "{}")
-      : {
-        nomeCompleto: "",
-        nomeUsuario: "",
-        email: "",
-        sobre: "",
-        joinDate: formatDate(new Date()),
-        //profileImage: FotoPerfil
-      }
+  const [user, setUser] = useState({
+    data: localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user") || "{}")
+      : {}
   });
+
+  const [empresa, setEmpresa] = useState({
+    data: localStorage.getItem("empresa")
+      ? JSON.parse(localStorage.getItem("empresa") || "{}")
+      : {}
+  });
+
+  const [usuarioLogado, setUsuarioLogado] = useState({});
+
+  useEffect(() => {
+    if (user.data.nomeUsuario != null) {
+      setUsuarioLogado({
+        nomeUsuario: user.data.nomeUsuario,
+        role: user.data.role
+      });
+    } else if (empresa.data.nomeEmpresa != null) {
+      setUsuarioLogado({
+        nomeUsuario: empresa.data.nomeEmpresa,
+        role: empresa.data.role
+      });
+    }
+  }, []);
 
   const navigate = useNavigate();
 
@@ -66,10 +78,12 @@ const MenuSuperior = () => {
   };
 
   const handleConfirmLogout = () => {
-    localStorage.removeItem("userData");
+    localStorage.removeItem("user");
+    localStorage.removeItem("empresa");
     localStorage.removeItem("userToken");
     localStorage.removeItem("empresaToken");
-    localStorage.removeItem("empresaNome");
+    setUser(null);
+    setEmpresa(null);
     setIsLogoutModalOpen(false);
     navigate("/");
   };
@@ -107,12 +121,12 @@ const MenuSuperior = () => {
           </div>
 
           {/* Botão Cadastre-se - Desktop */}
-          {!user && !empresaToken && (
+          {user == null && empresa == null && (
             <div className="hidden md:flex items-center gap-4">
               <Link to="/login">
                 <button
                   className="px-6 py-2 bg-white text-pink-500 rounded-full font-quicksand font-semibold 
-          hover:bg-opacity-90 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
+                  hover:bg-opacity-90 hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                   style={{ color: '#f36ec0' }}
                 >
                   Cadastre-se
@@ -121,11 +135,10 @@ const MenuSuperior = () => {
             </div>
           )}
 
-          {(user || empresaToken) && (
+          {user != null && (
             <div className="flex flex-row items-center relative justify-around w-[250px]">
 
-
-              {user?.role === "MODERADOR" && (
+              {user.data.role == "MODERADOR" && (
                 <button onClick={() => setMostrarNotificacoes(!mostrarNotificacoes)}>
                   <Bell />
                 </button>
@@ -140,9 +153,7 @@ const MenuSuperior = () => {
 
               <div className="flex flex-row items-center">
                 <p className="font-semibold text-white text-right">
-                  {user
-                    ? `@${userProfile.data.nomeUsuario}`
-                    : empresaNome || "Empresa"}
+                  {`@${usuarioLogado.nomeUsuario}`}
                 </p>
 
                 <button
@@ -159,11 +170,9 @@ const MenuSuperior = () => {
                 <div className="absolute right-4 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 border border-[#af5fe4]">
                   <Link
                     to={
-                      user
+                      usuarioLogado.role != "EMPRESA"
                         ? "/perfil"
-                        : empresaToken
-                          ? "/perfil-empresa"
-                          : "/login"
+                        : "/perfil-empresa"
                     }
                     className="flex items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
                     onClick={() => setIsProfileOpen(false)}
@@ -274,7 +283,7 @@ const MenuSuperior = () => {
       )}
 
       {/* MODAL DE CONFIRMAÇÃO DE SAÍDA (INLINE) */}
-      {(user || empresaToken) && isLogoutModalOpen && (
+      {(user || empresa) && isLogoutModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
 
           {/* Container do Popup Branco */}
@@ -311,7 +320,6 @@ const MenuSuperior = () => {
           </div>
         </div>
       )}
-
 
     </header>
   );

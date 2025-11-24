@@ -9,7 +9,7 @@ import axios from 'axios';
 function LoginEmpresa() {
     const navigate = useNavigate();
 
-    const [form, setForm] = useState({
+    const [registerForm, setRegisterForm] = useState({
         nomeEmpresa: '',
         cnpj: '',
         telefone: '',
@@ -71,7 +71,7 @@ function LoginEmpresa() {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setRegisterForm((prev) => ({ ...prev, [name]: value }));
         if (name === 'senha') validatePassword(value);
     };
 
@@ -101,25 +101,38 @@ function LoginEmpresa() {
 
         try {
             const response = await axios.post("http://localhost:8080/empresa/criar", {
-                nomeEmpresa: form.nomeEmpresa,
-                cnpj: form.cnpj,
-                email: form.email,
-                senha: form.senha,
-                telefone: form.telefone,
-                status: "PENDENTE",
-                role: "EMPRESA"
+                nomeEmpresa: registerForm.nomeEmpresa,
+                cnpj: registerForm.cnpj,
+                email: registerForm.email,
+                senha: registerForm.senha,
+                telefone: registerForm.telefone,
+                role: "EMPRESA",
+                status: "PENDENTE"
             });
 
-            if (response.status === 200) {
-                alert("Cadastro realizado! Nossa equipe está analisando seus dados. Você será notificado por e-mail quando for aprovado.");
-                setModo("signup");
-            }
+            const empresa = response.data;
+
+            const empresaData = {
+                nomeEmpresa: empresa.nomeEmpresa,
+                cnpj: empresa.cnpj,
+                email: empresa.email,
+                senha: empresa.senha,
+                telefone: empresa.telefone,
+                role: empresa.role,
+                status: empresa.status
+            };
+
+            localStorage.setItem("empresa", JSON.stringify(empresaData));
+            
+            alert("Cadastro realizado! Nossa equipe está analisando seus dados. Você será notificado por e-mail quando for aprovado.");
+            setModo("sgnup");
         } catch (error) {
             console.error("Erro ao cadastrar:", error.response?.data || error.message);
             alert("Erro ao cadastrar: " + (error.response?.data || error.message));
         }
     };
 
+    const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showSuccessLoginPopup, setShowSuccessLoginPopup] = useState(false);
 
     // LOGIN DE EMPRESA
@@ -133,20 +146,34 @@ function LoginEmpresa() {
                 senha: loginForm.senha
             });
 
-            if (typeof response.data === "string" && response.data.includes("análise")) {
+            const empresa = response.data;
+
+            const empresaData = {
+                nomeEmpresa: empresa.nomeEmpresa,
+                cnpj: empresa.cnpj,
+                email: empresa.email,
+                senha: empresa.senha,
+                telefone: empresa.telefone,
+                role: empresa.role,
+                status: empresa.status
+            };
+
+            console.log(empresaData);
+
+            if(empresa.status == "PENDENTE"){
                 setStatusMessage("Nossa equipe está analisando seus dados, você será notificado quando acabarmos.");
                 return;
+            }else if(empresa.status == "REPROVADO"){
+                setStatusMessage("Infelizmente, seu cadastro foi reprovado. Entre em contato conosco para mais informações.");
+            }else{
+                localStorage.setItem("empresa", JSON.stringify(empresaData));
             }
 
-            const { token, empresa } = response.data;
-            localStorage.setItem("empresaToken", token);
-            localStorage.setItem("empresaNome", empresa);
-            navigate("/");
-
             setShowSuccessLoginPopup(true);
+            
             setTimeout(() => {
                 navigate("/");
-            }, 3000);
+            }, 900);
         } catch (error) {
             const errorMsg = error.response?.data || "Verifique suas credenciais.";
             setStatusMessage(errorMsg);
@@ -159,6 +186,24 @@ function LoginEmpresa() {
         if (modo === "signin") setClasseAtual(Styles.cadastra);
         if (modo === "signup") setClasseAtual(Styles.loga);
     }, [modo]);
+
+    const SuccessPopup = () => (
+        <div style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: '#4caf50',
+            color: 'white',
+            padding: '15px 20px',
+            borderRadius: '8px',
+            boxShadow: '0 4px 8px rgba(0,0,0,0.2)',
+            zIndex: 9999,
+            fontSize: '1rem',
+            fontWeight: 'bold'
+        }}>
+            Cadastro efetuado com sucesso! 🎉
+        </div>
+    );
 
     const SuccessLoginPopup = () => (
         <div style={{
@@ -180,7 +225,9 @@ function LoginEmpresa() {
 
     return (
         <div className={`${Styles.container} ${classeAtual}`}>
+            {showSuccessPopup && <SuccessPopup />}
             {showSuccessLoginPopup && <SuccessLoginPopup />}
+
             <Link to="/">
                 <button className="absolute top-4 left-0 w-24 flex flex-row justify-around"><ArrowLeft /> Voltar</button>
             </Link>
@@ -203,23 +250,23 @@ function LoginEmpresa() {
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
                             <i className="far fa-user icon-modify"></i>
-                            <input type="text" name="nomeEmpresa" placeholder="Digite o nome da empresa" value={form.nomeEmpresa} onChange={handleChange} required />
+                            <input type="text" name="nomeEmpresa" placeholder="Digite o nome da empresa" value={registerForm.nomeEmpresa} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-br-at icon-modify"></i>
-                            <input type="text" name="cnpj" placeholder="Digite o CNPJ da empresa" value={form.cnpj} onChange={handleChange} required />
+                            <input type="text" name="cnpj" placeholder="Digite o CNPJ da empresa" value={registerForm.cnpj} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-br-at icon-modify"></i>
-                            <input type="text" name="telefone" placeholder="Digite o telefone da empresa" value={form.telefone} onChange={handleChange} required />
+                            <input type="text" name="telefone" placeholder="Digite o telefone da empresa" value={registerForm.telefone} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-rr-envelope icon-modify"></i>
-                            <input type="email" name="email" placeholder="Digite o email da empresa" value={form.email} onChange={handleChange} required />
+                            <input type="email" name="email" placeholder="Digite o email da empresa" value={registerForm.email} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-sr-lock icon-modify"></i>
-                            <input type="password" name="senha" placeholder="Digite sua senha" value={form.senha} onChange={handleChange} required />
+                            <input type="password" name="senha" placeholder="Digite sua senha" value={registerForm.senha} onChange={handleChange} required />
                         </label>
 
                         {passwordError && (

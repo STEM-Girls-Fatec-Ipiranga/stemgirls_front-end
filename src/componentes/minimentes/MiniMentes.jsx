@@ -377,6 +377,8 @@ export default function MiniMentes() {
     );
   }
 
+    const user = JSON.parse(localStorage.getItem("userData"));
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50 p-6 text-gray-800 text-sm">
       <div className="max-w-7xl mx-auto flex gap-6">
@@ -468,14 +470,15 @@ export default function MiniMentes() {
         </div>
       </div>
 
-            
+            {user?.role === "MODERADOR" && (
             <div className="mt-2">
-              <button onClick={() => { setEditing(null); setUploadForm({ title: "", description: "", category: data[0]?.id || "logica", difficulty: "Fácil", videoFile: null, thumbFile: null, quiz: [] }); setUploadPreview({ videoUrl: null, thumbUrl: null }); setShowUpload(true); }} className="px-6 py-2 rounded-full bg-pink-500 text-white font-semibold">
+              <button onClick={() => { setEditing(null); setUploadForm({ title: "", description: "", category: data[0]?.id || "logica", difficulty: "Fácil", videoFile: null, thumbFile: null, quiz: [] }); setUploadPreview({ videoUrl: null, thumbUrl: null }); setShowUpload(true); }} className="px-6 py-2 rounded-full bg-[#F36EC0] text-white font-semibold">
                 Postar Conteúdo
               </button>
             </div>
+            )}
           </div>
-
+            
          
 
           {/* categories + cards */}
@@ -518,7 +521,7 @@ export default function MiniMentes() {
                           <div className="mt-4 flex gap-2">
                             <button
                               onClick={() => openQuizScreen(c.id, { ...q, categoryTitle: c.title }, c.title)}
-                              className="flex-1 bg-pink-500 hover:bg-pink-600 text-white py-2 rounded-full font-semibold shadow items-center justify-center flex gap-2"
+                              className="flex-1 bg-[#F36EC0] hover:bg-pink-600 text-white py-2 rounded-full font-semibold shadow items-center justify-center flex gap-2"
                             >
                               <span>Assistir</span>
                             </button>

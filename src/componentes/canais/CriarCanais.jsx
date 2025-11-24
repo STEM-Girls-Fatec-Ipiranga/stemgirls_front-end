@@ -49,13 +49,13 @@ export default function CriarCanais({ setCanais, canais, onClose, setShowNotific
           value={nome}
           onChange={(e) => setNome(e.target.value)}
           placeholder="Nome do canal"
-          className="w-full border p-2 rounded-lg mb-3"
+          className="w-full px-4 py-3 mb-6 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-7003"
         />
         <textarea
           value={desc}
           onChange={(e) => setDesc(e.target.value)}
           placeholder="Descrição"
-          className="w-full border p-2 rounded-lg mb-3"
+          className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
         />
 
         <label className="font-semibold text-sm mb-1 text-pink-600 block">Banner:</label>

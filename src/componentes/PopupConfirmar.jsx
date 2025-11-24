@@ -25,13 +25,13 @@ function PopupConfirmar({ fechar }) {
             <div className="bg-white p-6 rounded-xl w-[350px] shadow-lg">
                 <h2 className="text-lg font-bold mb-4">Confirmar Aprovação</h2>
 
-                <form onSubmit={handleSubmit} className="flex flex-col gap-3">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5">
                     <input
                         type="text"
                         placeholder="Digite o e-mail da empresa"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
-                        className="text-white border p-2 w-full mb-2 rounded"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                     />
 
                     <input
@@ -39,7 +39,7 @@ function PopupConfirmar({ fechar }) {
                         placeholder="Digite o CNPJ"
                         value={cnpj}
                         onChange={(e) => setCnpj(e.target.value)}
-                        className="text-white border p-2 w-full mb-2 rounded"
+                        className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                     />
 
                     {erro && <p className="text-red-500">{erro}</p>}

@@ -68,13 +68,15 @@ const mulheres = [
   },
 ];
 
-
-
-
 export default function App() {
 
   const [popupOpen, setPopupOpen] = useState(false);
   const [selecionada, setSelecionada] = useState(null);
+
+  const user = JSON.parse(localStorage.getItem("userData"));
+  const empresaToken = localStorage.getItem("empresaToken");
+  const moderadorToken = localStorage.getItem("moderadorToken");
+
 
   return (
     <div
@@ -146,16 +148,28 @@ export default function App() {
               </h2>
               <p className="text-gray-900 mt-2 text-sm">{mulher.resumo}</p>
 
-
               <button
                 onClick={() => {
-                  setSelecionada(mulher);
+                  if (user || empresaToken || moderadorToken) {
+                    setSelecionada(mulher);
+                  } else {
+                    setPopupOpen(true);
+                  }
                 }}
-                className="mt-3 bg-pink-500 text-white px-4 py-2 rounded-full text-sm"
+                className="mt-3 bg-[#F36EC0] text-white px-4 py-2 rounded-full text-sm font-bold"
               >
                 Saiba mais
               </button>
 
+
+              {/* <button
+                onClick={() => {
+                  setSelecionada(mulher);
+                }}
+                className="mt-3 bg-[#F36EC0] text-white px-4 py-2 rounded-full text-sm font-bold"
+              >
+                Saiba mais
+              </button> */}
 
             </div>
           </div>
@@ -183,6 +197,12 @@ export default function App() {
           </div>
         </div>
       )}
+
+      <PopupLoginAviso
+        isOpen={popupOpen}
+        onClose={() => setPopupOpen(false)}
+      />
+
     </div>
   );
 }

@@ -10,25 +10,21 @@ import axios from 'axios';
 function Login() {
     const navigate = useNavigate();
 
-    // Estado para o formulário de CADASTRO
-    const [form, setForm] = useState({
+    const [registerForm, setRegisterForm] = useState({
         nomeCompleto: '',
         nomeUsuario: '',
         email: '',
         senha: ''
     });
 
-    // Estado SEPARADO para o formulário de LOGIN
     const [loginForm, setLoginForm] = useState({
         email: '',
         senha: ''
     });
 
-    // --- NOVOS ESTADOS PARA VALIDAÇÃO DA SENHA ---
     const [passwordError, setPasswordError] = useState('');
     const [isPasswordValid, setIsPasswordValid] = useState(false);
 
-    // --- NOVA FUNÇÃO PARA VALIDAR A SENHA ---
     const validatePassword = (senha) => {
         const minLength = 8;
         const hasUpperCase = /[A-Z]/.test(senha);
@@ -70,24 +66,21 @@ function Login() {
         setPasswordError('Senha forte!');
         setIsPasswordValid(true);
     };
-
-    // Handler para atualizar o estado do formulário de LOGIN 
+ 
     const handleLoginChange = (e) => {
         const { name, value } = e.target;
         setLoginForm((prev) => ({ ...prev, [name]: value }));
     };
 
-    // Handler para atualizar o estado do formulário de CADASTRO (MODIFICADO)
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm((prev) => ({ ...prev, [name]: value }));
+        setRegisterForm((prev) => ({ ...prev, [name]: value }));
 
         if (name === 'senha') {
             validatePassword(value);
         }
     };
 
-    // Handler para atualizar o estado do formulário de CADASTRO
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
 
@@ -105,34 +98,33 @@ function Login() {
 
         try {
             const response = await axios.post("http://localhost:8080/usuario/criar", {
-                nomeCompleto: form.nomeCompleto,
-                nomeUsuario: form.nomeUsuario,
-                email: form.email,
-                senha: form.senha,
+                nomeCompleto: registerForm.nomeCompleto,
+                nomeUsuario: registerForm.nomeUsuario,
+                email: registerForm.email,
+                senha: registerForm.senha,
                 joinDate: new Date(),
                 role: "USUARIO"
             });
 
             const user = response.data;
 
-            if (response.status === 200 || response.status === 201) {
+            const userData = {
+                nomeUsuario: user.nomeUsuario,
+                nomeCompleto: user.nomeCompleto,
+                email: user.email,
+                senha: user.senha,
+                role: user.role,
+                joinDate: user.joinDate,
+                profileImage: user.profileImage
+            };
 
-                const userDataFormatado = {
-                    nomeCompleto: user.nomeCompleto || user.nome || "",
-                    nomeUsuario: user.nomeUsuario || user.username || "",
-                    email: user.email || "",
-                    joinDate: user.joinDate || new Date(),
-                    profileImage: user.profileImage || null
-                };
+            localStorage.setItem("user", JSON.stringify(userData));
 
-                localStorage.setItem("userData", JSON.stringify(userDataFormatado));
+            setShowSuccessPopup(true);
 
-                setShowSuccessPopup(true);
-
-                setTimeout(() => {
-                    navigate("/");
-                }, 900);
-            }
+            setTimeout(() => {
+                navigate("/");
+            }, 900);
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error("Erro no cadastro:", errorMessage);
@@ -143,36 +135,35 @@ function Login() {
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showSuccessLoginPopup, setShowSuccessLoginPopup] = useState(false);
 
-    // --- FUNÇÃO DE SUBMISSÃO DO LOGIN ---
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
+
         try {
-            const response = await axios.post("http://localhost:8080/api/auth/login", {
+            const response = await axios.post("http://localhost:8080/usuario/login", {
                 email: loginForm.email,
                 senha: loginForm.senha
             });
 
-            const { token, user } = response.data;
+            const user = response.data;
 
-            if (token) {
-                localStorage.setItem("userToken", token);
+            const userData = {
+                nomeUsuario: user.nomeUsuario,
+                nomeCompleto: user.nomeCompleto,
+                email: user.email,
+                senha: user.senha,
+                role: user.role,
+                joinDate: user.joinDate,
+                profileImage: user.profileImage
+            };
 
-                const userDataFormatado = {
-                    nomeCompleto: user.nomeCompleto || user.nome || "",
-                    nomeUsuario: user.nomeUsuario || user.username || "",
-                    email: user.email || "",
-                    joinDate: user.joinDate || user.dataCriacao || new Date(),
-                    profileImage: user.profileImage || null,
-                    role: user.role || "USUARIO"
-                };
+            localStorage.setItem("user", JSON.stringify(userData));
 
-                localStorage.setItem("userData", JSON.stringify(userDataFormatado));
+            setShowSuccessLoginPopup(true);
 
-                setShowSuccessLoginPopup(true);
-                setTimeout(() => {
-                    navigate("/");  
-                }, 1500);
-            }
+            setTimeout(() => {
+                navigate("/");
+            }, 900);
+
         } catch (error) {
             const errorMessage = error.response?.data || "Verifique suas credenciais.";
             console.error("Erro no login:", errorMessage);
@@ -180,7 +171,7 @@ function Login() {
         }
     };
 
-    //-------------- LÓGICA DA ANIMAÇÃO --------------
+    //lógica animação
     const [modo, setModo] = useState("");
     const [classeAtual, setClasseAtual] = useState("");
     useEffect(() => {
@@ -192,11 +183,9 @@ function Login() {
         }
     }, [modo]);
 
-    // FUNÇÃO PARA TERMOS DE USO
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [termsError, setTermsError] = useState('');
 
-    // POP-UP de sucesso
     const SuccessPopup = () => (
         <div style={{
             position: 'fixed',
@@ -215,7 +204,7 @@ function Login() {
         </div>
     );
 
-        const SuccessLoginPopup = () => (
+    const SuccessLoginPopup = () => (
         <div style={{
             position: 'fixed',
             top: '20px',
@@ -259,19 +248,19 @@ function Login() {
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
                             <i className="far fa-user icon-modify"></i>
-                            <input type="text" name="nomeCompleto" placeholder="Digite seu nome completo" value={form.nomeCompleto} onChange={handleChange} required />
+                            <input type="text" name="nomeCompleto" placeholder="Digite seu nome completo" value={registerForm.nomeCompleto} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-br-at icon-modify"></i>
-                            <input type="text" name="nomeUsuario" placeholder="Digite o nome de usuário" value={form.nomeUsuario} onChange={handleChange} required />
+                            <input type="text" name="nomeUsuario" placeholder="Digite o nome de usuário" value={registerForm.nomeUsuario} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-rr-envelope icon-modify"></i>
-                            <input type="email" name="email" placeholder="Digite seu Email" value={form.email} onChange={handleChange} required />
+                            <input type="email" name="email" placeholder="Digite seu Email" value={registerForm.email} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-sr-lock icon-modify"></i>
-                            <input type="password" name="senha" placeholder="Digite sua senha" value={form.senha} onChange={handleChange} required />
+                            <input type="password" name="senha" placeholder="Digite sua senha" value={registerForm.senha} onChange={handleChange} required />
                         </label>
                         {passwordError && (
                             <p style={{

@@ -5,6 +5,12 @@ const UsuarioSchema = new mongoose.Schema({
   nomeUsuario: String,
   email: String,
   senha: String,
+  sobre: String,
+  role: {
+    type: String,
+    enum: ["EMPRESA","USUARIO", "MODERADOR"],
+    required: true,
+  },
   joinDate: {
     type: Date,
     default: Date.now

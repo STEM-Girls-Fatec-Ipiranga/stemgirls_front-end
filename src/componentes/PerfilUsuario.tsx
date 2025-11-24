@@ -1,8 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { EditarPerfilModal } from "./EditarPerfilModal"; 
+import { EditarPerfilModal } from "./EditarPerfilModal";
 
 const DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/gST4tJ1/default-profile.png";
 
@@ -18,32 +18,30 @@ export default function PerfilUsuario() {
             })
             : "Data Indisponível";
 
-    const [userData, setUserData] = useState(() => {
-        const storedData = localStorage.getItem("userData");
-        const initialData = storedData && storedData !== "undefined"
-            ? JSON.parse(storedData)
-            : {};
 
-        return {
-            nomeCompleto: initialData.nomeCompleto || "Nome Completo (Sem Login)",
-            nomeUsuario: initialData.nomeUsuario || "stemgirl",
-            email: initialData.email || "exemplo@stemgirls.com.br",
-            sobre: initialData.sobre || "Digite aqui um pequeno texto sobre você!",
-            joinDate: initialData.joinDate || "2024-01-01T00:00:00Z",
-            profileImage: initialData.profileImage || DEFAULT_PROFILE_IMAGE,
-        };
+    const [user, setUser] = useState({
+        data: localStorage.getItem("user")
+            ? JSON.parse(localStorage.getItem("user") || "{}")
+            : {
+                nomeCompleto: "Nome Completo (Sem Login)",
+                nomeUsuario: "stemgirl",
+                email: "exemplo@stemgirls.com.br",
+                sobre: "Digite aqui um pequeno texto sobre você!",
+                joinDate: "2024-01-01T00:00:00Z",
+                profileImage: DEFAULT_PROFILE_IMAGE,
+            }
     });
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const toggleModal = () => setIsModalOpen(!isModalOpen);
 
     const handleSave = (newUserData: any) => {
-        setUserData(newUserData);
-        localStorage.setItem("userData", JSON.stringify(newUserData));
+        setUser(newUserData);
+        localStorage.setItem("user", JSON.stringify(newUserData));
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("userData");
+        localStorage.removeItem("user");
         localStorage.removeItem("userToken");
         navigate("/");
     };
@@ -58,17 +56,17 @@ export default function PerfilUsuario() {
                             <div className="relative -mt-16 sm:-mt-20 mb-6 flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
                                 <div className="relative">
                                     <img
-                                        src={userData.profileImage}
-                                        alt={userData.nomeCompleto}
+                                        src={user.data.profileImage}
+                                        alt={user.data.nomeCompleto}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                         onError={(e: any) => { e.target.onerror = null; e.target.src = DEFAULT_PROFILE_IMAGE; }}
                                     />
                                 </div>
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
-                                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{userData.nomeCompleto}</h2>
+                                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{user.data.nomeCompleto}</h2>
                                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                                         <User className="w-4 h-4 text-purple-600" />
-                                        <span className="text-gray-600 text-[17px]">@{userData.nomeUsuario}</span>
+                                        <span className="text-gray-600 text-[17px]">@{user.data.nomeUsuario}</span>
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-4 sm:mt-0 flex-shrink-0">
@@ -87,7 +85,7 @@ export default function PerfilUsuario() {
                                     <div className="bg-purple-50 rounded-xl p-6 border border-purple-100">
                                         <h3 className="text-xl font-semibold text-gray-900 mb-3 border-b border-purple-200 pb-2">Sobre</h3>
                                         <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                            {userData.sobre?.trim() || "Nenhum texto 'Sobre' adicionado ainda. Clique em 'Editar Perfil' para adicionar um!"}
+                                            {user.data.sobre?.trim() || "Nenhum texto 'Sobre' adicionado ainda. Clique em 'Editar Perfil' para adicionar um!"}
                                         </p>
                                     </div>
                                 </div>
@@ -100,14 +98,14 @@ export default function PerfilUsuario() {
                                                 <Calendar className="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Membro desde</p>
-                                                    <p className="font-medium text-gray-800">{formatDate(userData.joinDate)}</p>
+                                                    <p className="font-medium text-gray-800">{formatDate(user.data.joinDate)}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-start gap-3 text-gray-700">
                                                 <Mail className="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Email de login</p>
-                                                    <p className="font-medium text-gray-800 break-all">{userData.email}</p>
+                                                    <p className="font-medium text-gray-800 break-all">{user.data.email}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -117,10 +115,10 @@ export default function PerfilUsuario() {
 
                             <div className="flex justify-end mt-8">
                                 <Link to="/">
-                                    <button 
+                                    <button
                                         className="w-auto px-6 py-3 bg-purple-500 hover:bg-purple-600 rounded-xl text-white font-bold transition-colors duration-200 shadow-lg flex items-center gap-2"
                                     >
-                                        <ArrowLeft className="w-5 h-5"/>
+                                        <ArrowLeft className="w-5 h-5" />
                                         Voltar
                                     </button>
                                 </Link>
@@ -135,7 +133,7 @@ export default function PerfilUsuario() {
                 isOpen={isModalOpen}
                 onClose={toggleModal}
                 onSave={handleSave}
-                initialData={userData}
+                initialData={user.data}
             />
         </>
     );
