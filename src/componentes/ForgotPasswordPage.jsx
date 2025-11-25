@@ -16,7 +16,7 @@ function ForgotPasswordPage() {
             const response = await axios.post('http://localhost:8080/api/auth/forgot-password', { email });
             setMessage(response.data);
         } catch (error) {
-            setMessage(error.response?.data || 'Ocorreu um erro. Tente novamente.');
+            setMessage(error.response?.data.mensagem || 'Ocorreu um erro. Tente novamente.');
         } finally {
             setIsLoading(false);
         }
@@ -32,7 +32,6 @@ function ForgotPasswordPage() {
                 </p>
                 <form className={Styles.form} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }} onSubmit={handleSubmit}>
                     
-                    {/* --- AQUI ESTÁ A CORREÇÃO --- */}
                     <label className={Styles.input_group} style={{maxWidth: '400px'}}>
                         <i className="fi fi-rr-envelope"></i>
                         <input 

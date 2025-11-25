@@ -83,15 +83,12 @@ function LoginEmpresa() {
     const [termsAccepted, setTermsAccepted] = useState(false);
     const [termsError, setTermsError] = useState('');
 
-    // CADASTRO DE EMPRESA
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();
 
         if (!termsAccepted) {
             setTermsError('Você precisa aceitar os Termos de Uso para concluir o cadastro.');
             return;
-        } else {
-            setTermsError('');
         }
 
         if (!isPasswordValid) {
@@ -127,15 +124,14 @@ function LoginEmpresa() {
             alert("Cadastro realizado! Nossa equipe está analisando seus dados. Você será notificado por e-mail quando for aprovado.");
             setModo("sgnup");
         } catch (error) {
-            console.error("Erro ao cadastrar:", error.response?.data || error.message);
-            alert("Erro ao cadastrar: " + (error.response?.data || error.message));
+            const errorMsg = error.response?.data.mensagem || "Erro ao cadastrar";
+            setStatusMessage(errorMsg);
         }
     };
 
     const [showSuccessPopup, setShowSuccessPopup] = useState(false);
     const [showSuccessLoginPopup, setShowSuccessLoginPopup] = useState(false);
 
-    // LOGIN DE EMPRESA
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
         setStatusMessage('');
@@ -175,7 +171,7 @@ function LoginEmpresa() {
                 navigate("/");
             }, 900);
         } catch (error) {
-            const errorMsg = error.response?.data || "Verifique suas credenciais.";
+            const errorMsg = error.response?.data.mensagem || "Verifique suas credenciais.";
             setStatusMessage(errorMsg);
         }
     };
@@ -283,10 +279,9 @@ function LoginEmpresa() {
                         )}
 
                         <div className={Styles.terms_container}>
-                            <input className={Styles.input_terms} type="checkbox" name="terms" id="terms" required checked={termsAccepted}
+                            <input className={Styles.input_terms} type="checkbox" name="terms" id="terms" checked={termsAccepted}
                                 onChange={(e) => {
                                     setTermsAccepted(e.target.checked);
-                                    if (e.target.checked) setTermsError('');
                                 }} />
                             <label className={Styles.label_terms} htmlFor="terms">
                                 Li e aceito os <a href="#" target="_blank"> Termos de Uso</a>
@@ -294,17 +289,30 @@ function LoginEmpresa() {
                         </div>
                         {termsError && (
                             <p style={{
+                                width: '100%',
+                                textAlign: 'left',
                                 color: '#e74c3c',
                                 fontSize: '0.8rem',
-                                marginTop: '4px',
-                                paddingLeft: '4px',
-                                fontWeight: '600',
+                                marginTop: '5px',
+                                paddingLeft: '5px'
                             }}>
                                 {termsError}
                             </p>
                         )}
 
                         <button type="submit" className={`${Styles.segundo_botao} ${Styles.botao}`}>Cadastrar-se</button>
+
+                        {statusMessage && (
+                            <p style={{
+                                width: '100%',
+                                color: '#e74c3c',
+                                fontSize: '0.8rem',
+                                marginTop: '5px',
+                                paddingLeft: '5px'
+                            }}>
+                                {statusMessage}
+                            </p>
+                        )}
 
                         <Link className={Styles.sou_usuario} to="/login">
                             <a href="/login-empresa">Sou um usuário padrão</a>
@@ -355,9 +363,11 @@ function LoginEmpresa() {
 
                         {statusMessage && (
                             <p style={{
+                                width: '100%',
                                 color: '#e74c3c',
-                                fontSize: '0.9rem',
-                                marginTop: '8px',
+                                fontSize: '0.8rem',
+                                marginTop: '5px',
+                                paddingLeft: '5px',
                                 textAlign: 'center'
                             }}>
                                 {statusMessage}

@@ -73,9 +73,9 @@ export default function App() {
   const [popupOpen, setPopupOpen] = useState(false);
   const [selecionada, setSelecionada] = useState(null);
 
-  const user = JSON.parse(localStorage.getItem("userData"));
-  const empresaToken = localStorage.getItem("empresaToken");
-  const moderadorToken = localStorage.getItem("moderadorToken");
+  const user = JSON.parse(localStorage.getItem("user"));
+  const empresa = localStorage.getItem("empresa");
+  const moderador = localStorage.getItem("moderador");
 
 
   return (
@@ -150,7 +150,7 @@ export default function App() {
 
               <button
                 onClick={() => {
-                  if (user || empresaToken || moderadorToken) {
+                  if (user || empresa || moderador) {
                     setSelecionada(mulher);
                   } else {
                     setPopupOpen(true);
@@ -180,7 +180,6 @@ export default function App() {
         onClose={() => setPopupOpen(false)}
       />
 
-      {/* POP-UP */}
       {selecionada && (
         <div className="fixed inset-0 bg-black/50 flex justify-center items-center p-4">
           <div className="bg-white rounded-xl max-w-lg w-full p-6 relative shadow-2xl overflow-y-auto max-h-[80vh]">

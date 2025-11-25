@@ -73,12 +73,12 @@ export default function PerfilEmpresa() {
 
     const handleSave = (newData: any) => {
         setEmpresaData(newData);
-        localStorage.setItem("empresaData", JSON.stringify(newData));
+        localStorage.setItem("empresa", JSON.stringify(newData));
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("empresaData");
-        localStorage.removeItem("empresaToken");
+        localStorage.removeItem("empresa");
+        localStorage.removeItem("empresa");
         navigate("/");
     };
 

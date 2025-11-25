@@ -42,7 +42,7 @@ export default function PerfilUsuario() {
 
     const handleLogout = () => {
         localStorage.removeItem("user");
-        localStorage.removeItem("userToken");
+        localStorage.removeItem("user");
         navigate("/");
     };
 

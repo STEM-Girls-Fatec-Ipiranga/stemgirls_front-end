@@ -7,20 +7,16 @@ function ResetPasswordPage() {
     const { token } = useParams();
     const navigate = useNavigate();
 
-    // Estados do formulário
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    
-    // Estados de feedback e controle
+
     const [message, setMessage] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    // --- NOVOS ESTADOS PARA VALIDAÇÃO DA SENHA ---
     const [passwordError, setPasswordError] = useState('');
     const [isPasswordValid, setIsPasswordValid] = useState(false);
     const [confirmPasswordError, setConfirmPasswordError] = useState('');
 
-    // --- FUNÇÃO PARA VALIDAR A SENHA FORTE (a mesma do Login.jsx) ---
     const validatePassword = (senha) => {
         const minLength = 8;
         const hasUpperCase = /[A-Z]/.test(senha);
@@ -56,20 +52,18 @@ function ResetPasswordPage() {
         setIsPasswordValid(true);
     };
     
-    // --- NOVO HANDLER UNIFICADO PARA OS INPUTS ---
     const handleChange = (e) => {
         const { name, value } = e.target;
 
         if (name === 'password') {
             setPassword(value);
-            validatePassword(value); // Valida a força da senha
+            validatePassword(value); 
         }
         
         if (name === 'confirmPassword') {
             setConfirmPassword(value);
         }
 
-        // Valida a confirmação da senha (usando 'value' para o campo atual)
         if (name === 'confirmPassword' && password !== value) {
             setConfirmPasswordError('As senhas não coincidem.');
         } else if (name === 'password' && confirmPassword && value !== confirmPassword) {
@@ -82,16 +76,13 @@ function ResetPasswordPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        // Limpa a mensagem geral antes de novas verificações
         setMessage('');
 
-        // Verificação 1: Se a senha é forte
         if (!isPasswordValid) {
             setMessage('Por favor, use uma senha que atenda aos critérios de segurança.');
             return;
         }
         
-        // Verificação 2: Se as senhas coincidem
         if (password !== confirmPassword) {
             setMessage('As senhas não coincidem.');
             return;
@@ -101,9 +92,9 @@ function ResetPasswordPage() {
         setMessage('Redefinindo sua senha...');
         try {
             const response = await axios.post(`http://localhost:8080/api/auth/reset-password/${token}`, {
-                newPassword: password
+                senha: password
             });
-            setPasswordError(''); // Limpa os erros em caso de sucesso
+            setPasswordError(''); 
             setConfirmPasswordError('');
             setMessage(response.data + " Você será redirecionado para o login em 3 segundos.");
             setTimeout(() => {
@@ -111,6 +102,7 @@ function ResetPasswordPage() {
             }, 3000);
         } catch (error) {
             setMessage(error.response?.data || 'Ocorreu um erro. Tente novamente ou solicite um novo link.');
+            console.log(error.response?.data);
             setIsLoading(false);
         }
     };
@@ -136,14 +128,13 @@ function ResetPasswordPage() {
                             required 
                         />
                     </label>
-                    {/* Feedback de força da senha */}
+        
                     {passwordError && (
                         <p style={{ width: '100%', maxWidth: '400px', textAlign: 'left', color: isPasswordValid ? 'green' : '#e74c3c', fontSize: '0.8rem', marginTop: '5px', paddingLeft: '5px' }}>
                             {passwordError}
                         </p>
                     )}
 
-                    {/* Input de confirmação de senha com estilo corrigido */}
                     <label className={Styles.input_group} style={{maxWidth: '400px', marginTop: '15px'}}>
                         <i className="fi fi-sr-lock icon-modify"></i>
                         <input 
@@ -155,7 +146,7 @@ function ResetPasswordPage() {
                             required
                         />
                     </label>
-                     {/* Feedback de confirmação da senha */}
+                     
                     {confirmPasswordError && (
                         <p style={{ width: '100%', maxWidth: '400px', textAlign: 'left', color: '#e74c3c', fontSize: '0.8rem', marginTop: '5px', paddingLeft: '5px' }}>
                             {confirmPasswordError}

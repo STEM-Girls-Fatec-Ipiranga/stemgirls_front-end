@@ -39,9 +39,6 @@ const MenuSuperior = () => {
     { label: "Parceiros", path: "/parceiros" },
   ];
 
-  const empresaToken = localStorage.getItem("empresaToken");
-  const userToken = localStorage.getItem("userToken");
-
   const [user, setUser] = useState({
     data: localStorage.getItem("user")
       ? JSON.parse(localStorage.getItem("user") || "{}")
@@ -80,8 +77,6 @@ const MenuSuperior = () => {
   const handleConfirmLogout = () => {
     localStorage.removeItem("user");
     localStorage.removeItem("empresa");
-    localStorage.removeItem("userToken");
-    localStorage.removeItem("empresaToken");
     setUser(null);
     setEmpresa(null);
     setIsLogoutModalOpen(false);

@@ -1,5 +1,5 @@
 // src/components/CadastroEventos.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
 export default function CadastroEventos({
@@ -8,8 +8,10 @@ export default function CadastroEventos({
   onCancelar,
   imagensDisponiveis = [],
 }) {
-  // Estados do formulário
-  const [empresa, setEmpresa] = useState("");
+  const fileInputRef = useRef(null);
+
+  const [organizadorTipo, setOrganizadorTipo] = useState("stemgirls");
+  const [empresaNome, setEmpresaNome] = useState("");
   const [tituloEvento, setTituloEvento] = useState("");
   const [dataEvento, setDataEvento] = useState("");
   const [horaEvento, setHoraEvento] = useState("");
@@ -21,44 +23,73 @@ export default function CadastroEventos({
   const [rua, setRua] = useState("");
   const [numero, setNumero] = useState("");
   const [complemento, setComplemento] = useState("");
-  const [link, setLink] = useState("");
+  const [linkInscricao, setLinkInscricao] = useState("");
+  const [linkPlataforma, setLinkPlataforma] = useState("");
   const [descricaoEvento, setDescricaoEvento] = useState("");
   const [imagem, setImagem] = useState(imagensDisponiveis[0] || "");
   const [imagemPreview, setImagemPreview] = useState(imagensDisponiveis[0] || "");
 
   useEffect(() => {
     if (eventoEditando) {
-      setEmpresa(eventoEditando.empresa || "");
+      setOrganizadorTipo(eventoEditando.organizadorTipo || "stemgirls");
+      setEmpresaNome(eventoEditando.empresa || eventoEditando.organizador || "");
       setTituloEvento(eventoEditando.titulo || "");
       setDataEvento(eventoEditando.data || "");
       setHoraEvento(eventoEditando.hora || "");
       setModelo(eventoEditando.tipo === "presencial" ? "presencial" : "remoto");
-      setLink(eventoEditando.link || "");
+      setLinkInscricao(eventoEditando.linkInscricao || eventoEditando.link || eventoEditando.linkParaInscricao || "");
+      setLinkPlataforma(eventoEditando.linkPlataforma || eventoEditando.plataforma || "");
       setDescricaoEvento(eventoEditando.descricao || "");
-      setImagem(eventoEditando.imagem || (imagensDisponiveis[0] || ""));
-      setImagemPreview(eventoEditando.imagem || (imagensDisponiveis[0] || ""));
+      setImagem(eventoEditando.imagem || imagensDisponiveis[0] || "");
+      setImagemPreview(eventoEditando.imagem || imagensDisponiveis[0] || "");
 
+      // Preencher endereço caso venha em um campo composto
       if (eventoEditando.enderecoCompleto) {
         const end = eventoEditando.enderecoCompleto;
-        const parts = end.split(" - ");
-        if (parts.length >= 3) {
-          setRua(parts[0].split(",")[0] || "");
-          setNumero(parts[0].split(",")[1]?.trim() || "");
-          setComplemento(parts.length > 3 ? parts[1] : "");
+        const parts = end.split(" - ").map(p => p.trim()).filter(Boolean);
+        if (parts.length >= 1) {
+          // Primeiro pedaço costuma ser "rua, número"
+          const ruaNum = parts[0].split(",").map(p => p.trim());
+          setRua(ruaNum[0] || "");
+          setNumero(ruaNum[1] || "");
+        }
+        // tentar extrair complemento / bairro / cidade-uf
+        if (parts.length === 2) {
+          // ex: "Rua X, 123 - Bairro Y/Cidade/UF" (varia muito, então fazemos heurística)
+          const second = parts[1];
+          if (second.includes("/")) {
+            const lastParts = second.split("/");
+            setCidade((lastParts[0] || "").trim());
+            setEstado((lastParts[1] || "").trim());
+          } else {
+            setBairro(parts[1] || "");
+          }
+        } else if (parts.length >= 3) {
+          setComplemento(parts.length > 2 ? parts[1] : "");
           setBairro(parts[parts.length - 2] || "");
           const cidadeUf = parts[parts.length - 1] || "";
-          const [c, u] = cidadeUf.split("/");
-          setCidade((c || "").trim());
-          setEstado((u || "").trim());
+          const [c, u] = cidadeUf.split("/").map(p => p && p.trim());
+          setCidade(c || "");
+          setEstado(u || "");
         }
+      } else {
+        // popula direto se o backend enviou campos separados
+        setCidade(eventoEditando.cidade || eventoEditando.localidade || "");
+        setEstado(eventoEditando.estado || eventoEditando.uf || "");
+        setBairro(eventoEditando.bairro || "");
+        setRua(eventoEditando.rua || eventoEditando.logradouro || "");
+        setNumero(eventoEditando.numero || "");
+        setComplemento(eventoEditando.complemento || "");
       }
     } else {
       resetForm();
     }
-  }, [eventoEditando]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [eventoEditando]); // depende só do evento sendo editado
 
   const resetForm = () => {
-    setEmpresa("");
+    setOrganizadorTipo("stemgirls");
+    setEmpresaNome("");
     setTituloEvento("");
     setDataEvento("");
     setHoraEvento("");
@@ -70,15 +101,19 @@ export default function CadastroEventos({
     setRua("");
     setNumero("");
     setComplemento("");
-    setLink("");
+    setLinkInscricao("");
+    setLinkPlataforma("");
     setDescricaoEvento("");
-    setImagem(imagensDisponiveis[0] || "");
-    setImagemPreview(imagensDisponiveis[0] || "");
+    const fallback = imagensDisponiveis[0] || "";
+    setImagem(fallback);
+    setImagemPreview(fallback);
+    // limpar input file
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const preencherEndereco = async (cepValor) => {
-    const cepLimpo = cepValor.replace(/\D/g, "");
-    setCep(cepValor);
+    const cepLimpo = (cepValor || "").replace(/\D/g, "");
+    setCep(cepLimpo);
     if (cepLimpo.length !== 8) {
       if (!cepLimpo) {
         setCidade("");
@@ -118,39 +153,63 @@ export default function CadastroEventos({
     const maxSizeMB = 3;
     if (file.size > maxSizeMB * 1024 * 1024) {
       alert(`Arquivo muito grande. Tamanho máximo: ${maxSizeMB}MB.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
       return;
     }
 
     const reader = new FileReader();
     reader.onloadend = () => {
-      const base64 = reader.result;
-      setImagem(base64);
-      setImagemPreview(base64);
+      setImagem(reader.result);
+      setImagemPreview(reader.result);
     };
     reader.readAsDataURL(file);
   };
 
-  // 🔥🔥🔥 FUNÇÃO CORRIGIDA 🔥🔥🔥
   const salvarEvento = () => {
+    // validações simples
+    if (organizadorTipo === "empresa") {
+      if (modelo === "presencial") {
+        if (!linkInscricao.trim()) {
+          alert("Para eventos presenciais realizados por empresas é necessário informar o link de inscrição.");
+          return;
+        }
+      } else {
+        if (!linkPlataforma.trim() || !linkInscricao.trim()) {
+          alert("Para eventos remotos realizados por empresas é necessário informar o link da plataforma e o link de inscrição.");
+          return;
+        }
+      }
+    }
+
+    const enderecoFormatado = modelo === "presencial"
+      ? `${rua || ""}${numero ? ", " + numero : ""}${complemento ? " - " + complemento : ""}${bairro ? " - " + bairro : ""} - ${cidade || ""}/${estado || ""}`
+      : "";
+
     const eventoObj = {
       id: eventoEditando ? eventoEditando.id : Date.now(),
-      empresa: empresa.trim(),
+      organizadorTipo,
+      empresa: empresaNome.trim(),
       titulo: tituloEvento.trim(),
       data: dataEvento,
       hora: horaEvento,
       tipo: modelo,
-      local: modelo === "presencial" ? cidade : "Online",
+      local: modelo === "presencial" ? cidade || "Local não informado" : "Online",
       descricao: descricaoEvento.trim(),
       imagem,
-      link: link.trim(),
-      enderecoCompleto:
-        modelo === "presencial"
-          ? `${rua || ""}, ${numero || ""}${complemento ? " - " + complemento : ""} - ${bairro || ""} - ${cidade || ""}/${estado || ""}`
-          : "",
+      linkInscricao: linkInscricao.trim(),
+      linkPlataforma: linkPlataforma.trim(),
+      enderecoCompleto: enderecoFormatado,
+      // campos separados (úteis se backend espera esses campos)
+      rua: rua.trim(),
+      numero: numero.trim ? numero.trim() : numero,
+      complemento: complemento.trim(),
+      bairro: bairro.trim(),
+      cidade: cidade.trim(),
+      estado: estado.trim(),
+      cep: cep,
     };
 
     const isEdit = Boolean(eventoEditando);
-
     onSalvar(eventoObj, isEdit);
     resetForm();
   };
@@ -158,16 +217,44 @@ export default function CadastroEventos({
   return (
     <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
       <div className="flex items-center gap-2 mb-4">
-        <ArrowLeft className="cursor-pointer" onClick={onCancelar} />
+        <ArrowLeft className="cursor-pointer" onClick={() => { resetForm(); onCancelar(); }} />
         <h2 className="text-2xl font-bold">{eventoEditando ? "Editar Evento" : "Cadastrar Evento"}</h2>
+      </div>
+
+      {/* Organizador */}
+      <div className="mb-3">
+        <label className="block font-semibold mb-2">Organizador</label>
+        <div className="flex gap-3 items-center">
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="organizador"
+              value="stemgirls"
+              checked={organizadorTipo === "stemgirls"}
+              onChange={() => setOrganizadorTipo("stemgirls")}
+            />
+            <span>StemGirls</span>
+          </label>
+
+          <label className="flex items-center gap-2">
+            <input
+              type="radio"
+              name="organizador"
+              value="empresa"
+              checked={organizadorTipo === "empresa"}
+              onChange={() => setOrganizadorTipo("empresa")}
+            />
+            <span>Empresa</span>
+          </label>
+        </div>
       </div>
 
       <input
         type="text"
-        placeholder="Nome da empresa"
+        placeholder="Nome da empresa (se aplicável)"
         className="w-full mb-3 p-2 border rounded-lg"
-        value={empresa}
-        onChange={(e) => setEmpresa(e.target.value)}
+        value={empresaNome}
+        onChange={(e) => setEmpresaNome(e.target.value)}
       />
 
       <input
@@ -185,7 +272,6 @@ export default function CadastroEventos({
           value={dataEvento}
           onChange={(e) => setDataEvento(e.target.value)}
         />
-
         <input
           type="time"
           className="flex-1 p-2 border rounded-lg"
@@ -245,25 +331,46 @@ export default function CadastroEventos({
             />
           </div>
 
-          <input
-            type="text"
-            placeholder="Link para formulário de inscrição"
-            className="w-full p-2 border rounded-lg mt-2"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-          />
+          {organizadorTipo === "empresa" && (
+            <input
+              type="text"
+              placeholder="Link para formulário de inscrição (empresa)"
+              className="w-full p-2 border rounded-lg mt-2"
+              value={linkInscricao}
+              onChange={(e) => setLinkInscricao(e.target.value)}
+            />
+          )}
         </div>
       )}
 
       {modelo === "remoto" && (
         <div className="flex flex-col gap-2 mb-3">
-          <input
-            type="text"
-            placeholder="Link ou plataforma do evento"
-            className="w-full p-2 border rounded-lg"
-            value={link}
-            onChange={(e) => setLink(e.target.value)}
-          />
+          {organizadorTipo === "empresa" ? (
+            <>
+              <input
+                type="text"
+                placeholder="Link da plataforma / sala (empresa)"
+                className="w-full p-2 border rounded-lg"
+                value={linkPlataforma}
+                onChange={(e) => setLinkPlataforma(e.target.value)}
+              />
+              <input
+                type="text"
+                placeholder="Link para inscrição (empresa)"
+                className="w-full p-2 border rounded-lg"
+                value={linkInscricao}
+                onChange={(e) => setLinkInscricao(e.target.value)}
+              />
+            </>
+          ) : (
+            <input
+              type="text"
+              placeholder="Link ou plataforma do evento"
+              className="w-full p-2 border rounded-lg"
+              value={linkInscricao}
+              onChange={(e) => setLinkInscricao(e.target.value)}
+            />
+          )}
         </div>
       )}
 
@@ -276,29 +383,19 @@ export default function CadastroEventos({
 
       <div className="mb-3">
         <label className="font-semibold block mb-1">Imagem do evento</label>
-        <input type="file" accept="image/*" onChange={handleUploadImagem} className="w-full p-2 border rounded-lg" />
-
-        {imagemPreview && (
-          <img src={imagemPreview} alt="Prévia da imagem" className="mt-3 w-full h-40 object-cover rounded-lg border" />
-        )}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handleUploadImagem}
+          className="w-full p-2 border rounded-lg"
+        />
+        {imagemPreview && <img src={imagemPreview} alt="Prévia da imagem" className="mt-3 w-full h-40 object-cover rounded-lg border" />}
       </div>
 
       <div className="flex gap-2">
-        <button
-          className="flex-1 bg-gray-300 px-4 py-2 rounded-lg"
-          onClick={() => {
-            resetForm();
-            onCancelar();
-          }}
-        >
-          Cancelar
-        </button>
-
-        {/* 🔥 BOTÃO CORRIGIDO */}
-        <button
-          className="flex-1 bg-pink-500 text-white px-4 py-2 rounded-lg"
-          onClick={salvarEvento}
-        >
+        <button className="flex-1 bg-gray-300 px-4 py-2 rounded-lg" onClick={() => { resetForm(); onCancelar(); }}>Cancelar</button>
+        <button className="flex-1 bg-pink-500 text-white px-4 py-2 rounded-lg" onClick={salvarEvento}>
           {eventoEditando ? "Salvar alterações" : "Cadastrar"}
         </button>
       </div>
