@@ -9,33 +9,37 @@ const imagensDisponiveis = [
   "/src/assets/img/mulheres-tecnologia.jpg",
 ];
 
-const user = JSON.parse(localStorage.getItem("user"));
+const user = JSON.parse(localStorage.getItem("user") || "null");
 const BACKEND_BASE = "http://localhost:8080";
 
 export default function Eventos() {
+  // dados
   const eventosFixos = [
     {
       id: 1,
       titulo: "Reunião meninas digitais",
-      data: "26/06/2025",
+      data: "2025-06-26",
       hora: "19:00",
       tipo: "ao-vivo",
       local: "São Paulo",
-      descricao: "Reunião para trocar ideias e conhecimentos sobre o projeto buscando o aprimoramento.",
+      descricao:
+        "Reunião para trocar ideias e conhecimentos sobre o projeto buscando o aprimoramento.",
       imagem: "/src/assets/img/mulheres-tecnologia.jpg",
       organizador: "Stem Girls",
+      organizadorTipo: "stemgirls",
       linkInscricao: "",
     },
     {
       id: 2,
       titulo: "Palestra tecnologia inclusiva",
-      data: "28/06/2025",
+      data: "2025-06-28",
       hora: "15:00",
       tipo: "presencial",
       local: "Rio de Janeiro",
       descricao: "Discussão sobre inclusão de mulheres no mercado de tecnologia.",
       imagem: "/src/assets/img/mulheres-tecnologia.jpg",
       organizador: "Empresa XPTO",
+      organizadorTipo: "empresa",
       linkInscricao: "https://empresa-xpto.com/inscricao",
     },
   ];
@@ -55,6 +59,10 @@ export default function Eventos() {
   const [telefone, setTelefone] = useState("");
   const [instituicao, setInstituicao] = useState("");
 
+  // modal de confirmação externa (empresa)
+  const [confirmEmpresa, setConfirmEmpresa] = useState(null);
+
+  // máscaras / validação CPF / telefone
   const aplicarMascaraCPF = (valor) => {
     const cpfLimpo = (valor || "").replace(/\D/g, "");
     let cpfFormatado = cpfLimpo;
@@ -90,6 +98,7 @@ export default function Eventos() {
     return resto === parseInt(c[10]);
   };
 
+  // busca eventos no backend (quando disponível)
   const listarEventosBackend = async () => {
     try {
       const res = await fetch(`${BACKEND_BASE}/eventos`);
@@ -97,6 +106,7 @@ export default function Eventos() {
       const dados = await res.json();
       setEventosCriados(Array.isArray(dados) ? dados : []);
     } catch (e) {
+      // se falhar, mantém só os criados locais vazios (ou você pode mostrar mensagem)
       setEventosCriados([]);
     }
   };
@@ -107,7 +117,15 @@ export default function Eventos() {
 
   const salvarEvento = async (eventoObj, isEdit) => {
     try {
+      // garante as chaves que usamos no front
+      eventoObj.organizadorTipo = (eventoObj.organizadorTipo || eventoObj.organizerType || eventoObj.organizador || "").toString().trim().toLowerCase();
+      // assegura que exista campo "organizador" (compatibilidade)
+      if (!eventoObj.organizador && eventoObj.empresa) eventoObj.organizador = eventoObj.empresa;
+
+      eventoObj.linkInscricao = eventoObj.linkInscricao || eventoObj.link || eventoObj.linkParaInscricao || "";
+
       if (isEdit) {
+        // se estiver integrando backend: tenta atualizar
         const res = await fetch(`${BACKEND_BASE}/eventos/${eventoObj.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -129,7 +147,16 @@ export default function Eventos() {
       setTelaCadastro(false);
       setEventoEditando(null);
     } catch (e) {
-      alert("Erro ao salvar evento.");
+      // fallback: se backend não responder, atualiza localmente (útil durante desenvolvimento)
+      if (!isEdit) {
+        setEventosCriados((prev) => [...prev, eventoObj]);
+        alert("Evento armazenado localmente (backend indisponível).");
+      } else {
+        setEventosCriados((prev) => prev.map((ev) => (ev.id === eventoObj.id ? eventoObj : ev)));
+        alert("Alteração aplicada localmente (backend indisponível).");
+      }
+      setTelaCadastro(false);
+      setEventoEditando(null);
     }
   };
 
@@ -144,42 +171,44 @@ export default function Eventos() {
       alert("Evento excluído!");
       setEventoParaExcluir(null);
     } catch (e) {
-      alert("Erro ao excluir.");
+      // fallback local
+      setEventosCriados((prev) => prev.filter((e) => e.id !== eventoParaExcluir.id));
+      alert("Evento removido localmente (backend indisponível).");
+      setEventoParaExcluir(null);
     }
   };
 
   // ---------- Feed + filtros ----------
   const todosOsEventos = [...eventosFixos, ...eventosCriados];
   const eventosFiltrados = todosOsEventos.filter((ev) => {
-    const tipoMatch = filtro === "todos" || ev.tipo === filtro;
-    const localMatch = (ev.local || "").toLowerCase().includes(localidade.toLowerCase());
+    const tipoMatch = filtro === "todos" || (ev.tipo || ev.tipoEvento || "").toLowerCase() === filtro;
+    const localMatch = (ev.local || ev.cidade || "").toLowerCase().includes(localidade.toLowerCase());
     return tipoMatch && localMatch;
   });
 
   // ---------- Helpers ----------
-  const isStemGirls = (ev) => {
-    const organizador = (ev.organizador || ev.empresa || ev.organizer || "").toString().toLowerCase();
-    return organizador.includes("stem") || organizador.includes("stem girls") || organizador === "stem girls";
+  const normalizeOrganizadorTipo = (ev) => {
+    if (!ev) return "";
+    const t = (ev.organizadorTipo || ev.organizerType || "").toString().trim().toLowerCase();
+    if (t) return t === "empresa" ? "empresa" : t === "stemgirls" ? "stemgirls" : t;
+    // fallback: tenta inferir pelo nome
+    const nome = (ev.organizador || ev.empresa || ev.organizer || "").toString().toLowerCase();
+    if (!nome) return "";
+    if (nome.includes("stem")) return "stemgirls";
+    // assume empresa se não for stem
+    return "empresa";
   };
 
-  const isEmpresa = (ev) => {
-    const organizador = (ev.organizador || ev.empresa || ev.organizer || "").toString().trim();
-    return organizador && !isStemGirls(ev);
-  };
+  const isStemGirls = (ev) => normalizeOrganizadorTipo(ev) === "stemgirls";
+  const isEmpresa = (ev) => normalizeOrganizadorTipo(ev) === "empresa";
 
-  // normalize different possible link fields
   const pegarLinkInscricao = (ev) => {
     if (!ev) return null;
-    const fields = [
-      ev.linkInscricao,
-      ev.link,
-      ev.linkParaInscricao,
-      ev.link_inscricao,
-      ev.linkPlataforma, // fallback: sometimes they put the platform link in this field
-    ];
-    for (const f of fields) {
-      if (typeof f === "string" && f.trim()) return f.trim();
+    const keys = ["linkInscricao", "link", "linkParaInscricao", "link_inscricao", "urlInscricao", "inscricaoLink"];
+    for (const k of keys) {
+      if (ev[k] && typeof ev[k] === "string" && ev[k].trim()) return ev[k].trim();
     }
+    if (ev.linkPlataforma && typeof ev.linkPlataforma === "string" && ev.linkPlataforma.trim()) return ev.linkPlataforma.trim();
     return null;
   };
 
@@ -208,15 +237,16 @@ export default function Eventos() {
 
   const abrirDetalhes = (ev) => setDetalhesEvento(ev);
 
-  // IMPORTANT: if event is empresa and has link -> open link directly.
-  // If event is StemGirls (or no external link) -> open internal inscription modal.
+  // NOVO: abrir inscrição respeitando regras: stem => popup interno; empresa => modal de confirmação (não abre direto)
   const abrirInscricaoComRegras = (ev) => {
+    if (!ev) return;
+    // usa normalização robusta
     if (isStemGirls(ev)) {
       setInscricaoEvento(ev);
-      const user = JSON.parse(localStorage.getItem("user") || "null");
-      if (user) {
-        setNome(user.nome || "");
-        setEmail(user.email || "");
+      const usuario = JSON.parse(localStorage.getItem("user") || "null");
+      if (usuario) {
+        setNome(usuario.nome || "");
+        setEmail(usuario.email || "");
       }
       return;
     }
@@ -224,16 +254,16 @@ export default function Eventos() {
     if (isEmpresa(ev)) {
       const link = pegarLinkInscricao(ev);
       if (link) {
-        // Open in new tab directly as requested
-        window.open(link, "_blank", "noopener,noreferrer");
+        // mostra modal de confirmação para redirecionamento (não abre imediatamente)
+        setConfirmEmpresa({ evento: ev, link });
         return;
       } else {
-        alert("Nenhum link de inscrição foi fornecido para este evento.");
+        alert("Nenhum link de inscrição foi fornecido para este evento de empresa.");
         return;
       }
     }
 
-    // fallback: open internal inscription modal
+    // fallback: trata como interno
     setInscricaoEvento(ev);
   };
 
@@ -272,6 +302,24 @@ export default function Eventos() {
     }
   };
 
+  // confirma redirecionamento para evento empresa (usa alerta simples vindo da sua escolha A)
+  const confirmarRedirecionamentoEmpresa = () => {
+    if (!confirmEmpresa) return;
+    const link = confirmEmpresa.link;
+    if (!link) {
+      alert("Link inválido.");
+      setConfirmEmpresa(null);
+      return;
+    }
+
+    // usa o alert de confirmação simples (Opção A)
+    const quero = window.confirm("Você será direcionado para uma página externa. Deseja continuar?");
+    if (quero) {
+      window.open(link, "_blank", "noopener,noreferrer");
+    }
+    setConfirmEmpresa(null);
+  };
+
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-gray-800">
       {/* Sidebar */}
@@ -289,15 +337,12 @@ export default function Eventos() {
           />
         </div>
 
-        {/* Meus eventos */}
-        {["EMPRESA", "MODERADOR"].includes(user?.role?.toUpperCase()) && (
+        {//["EMPRESA", "MODERADOR"].includes(user?.role?.toUpperCase()) && (
           <>
-            {/* Meus eventos */}
             <div className="mt-2 ml-4">
               <div className="flex justify-between items-center">
                 <h4 className="text-lg font-semibold">Meus eventos</h4>
 
-                {/* Botão VER */}
                 <p
                   className="px-2 py-1 text-sm rounded-md bg-pink-200 hover:bg-pink-300 text-pink-700 cursor-pointer transition"
                   onClick={() => {
@@ -314,7 +359,7 @@ export default function Eventos() {
                   <div className="text-sm text-gray-400">Você ainda não criou eventos.</div>
                 ) : (
                   eventosCriados.map((ev) => (
-                    <div key={ev.id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
+                    <div key={ev.id ?? ev._id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
                       <div className="truncate text-sm">{ev.titulo}</div>
                       <div className="flex gap-1">
                         <button
@@ -339,8 +384,7 @@ export default function Eventos() {
               </div>
             </div>
 
-            {/* Botão Publicar */}
-            <Button
+            <button
               className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
               onClick={() => {
                 setTelaCadastro(true);
@@ -348,9 +392,10 @@ export default function Eventos() {
               }}
             >
               + Publicar Evento
-            </Button>
+            </button>
           </>
-        )}
+        //)
+        }
 
       </aside>
 
@@ -360,7 +405,7 @@ export default function Eventos() {
           <CadastroEventos
             eventoEditando={eventoEditando}
             onSalvar={salvarEvento}
-            onCancelar={() => setTelaCadastro(false)}
+            onCancelar={() => { setTelaCadastro(false); setEventoEditando(null); }}
             imagensDisponiveis={imagensDisponiveis}
           />
         ) : telaMeusEventos ? (
@@ -433,14 +478,14 @@ export default function Eventos() {
                       {(ev.tipo || "").toUpperCase()} - {(ev.local || "")}
                     </p>
                     <div className="mt-auto pt-4 flex justify-center gap-3">
-                      <Button
+                      <button
                         className="bg-[#F36EC0] text-white font-semibold px-6 py-2 hover:bg-[#e055a8] transition"
                         onClick={(e) => { e.stopPropagation(); abrirInscricaoComRegras(ev); }}
                       >
                         Participar
-                      </Button>
+                      </button>
 
-                      <Button
+                      <button
                         className="bg-white border px-4 py-2 text-sm hover:bg-gray-100 transition"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -448,203 +493,230 @@ export default function Eventos() {
                         }}
                       >
                         Saiba mais
-                      </Button>
+                      </button>
 
                     </div>
                   </CardContent>
                 </Card>
               ))}
+
+              {eventosFiltrados.length === 0 && (
+                <div className="text-center text-gray-500 col-span-full">Nenhum evento encontrado.</div>
+              )}
             </div>
           </>
         )}
 
-      {/* Modal Detalhes */}
-      {detalhesEvento && (
-        <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start p-4 overflow-y-auto" onClick={() => setDetalhesEvento(null)}>
-          <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl mt-10 mb-10 
-      max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="flex gap-4 p-6 flex-wrap">
-              <img
-                src={detalhesEvento.imagem || imagensDisponiveis[0]}
-                alt={detalhesEvento.titulo}
-                className="w-40 h-28 object-cover rounded-lg flex-shrink-0"
+        {/* Modal Detalhes */}
+        {detalhesEvento && (
+          <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start p-4 overflow-y-auto" onClick={() => setDetalhesEvento(null)}>
+            <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl mt-10 mb-10 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+              <div className="flex gap-4 p-6 flex-wrap">
+                <img
+                  src={detalhesEvento.imagem || imagensDisponiveis[0]}
+                  alt={detalhesEvento.titulo}
+                  className="w-40 h-28 object-cover rounded-lg flex-shrink-0"
+                />
+
+                <div className="flex-1 min-w-[200px]">
+                  <h2 className="text-2xl font-bold break-words">{detalhesEvento.titulo}</h2>
+
+                  <p className="text-pink-600 mt-1">
+                    {detalhesEvento.data} • {detalhesEvento.hora}
+                  </p>
+
+                  <p className="text-sm italic text-gray-600 mt-1">
+                    {(detalhesEvento.tipo || "").toUpperCase()} — {(detalhesEvento.local || "")}
+                  </p>
+
+                  <p className="mt-2 text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed">
+                    {detalhesEvento.descricao || "Sem descrição fornecida."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t px-6 py-4">
+                <h4 className="font-semibold mb-2">Endereço</h4>
+
+                <div className="text-sm text-gray-700 mb-4 break-words">
+                  {(detalhesEvento.endereco ||
+                    detalhesEvento.enderecoCompleto ||
+                    detalhesEvento.rua ||
+                    detalhesEvento.logradouro) ? (
+                    <div className="break-words">
+                      <div>{detalhesEvento.endereco || detalhesEvento.enderecoCompleto || detalhesEvento.rua || detalhesEvento.logradouro}</div>
+                      <div>
+                        {detalhesEvento.numero ? `Nº ${detalhesEvento.numero}` : ""}{" "}
+                        {detalhesEvento.bairro ? `- ${detalhesEvento.bairro}` : ""}
+                      </div>
+                      <div>
+                        {(detalhesEvento.cidade || detalhesEvento.localidade) ? `${detalhesEvento.cidade || detalhesEvento.localidade}` : ""}{" "}
+                        {detalhesEvento.estado ? `- ${detalhesEvento.estado}` : ""}{" "}
+                        {detalhesEvento.cep ? `, CEP: ${detalhesEvento.cep}` : ""}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-gray-400">Endereço completo não informado.</div>
+                  )}
+                </div>
+
+                <div className="mb-4">
+                  <h4 className="font-semibold mb-2">Links</h4>
+                  <div className="text-sm text-gray-700 flex flex-col gap-2">
+                    {pegarLinkInscricao(detalhesEvento) ? (
+                      <button
+                        className="underline text-sm text-left break-words"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          window.open(pegarLinkInscricao(detalhesEvento), "_blank", "noopener,noreferrer");
+                        }}
+                      >
+                        Link para inscrição
+                      </button>
+                    ) : (
+                      <div className="text-gray-400">Sem link de inscrição</div>
+                    )}
+
+                    {(detalhesEvento.linkPlataforma || detalhesEvento.plataforma || detalhesEvento.link_plataforma) && (
+                      <a
+                        href={detalhesEvento.linkPlataforma || detalhesEvento.plataforma || detalhesEvento.link_plataforma}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="underline text-sm break-words"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        Link da plataforma / sala
+                      </a>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2 items-center"></div>
+
+                  <div className="flex gap-2">
+                    <button
+                      className="bg-gray-200 px-4 py-2 rounded-lg"
+                      onClick={() => setDetalhesEvento(null)}
+                    >
+                      Fechar
+                    </button>
+
+                    <button
+                      className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#e055a8] transition"
+                      onClick={() => abrirInscricaoComRegras(detalhesEvento)}
+                    >
+                      Participar
+                    </button>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal Inscrição (interno - apenas StemGirls ou eventos sem link externo) */}
+        {inscricaoEvento && (
+          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
+            <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
+              <h2 className="text-xl font-bold">Inscrição</h2>
+              <p className="font-semibold mb-3">{inscricaoEvento.titulo}</p>
+
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Nome"
+                value={nome}
+                onChange={(e) => setNome(e.target.value)}
               />
 
-              <div className="flex-1 min-w-[200px]">
-                <h2 className="text-2xl font-bold break-words">{detalhesEvento.titulo}</h2>
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="CPF"
+                value={cpf}
+                onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
+              />
 
-                <p className="text-pink-600 mt-1">
-                  {detalhesEvento.data} • {detalhesEvento.hora}
-                </p>
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-                <p className="text-sm italic text-gray-600 mt-1">
-                  {(detalhesEvento.tipo || "").toUpperCase()} — {(detalhesEvento.local || "")}
-                </p>
+              <input
+                className="w-full p-2 border rounded mb-2"
+                placeholder="Telefone"
+                value={telefone}
+                onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
+              />
 
-                <p className="mt-2 text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed">
-                  {detalhesEvento.descricao || "Sem descrição fornecida."}
-                </p>
-              </div>
-            </div>
+              <input
+                className="w-full p-2 border rounded mb-3"
+                placeholder="Instituição"
+                value={instituicao}
+                onChange={(e) => setInstituicao(e.target.value)}
+              />
 
-            <div className="border-t px-6 py-4">
-              <h4 className="font-semibold mb-2">Endereço</h4>
+              <div className="flex justify-between">
+                <button className="bg-gray-300 px-4 py-2 rounded-lg" onClick={() => setInscricaoEvento(null)}>
+                  Cancelar
+                </button>
 
-              <div className="text-sm text-gray-700 mb-4 break-words">
-                {(detalhesEvento.endereco ||
-                  detalhesEvento.enderecoCompleto ||
-                  detalhesEvento.rua ||
-                  detalhesEvento.logradouro) ? (
-                  <div className="break-words">
-                    <div>{detalhesEvento.endereco || detalhesEvento.enderecoCompleto || detalhesEvento.rua || detalhesEvento.logradouro}</div>
-                    <div>
-                      {detalhesEvento.numero ? `Nº ${detalhesEvento.numero}` : ""}{" "}
-                      {detalhesEvento.bairro ? `- ${detalhesEvento.bairro}` : ""}
-                    </div>
-                    <div>
-                      {(detalhesEvento.cidade || detalhesEvento.localidade) ?
-                        `${detalhesEvento.cidade || detalhesEvento.localidade}` : ""}{" "}
-                      {detalhesEvento.estado ? `- ${detalhesEvento.estado}` : ""}{" "}
-                      {detalhesEvento.cep ? `, CEP: ${detalhesEvento.cep}` : ""}
-                    </div>
-                  </div>
-                ) : (
-                  <div className="text-gray-400">Endereço completo não informado.</div>
-                )}
-              </div>
-
-              <div className="mb-4">
-                <h4 className="font-semibold mb-2">Links</h4>
-                <div className="text-sm text-gray-700 flex flex-col gap-2">
-                  {pegarLinkInscricao(detalhesEvento) ? (
-                    <button
-                      className="underline text-sm text-left break-words"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        // abrir o link em nova aba
-                        window.open(pegarLinkInscricao(detalhesEvento), "_blank", "noopener,noreferrer");
-                      }}
-                    >
-                      Link para inscrição
-                    </button>
-                  ) : (
-                    <div className="text-gray-400">Sem link de inscrição</div>
-                  )}
-
-                  {(detalhesEvento.linkPlataforma || detalhesEvento.plataforma || detalhesEvento.link_plataforma) && (
-                    <a
-                      href={detalhesEvento.linkPlataforma || detalhesEvento.plataforma || detalhesEvento.link_plataforma}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="underline text-sm break-words"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      Link da plataforma / sala
-                    </a>
-                  )}
-                </div>
-              </div>
-
-              <div className="flex justify-between items-center">
-                <div className="flex gap-2 items-center"></div>
-
-                <div className="flex gap-2">
-                  <button
-                    className="bg-gray-200 px-4 py-2 rounded-lg"
-                    onClick={() => setDetalhesEvento(null)}
-                  >
-                    Fechar
-                  </button>
-
-                  <button
-                    className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#e055a8] transition"
-                    onClick={() => abrirInscricaoComRegras(detalhesEvento)}
-                  >
-                    Participar
-                  </button>
-
-                </div>
+                <button className="bg-pink-500 text-white px-4 py-2 rounded-lg" onClick={enviarInscricao}>
+                  Confirmar
+                </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Modal Inscrição (interno - apenas StemGirls ou eventos sem link externo) */}
-      {inscricaoEvento && (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
-          <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
-            <h2 className="text-xl font-bold">Inscrição</h2>
-            <p className="font-semibold mb-3">{inscricaoEvento.titulo}</p>
+        {/* Modal confirmar redirecionamento evento empresa (usado apenas para manter estado; a confirmação final usa window.confirm) */}
+        {confirmEmpresa && (
+          <div className="fixed inset-0 z-60 bg-black bg-opacity-50 flex justify-center items-center p-4">
+            <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl">
+              <h3 className="text-xl font-bold mb-2">{confirmEmpresa.evento.titulo}</h3>
+              <p className="mb-4">Você será direcionada para uma página externa de inscrição. Deseja continuar?</p>
 
-            <input
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Nome"
-              value={nome}
-              onChange={(e) => setNome(e.target.value)}
-            />
+              <div className="flex flex-col gap-2">
+                <button
+                  onClick={confirmarRedirecionamentoEmpresa}
+                  className="w-full bg-green-600 text-white py-2 rounded"
+                >
+                  Confirmar e Acessar
+                </button>
 
-            <input
-              className="w-full p-2 border rounded mb-2"
-              placeholder="CPF"
-              value={cpf}
-              onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
-            />
-
-            <input
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-
-            <input
-              className="w-full p-2 border rounded mb-2"
-              placeholder="Telefone"
-              value={telefone}
-              onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
-            />
-
-            <input
-              className="w-full p-2 border rounded mb-3"
-              placeholder="Instituição"
-              value={instituicao}
-              onChange={(e) => setInstituicao(e.target.value)}
-            />
-
-            <div className="flex justify-between">
-              <button className="bg-gray-300 px-4 py-2 rounded-lg" onClick={() => setInscricaoEvento(null)}>
-                Cancelar
-              </button>
-
-              <button className="bg-pink-500 text-white px-4 py-2 rounded-lg" onClick={enviarInscricao}>
-                Confirmar
-              </button>
+                <button
+                  onClick={() => setConfirmEmpresa(null)}
+                  className="w-full bg-gray-300 text-black py-2 rounded"
+                >
+                  Cancelar
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Modal excluir */}
-      {eventoParaExcluir && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-xl w-96">
-            <h3 className="font-bold text-lg">Excluir evento</h3>
-            <p className="mb-4">
-              Tem certeza que deseja excluir <b>{eventoParaExcluir.titulo}</b>?
-            </p>
+        {/* Modal excluir */}
+        {eventoParaExcluir && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+            <div className="bg-white p-6 rounded-xl w-96">
+              <h3 className="font-bold text-lg">Excluir evento</h3>
+              <p className="mb-4">
+                Tem certeza que deseja excluir <b>{eventoParaExcluir.titulo}</b>?
+              </p>
 
-            <div className="flex justify-between">
-              <button className="bg-gray-300 px-4 py-2 rounded-lg" onClick={() => setEventoParaExcluir(null)}>
-                Cancelar
-              </button>
-              <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={confirmarExcluirEvento}>
-                Excluir
-              </button>
+              <div className="flex justify-between">
+                <button className="bg-gray-300 px-4 py-2 rounded-lg" onClick={() => setEventoParaExcluir(null)}>
+                  Cancelar
+                </button>
+                <button className="bg-red-500 text-white px-4 py-2 rounded-lg" onClick={confirmarExcluirEvento}>
+                  Excluir
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
       </main>
     </div>
   );
