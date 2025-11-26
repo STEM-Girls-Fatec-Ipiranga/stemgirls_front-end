@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
 import { Comunidade } from '../types';
 import CriarComunidadesModal from './CriarComunidadesModal';
@@ -27,7 +27,24 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
   const [showLoginPopup, setShowLoginPopup] = useState(false);
 
   const navigate = useNavigate();
-  const user = localStorage.getItem("userData");
+  //const user = localStorage.getItem("user");
+
+  const [user, setUser] = useState({
+    data: localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user") || "{}")
+      : {}
+  });
+
+  const [usuarioLogado, setUsuarioLogado] = useState({});
+
+  useEffect(() => {
+    if (user.data.nomeUsuario != null) {
+      setUsuarioLogado({
+        nomeUsuario: user.data.nomeUsuario,
+        role: user.data.role
+      });
+    }
+  }, []);
 
   const aoSelecionar = (comunidade: Comunidade | null) => {
     aoSelecionarComunidade(comunidade);
@@ -44,7 +61,7 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
 
   // 🟣 ALTERAÇÃO: proteção para criar comunidade
   const handleCreateClick = () => {
-    if (!user) {
+    if (user == null) {
       setShowLoginPopup(true);
       return;
     }
@@ -53,7 +70,7 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
 
   // 🟣 ALTERAÇÃO: proteção ao clicar em comunidade
   const handleCommunityClick = (comunidade: Comunidade | null) => {
-    if (!user) {
+    if (user == null) {
       setShowLoginPopup(true);
       return;
     }
@@ -62,7 +79,7 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
 
   // 🟣 ALTERAÇÃO: proteção na barra de pesquisa
   const handleSearchClick = () => {
-    if (!user) {
+    if (user == null) {
       setShowLoginPopup(true);
       return;
     }
@@ -71,9 +88,8 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
   return (
     <>
       <div
-        className={`bg-[#FFF6FF] shadow-lg transition-all duration-300 ${
-          colapsada ? 'w-0 overflow-hidden' : 'w-80'
-        } relative border-r border-pink-100`}
+        className={`bg-[#FFF6FF] shadow-lg transition-all duration-300 ${colapsada ? 'w-0 overflow-hidden' : 'w-80'
+          } relative border-r border-pink-100`}
       >
         <div className="w-[80%] h-[50px] m-auto mt-[15px] flex items-center bg-[#FFF6FF]">
           <h1 className="font-bold text-black text-[22px]">Comunidades</h1>
@@ -83,11 +99,10 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
           {/* Feed Geral */}
           <div
             onClick={() => handleCommunityClick(null)} // 🟣 ALTERAÇÃO
-            className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-200 mb-4 ${
-              comunidadeSelecionada === null
-                ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
-                : 'hover:bg-gray-50'
-            }`}
+            className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-200 mb-4 ${comunidadeSelecionada === null
+              ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
+              : 'hover:bg-gray-50'
+              }`}
           >
             <span className="w-8 h-8 rounded-full bg-pink-500 flex items-center justify-center text-white font-bold text-lg mr-3">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,11 +136,10 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
                   <div
                     key={comunidade.id}
                     onClick={() => handleCommunityClick(comunidade)} // 🟣 ALTERAÇÃO
-                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                      comunidadeSelecionada?.id === comunidade.id
-                        ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
-                        : 'hover:bg-gray-50'
-                    }`}
+                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${comunidadeSelecionada?.id === comunidade.id
+                      ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
+                      : 'hover:bg-gray-50'
+                      }`}
                   >
                     <img
                       src={comunidade.avatar}
@@ -162,11 +176,10 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
                   <div
                     key={comunidade.id}
                     onClick={() => handleCommunityClick(comunidade)} // 🟣 ALTERAÇÃO
-                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${
-                      comunidadeSelecionada?.id === comunidade.id
-                        ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
-                        : 'hover:bg-gray-50'
-                    }`}
+                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${comunidadeSelecionada?.id === comunidade.id
+                      ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
+                      : 'hover:bg-gray-50'
+                      }`}
                   >
                     <img
                       src={comunidade.avatar}

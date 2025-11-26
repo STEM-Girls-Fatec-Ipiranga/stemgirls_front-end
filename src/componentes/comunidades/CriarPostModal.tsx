@@ -58,7 +58,7 @@ const CriarPostModal: React.FC<CriarPostModalProps> = ({
               value={titulo}
               onChange={(e) => setTitulo(e.target.value)}
               placeholder="Digite o título da sua publicação..."
-              className="w-full text-black px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
               required
             />
           </div>
@@ -72,7 +72,7 @@ const CriarPostModal: React.FC<CriarPostModalProps> = ({
               onChange={(e) => setConteudo(e.target.value)}
               placeholder="Compartilhe suas ideias com a comunidade..."
               rows={4}
-              className="w-full text-black px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
+              className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
               required
             />
           </div>
@@ -89,7 +89,7 @@ const CriarPostModal: React.FC<CriarPostModalProps> = ({
                 value={imagem}
                 onChange={(e) => setImagem(e.target.value)}
                 placeholder="https://exemplo.com/imagem.jpg"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent text-sm"
+                className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
               />
             </div>
           </div>

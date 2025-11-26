@@ -634,18 +634,18 @@ export default function MiniMentes() {
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-3">
-              <input value={uploadForm.title} onChange={(e) => setUploadForm((f) => ({ ...f, title: e.target.value }))} placeholder="Título" className="p-3 rounded border" />
-              <textarea value={uploadForm.description} onChange={(e) => setUploadForm((f) => ({ ...f, description: e.target.value }))} placeholder="Descrição" className="p-3 rounded border" rows={3} />
+              <input value={uploadForm.title} onChange={(e) => setUploadForm((f) => ({ ...f, title: e.target.value }))} placeholder="Título" className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" />
+              <textarea value={uploadForm.description} onChange={(e) => setUploadForm((f) => ({ ...f, description: e.target.value }))} placeholder="Descrição" className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" rows={3} />
 
               <div className="grid grid-cols-2 gap-2">
-                <select value={uploadForm.category} onChange={(e) => setUploadForm((f) => ({ ...f, category: e.target.value }))} className="p-3 rounded border">
+                <select value={uploadForm.category} onChange={(e) => setUploadForm((f) => ({ ...f, category: e.target.value }))} className="p-3 rounded border border-gray-200 bg-gray-100 text-gray-700">
                   {data.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.title}
                     </option>
                   ))}
                 </select>
-                <select value={uploadForm.difficulty} onChange={(e) => setUploadForm((f) => ({ ...f, difficulty: e.target.value }))} className="p-3 rounded border">
+                <select value={uploadForm.difficulty} onChange={(e) => setUploadForm((f) => ({ ...f, difficulty: e.target.value }))} className="p-3 rounded border border-gray-200 bg-gray-100 text-gray-700">
                   <option>Fácil</option>
                   <option>Médio</option>
                   <option>Difícil</option>

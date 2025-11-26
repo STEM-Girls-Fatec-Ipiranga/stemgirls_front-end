@@ -259,7 +259,6 @@ export default function Canais() {
                 role: "USUARIO",
                 sobre: "Digite aqui um pequeno texto sobre você!",
                 joinDate: "2024-01-01T00:00:00Z",
-                profileImage: DEFAULT_PROFILE_IMAGE,
             }
     });
 
@@ -404,7 +403,7 @@ export default function Canais() {
         ) : null}
 
         {/* Meus Canais */}
-        {user.role == "MODERADOR" && (
+        {user?.role === "MODERADOR" && (
           <>
             <h3 className="text-xl font-semibold mb-3 text-gray-800">Meus Canais</h3>
             

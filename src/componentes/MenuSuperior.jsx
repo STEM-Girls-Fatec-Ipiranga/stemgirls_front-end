@@ -83,7 +83,6 @@ const MenuSuperior = () => {
     navigate("/");
   };
 
-
   return (
     <header className="w-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg" style={{
       background: 'linear-gradient(90deg, #af5fe4 0%, #f36ec0 100%)'
