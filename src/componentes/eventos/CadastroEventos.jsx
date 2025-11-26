@@ -1,4 +1,3 @@
-// src/components/CadastroEventos.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { ArrowLeft } from "lucide-react";
 
@@ -31,31 +30,35 @@ export default function CadastroEventos({
 
   useEffect(() => {
     if (eventoEditando) {
-      setOrganizadorTipo(eventoEditando.organizadorTipo || "stemgirls");
+      // decide organizador
+      const organizadorField = eventoEditando.organizador || eventoEditando.empresa || "";
+      const isStem = (organizadorField || "").toString().toLowerCase().includes("stem");
+      const tipoNormalized = (eventoEditando.organizadorTipo || (isStem ? "stemgirls" : "empresa")).toString().trim().toLowerCase();
+      setOrganizadorTipo(tipoNormalized === "empresa" ? "empresa" : "stemgirls");
       setEmpresaNome(eventoEditando.empresa || eventoEditando.organizador || "");
+
       setTituloEvento(eventoEditando.titulo || "");
-      setDataEvento(eventoEditando.data || "");
-      setHoraEvento(eventoEditando.hora || "");
-      setModelo(eventoEditando.tipo === "presencial" ? "presencial" : "remoto");
+      setDataEvento(eventoEditando.data || eventoEditando.dataEvento || "");
+      setHoraEvento(eventoEditando.hora || eventoEditando.horaEvento || "");
+      setModelo((eventoEditando.tipo || "presencial").toString().toLowerCase() === "presencial" ? "presencial" : "remoto");
+
+      // PRIORIZA eventoEditando.linkInscricao -> eventoEditando.link
       setLinkInscricao(eventoEditando.linkInscricao || eventoEditando.link || eventoEditando.linkParaInscricao || "");
       setLinkPlataforma(eventoEditando.linkPlataforma || eventoEditando.plataforma || "");
+
       setDescricaoEvento(eventoEditando.descricao || "");
       setImagem(eventoEditando.imagem || imagensDisponiveis[0] || "");
       setImagemPreview(eventoEditando.imagem || imagensDisponiveis[0] || "");
 
-      // Preencher endereço caso venha em um campo composto
       if (eventoEditando.enderecoCompleto) {
         const end = eventoEditando.enderecoCompleto;
         const parts = end.split(" - ").map(p => p.trim()).filter(Boolean);
         if (parts.length >= 1) {
-          // Primeiro pedaço costuma ser "rua, número"
           const ruaNum = parts[0].split(",").map(p => p.trim());
           setRua(ruaNum[0] || "");
           setNumero(ruaNum[1] || "");
         }
-        // tentar extrair complemento / bairro / cidade-uf
         if (parts.length === 2) {
-          // ex: "Rua X, 123 - Bairro Y/Cidade/UF" (varia muito, então fazemos heurística)
           const second = parts[1];
           if (second.includes("/")) {
             const lastParts = second.split("/");
@@ -68,12 +71,11 @@ export default function CadastroEventos({
           setComplemento(parts.length > 2 ? parts[1] : "");
           setBairro(parts[parts.length - 2] || "");
           const cidadeUf = parts[parts.length - 1] || "";
-          const [c, u] = cidadeUf.split("/").map(p => p && p.trim());
+          const [c, u] = (cidadeUf.split("/").map(p => p && p.trim()));
           setCidade(c || "");
           setEstado(u || "");
         }
       } else {
-        // popula direto se o backend enviou campos separados
         setCidade(eventoEditando.cidade || eventoEditando.localidade || "");
         setEstado(eventoEditando.estado || eventoEditando.uf || "");
         setBairro(eventoEditando.bairro || "");
@@ -85,7 +87,7 @@ export default function CadastroEventos({
       resetForm();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [eventoEditando]); // depende só do evento sendo editado
+  }, [eventoEditando]);
 
   const resetForm = () => {
     setOrganizadorTipo("stemgirls");
@@ -107,7 +109,6 @@ export default function CadastroEventos({
     const fallback = imagensDisponiveis[0] || "";
     setImagem(fallback);
     setImagemPreview(fallback);
-    // limpar input file
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -166,8 +167,11 @@ export default function CadastroEventos({
   };
 
   const salvarEvento = () => {
-    // validações simples
-    if (organizadorTipo === "empresa") {
+    // padroniza salvar organizadorTipo em lowercase e valores esperados
+    const organizadorTipoNormalized = (organizadorTipo || "").toString().trim().toLowerCase();
+    const tipoFinal = organizadorTipoNormalized === "empresa" ? "empresa" : "stemgirls";
+
+    if (tipoFinal === "empresa") {
       if (modelo === "presencial") {
         if (!linkInscricao.trim()) {
           alert("Para eventos presenciais realizados por empresas é necessário informar o link de inscrição.");
@@ -182,13 +186,14 @@ export default function CadastroEventos({
     }
 
     const enderecoFormatado = modelo === "presencial"
-      ? `${rua || ""}${numero ? ", " + numero : ""}${complemento ? " - " + complemento : ""}${bairro ? " - " + bairro : ""} - ${cidade || ""}/${estado || ""}`
+      ? `${rua || ""}${numero ? ", " + numero : ""}${complemento ? " - " + complemento : ""}${bairro ? " - " + bairro : ""}${cidade ? " - " + cidade : ""}${estado ? "/" + estado : ""}`
       : "";
 
     const eventoObj = {
-      id: eventoEditando ? eventoEditando.id : Date.now(),
-      organizadorTipo,
-      empresa: empresaNome.trim(),
+      id: eventoEditando ? (eventoEditando.id ?? eventoEditando._id) : Date.now(),
+      organizadorTipo: tipoFinal,
+      empresa: (empresaNome || "").trim(),
+      organizador: (empresaNome || "").trim() || (tipoFinal === "stemgirls" ? "Stem Girls" : ""),
       titulo: tituloEvento.trim(),
       data: dataEvento,
       hora: horaEvento,
@@ -196,16 +201,19 @@ export default function CadastroEventos({
       local: modelo === "presencial" ? cidade || "Local não informado" : "Online",
       descricao: descricaoEvento.trim(),
       imagem,
+
+      // garante compatibilidade com front/back
+      link: linkInscricao.trim(),
       linkInscricao: linkInscricao.trim(),
       linkPlataforma: linkPlataforma.trim(),
+
       enderecoCompleto: enderecoFormatado,
-      // campos separados (úteis se backend espera esses campos)
-      rua: rua.trim(),
-      numero: numero.trim ? numero.trim() : numero,
-      complemento: complemento.trim(),
-      bairro: bairro.trim(),
-      cidade: cidade.trim(),
-      estado: estado.trim(),
+      rua: (rua || "").trim(),
+      numero: (numero || "").toString().trim ? (numero || "").toString().trim() : (numero || ""),
+      complemento: (complemento || "").trim(),
+      bairro: (bairro || "").trim(),
+      cidade: (cidade || "").trim(),
+      estado: (estado || "").trim(),
       cep: cep,
     };
 
@@ -221,7 +229,6 @@ export default function CadastroEventos({
         <h2 className="text-2xl font-bold">{eventoEditando ? "Editar Evento" : "Cadastrar Evento"}</h2>
       </div>
 
-      {/* Organizador */}
       <div className="mb-3">
         <label className="block font-semibold mb-2">Organizador</label>
         <div className="flex gap-3 items-center">
@@ -249,62 +256,23 @@ export default function CadastroEventos({
         </div>
       </div>
 
-      <input
-        type="text"
-        placeholder="Nome da empresa (se aplicável)"
-        className="w-full mb-3 p-2 border rounded-lg"
-        value={empresaNome}
-        onChange={(e) => setEmpresaNome(e.target.value)}
-      />
+      <input type="text" placeholder="Nome da empresa (se aplicável)" className="w-full mb-3 p-2 border rounded-lg" value={empresaNome} onChange={(e) => setEmpresaNome(e.target.value)} />
 
-      <input
-        type="text"
-        placeholder="Nome do evento"
-        className="w-full mb-3 p-2 border rounded-lg"
-        value={tituloEvento}
-        onChange={(e) => setTituloEvento(e.target.value)}
-      />
+      <input type="text" placeholder="Nome do evento" className="w-full mb-3 p-2 border rounded-lg" value={tituloEvento} onChange={(e) => setTituloEvento(e.target.value)} />
 
       <div className="flex gap-2 mb-3">
-        <input
-          type="date"
-          className="flex-1 p-2 border rounded-lg"
-          value={dataEvento}
-          onChange={(e) => setDataEvento(e.target.value)}
-        />
-        <input
-          type="time"
-          className="flex-1 p-2 border rounded-lg"
-          value={horaEvento}
-          onChange={(e) => setHoraEvento(e.target.value)}
-        />
+        <input type="date" className="flex-1 p-2 border rounded-lg" value={dataEvento} onChange={(e) => setDataEvento(e.target.value)} />
+        <input type="time" className="flex-1 p-2 border rounded-lg" value={horaEvento} onChange={(e) => setHoraEvento(e.target.value)} />
       </div>
 
       <div className="flex gap-2 mb-3">
-        <button
-          className={modelo === "presencial" ? "px-4 py-2 rounded-lg font-semibold bg-pink-500 text-white" : "px-4 py-2 rounded-lg font-semibold bg-gray-200"}
-          onClick={() => setModelo("presencial")}
-        >
-          Presencial
-        </button>
-
-        <button
-          className={modelo === "remoto" ? "px-4 py-2 rounded-lg font-semibold bg-pink-500 text-white" : "px-4 py-2 rounded-lg font-semibold bg-gray-200"}
-          onClick={() => setModelo("remoto")}
-        >
-          Remoto
-        </button>
+        <button className={modelo === "presencial" ? "px-4 py-2 rounded-lg font-semibold bg-pink-500 text-white" : "px-4 py-2 rounded-lg font-semibold bg-gray-200"} onClick={() => setModelo("presencial")}>Presencial</button>
+        <button className={modelo === "remoto" ? "px-4 py-2 rounded-lg font-semibold bg-pink-500 text-white" : "px-4 py-2 rounded-lg font-semibold bg-gray-200"} onClick={() => setModelo("remoto")}>Remoto</button>
       </div>
 
       {modelo === "presencial" && (
         <div className="flex flex-col gap-2 mb-3">
-          <input
-            type="text"
-            placeholder="CEP"
-            className="w-full p-2 border rounded-lg"
-            value={cep}
-            onChange={(e) => preencherEndereco(e.target.value)}
-          />
+          <input type="text" placeholder="CEP" className="w-full p-2 border rounded-lg" value={cep} onChange={(e) => preencherEndereco(e.target.value)} />
 
           <div className="flex gap-2">
             <input type="text" placeholder="Cidade" className="flex-1 p-2 border rounded-lg" value={cidade} readOnly />
@@ -315,30 +283,12 @@ export default function CadastroEventos({
           <input type="text" placeholder="Rua" className="w-full p-2 border rounded-lg" value={rua} readOnly />
 
           <div className="flex gap-2">
-            <input
-              type="text"
-              placeholder="Número"
-              className="flex-1 p-2 border rounded-lg"
-              value={numero}
-              onChange={(e) => setNumero(e.target.value)}
-            />
-            <input
-              type="text"
-              placeholder="Complemento"
-              className="flex-1 p-2 border rounded-lg"
-              value={complemento}
-              onChange={(e) => setComplemento(e.target.value)}
-            />
+            <input type="text" placeholder="Número" className="flex-1 p-2 border rounded-lg" value={numero} onChange={(e) => setNumero(e.target.value)} />
+            <input type="text" placeholder="Complemento" className="flex-1 p-2 border rounded-lg" value={complemento} onChange={(e) => setComplemento(e.target.value)} />
           </div>
 
           {organizadorTipo === "empresa" && (
-            <input
-              type="text"
-              placeholder="Link para formulário de inscrição (empresa)"
-              className="w-full p-2 border rounded-lg mt-2"
-              value={linkInscricao}
-              onChange={(e) => setLinkInscricao(e.target.value)}
-            />
+            <input type="text" placeholder="Link para formulário de inscrição (empresa)" className="w-full p-2 border rounded-lg mt-2" value={linkInscricao} onChange={(e) => setLinkInscricao(e.target.value)} />
           )}
         </div>
       )}
@@ -347,57 +297,26 @@ export default function CadastroEventos({
         <div className="flex flex-col gap-2 mb-3">
           {organizadorTipo === "empresa" ? (
             <>
-              <input
-                type="text"
-                placeholder="Link da plataforma / sala (empresa)"
-                className="w-full p-2 border rounded-lg"
-                value={linkPlataforma}
-                onChange={(e) => setLinkPlataforma(e.target.value)}
-              />
-              <input
-                type="text"
-                placeholder="Link para inscrição (empresa)"
-                className="w-full p-2 border rounded-lg"
-                value={linkInscricao}
-                onChange={(e) => setLinkInscricao(e.target.value)}
-              />
+              <input type="text" placeholder="Link da plataforma / sala (empresa)" className="w-full p-2 border rounded-lg" value={linkPlataforma} onChange={(e) => setLinkPlataforma(e.target.value)} />
+              <input type="text" placeholder="Link para inscrição (empresa)" className="w-full p-2 border rounded-lg" value={linkInscricao} onChange={(e) => setLinkInscricao(e.target.value)} />
             </>
           ) : (
-            <input
-              type="text"
-              placeholder="Link ou plataforma do evento"
-              className="w-full p-2 border rounded-lg"
-              value={linkInscricao}
-              onChange={(e) => setLinkInscricao(e.target.value)}
-            />
+            <input type="text" placeholder="Link ou plataforma do evento" className="w-full p-2 border rounded-lg" value={linkInscricao} onChange={(e) => setLinkInscricao(e.target.value)} />
           )}
         </div>
       )}
 
-      <textarea
-        placeholder="Descrição do evento"
-        className="w-full mb-3 p-2 border rounded-lg"
-        value={descricaoEvento}
-        onChange={(e) => setDescricaoEvento(e.target.value)}
-      />
+      <textarea placeholder="Descrição do evento" className="w-full mb-3 p-2 border rounded-lg" value={descricaoEvento} onChange={(e) => setDescricaoEvento(e.target.value)} />
 
       <div className="mb-3">
         <label className="font-semibold block mb-1">Imagem do evento</label>
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept="image/*"
-          onChange={handleUploadImagem}
-          className="w-full p-2 border rounded-lg"
-        />
+        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleUploadImagem} className="w-full p-2 border rounded-lg" />
         {imagemPreview && <img src={imagemPreview} alt="Prévia da imagem" className="mt-3 w-full h-40 object-cover rounded-lg border" />}
       </div>
 
       <div className="flex gap-2">
         <button className="flex-1 bg-gray-300 px-4 py-2 rounded-lg" onClick={() => { resetForm(); onCancelar(); }}>Cancelar</button>
-        <button className="flex-1 bg-pink-500 text-white px-4 py-2 rounded-lg" onClick={salvarEvento}>
-          {eventoEditando ? "Salvar alterações" : "Cadastrar"}
-        </button>
+        <button className="flex-1 bg-pink-500 text-white px-4 py-2 rounded-lg" onClick={salvarEvento}>{eventoEditando ? "Salvar alterações" : "Cadastrar"}</button>
       </div>
     </div>
   );
