@@ -42,8 +42,8 @@ function PopupConfirmar({ fechar }) {
                         className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                     />
 
-                    {erro && <p className="text-red-500">{erro}</p>}
-                    {mensagem && <p className="text-gray-500 text-sm">{mensagem}</p>}
+                    {erro && <p className="text-red-700">{erro}</p>}
+                    {mensagem && <p className="text-gray-700 text-sm">{mensagem}</p>}
 
                     <div className="flex justify-end gap-4 mt-4">
                         <button type="button" onClick={fechar} className="bg-gray-500 text-white px-4 py-2 rounded-xl">

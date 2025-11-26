@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 
-
-
 const CadastroEvento = () => {
   const [form, setForm] = useState({
     nomeEmpresa: '',
@@ -55,7 +53,6 @@ const CadastroEvento = () => {
       }))
     }
 
-    // Limpar erro do campo quando usuário começar a digitar
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,

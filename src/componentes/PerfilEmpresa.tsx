@@ -17,63 +17,26 @@ export default function PerfilEmpresa() {
               })
             : "Data Indisponível";
 
-    const [empresaData, setEmpresaData] = useState({
-        nomeEmpresa: "Meninas Mulheres",
-        cnpj: "",
-        emailEmpresa: "meninasmulheres@exemplo.com.br",
-        senha: "********",
-        sobre: "Digite aqui um pequeno texto sobre sua empresa!",
-        joinDate: "2025-11-13T00:00:00Z",
-        profileImage: DEFAULT_PROFILE_IMAGE,
+    const [empresa, setEmpresa] = useState({
+            data: localStorage.getItem("empresa")
+                ? JSON.parse(localStorage.getItem("empresa") || "{}")
+                : {
+                    nomeEmpresa: "Meninas Mulheres",
+                    cnpj: "",
+                    email: "meninasmulheres@exemplo.com.br",
+                    senha: "********",
+                    sobre: "Digite aqui um pequeno texto sobre sua empresa!",
+                    joinDate: "2025-11-13T00:00:00Z",
+                    profileImage: DEFAULT_PROFILE_IMAGE
+                }
     });
-
-    useEffect(() => {
-        let storedData = null;
-
-        const possibleKeys = ["empresaData", "empresa", "user", "empresaInfo"];
-
-        for (const key of possibleKeys) {
-            const data = localStorage.getItem(key);
-            if (data && data !== "undefined") {
-                storedData = JSON.parse(data);
-                break;
-            }
-        }
-
-        if (storedData) {
-            setEmpresaData((prev) => ({
-                ...prev,
-                nomeEmpresa:
-                    storedData.nomeEmpresa ||
-                    storedData.nome ||
-                    storedData.razaoSocial ||
-                    prev.nomeEmpresa,
-                emailEmpresa:
-                    storedData.emailEmpresa ||
-                    storedData.email ||
-                    storedData.login ||
-                    prev.emailEmpresa,
-                sobre:
-                    storedData.sobre ||
-                    "Digite aqui um pequeno texto sobre sua empresa!",
-                joinDate:
-                    storedData.joinDate ||
-                    storedData.dataCadastro ||
-                    prev.joinDate,
-                profileImage:
-                    storedData.profileImage ||
-                    storedData.fotoPerfil ||
-                    DEFAULT_PROFILE_IMAGE,
-            }));
-        }
-    }, []);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const toggleModal = () => setIsModalOpen(!isModalOpen);
 
-    const handleSave = (newData: any) => {
-        setEmpresaData(newData);
-        localStorage.setItem("empresa", JSON.stringify(newData));
+    const handleSave = (newEmpresaData: any) => {
+        setEmpresa(newEmpresaData);
+        localStorage.setItem("empresa", JSON.stringify(newEmpresaData));
     };
 
     const handleLogout = () => {
@@ -92,8 +55,8 @@ export default function PerfilEmpresa() {
                             <div className="relative -mt-16 sm:-mt-20 mb-6 flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
                                 <div className="relative">
                                     <img
-                                        src={empresaData.profileImage}
-                                        alt={empresaData.nomeEmpresa}
+                                        src={empresa.data.profileImage}
+                                        alt={empresa.data.nomeEmpresa}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                         onError={(
                                             e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -106,7 +69,7 @@ export default function PerfilEmpresa() {
                                 </div>
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
                                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                                        {empresaData.nomeEmpresa}
+                                        {empresa.data.nomeEmpresa}
                                     </h2>
                                     <div className="flex text-pink-600 items-center justify-center sm:justify-start gap-2">
                                         <Star />
@@ -133,7 +96,7 @@ export default function PerfilEmpresa() {
                                             Sobre a Empresa
                                         </h3>
                                         <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                            {empresaData.sobre?.trim() ||
+                                            {empresa.data.sobre?.trim() ||
                                                 "Nenhum texto 'Sobre' adicionado ainda. Clique em 'Editar Perfil' para adicionar um!"}
                                         </p>
                                     </div>
@@ -152,7 +115,7 @@ export default function PerfilEmpresa() {
                                                         Parceira desde
                                                     </p>
                                                     <p className="font-medium text-gray-800">
-                                                        {formatDate(empresaData.joinDate)}
+                                                        {formatDate(empresa.data.joinDate)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -163,7 +126,7 @@ export default function PerfilEmpresa() {
                                                         Email de login
                                                     </p>
                                                     <p className="font-medium text-gray-800 break-all">
-                                                        {empresaData.emailEmpresa}
+                                                        {empresa.data.email}
                                                     </p>
                                                 </div>
                                             </div>
@@ -192,7 +155,7 @@ export default function PerfilEmpresa() {
                 isOpen={isModalOpen}
                 onClose={toggleModal}
                 onSave={handleSave}
-                initialData={empresaData}
+                initialData={empresa.data}
             />
         </>
     );

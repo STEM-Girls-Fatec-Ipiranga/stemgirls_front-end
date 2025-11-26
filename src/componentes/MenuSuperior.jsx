@@ -175,7 +175,6 @@ const MenuSuperior = () => {
                     <User size={19} /> Perfil
                   </Link>
 
-                  {/* ABRE O MODAL */}
                   <button
                     className="flex w-full items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
                     onClick={handleClickLogout}
@@ -187,7 +186,6 @@ const MenuSuperior = () => {
             </div>
           )}
 
-          {/* Menu mobile button */}
           <button
             onClick={toggleMobileMenu}
             className="md:hidden p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-200"
@@ -201,7 +199,6 @@ const MenuSuperior = () => {
           </button>
         </div>
 
-        {/* Barra de pesquisa - Mobile */}
         <div className="md:hidden mt-4">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
@@ -217,8 +214,7 @@ const MenuSuperior = () => {
           </div>
         </div>
       </div>
-
-      {/* Menu Desktop */}
+      
       <div className="hidden md:block border-t border-white border-opacity-20">
         <div className="px-4 lg:px-8 py-3 max-w-7xl mx-auto">
           <nav className="flex items-center justify-center space-x-12">

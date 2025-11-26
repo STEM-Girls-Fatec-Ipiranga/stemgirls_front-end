@@ -15,7 +15,6 @@ function PopupReprovar({ fechar }) {
             setMensagem("Carregando...");
             await new Promise(resolve => setTimeout(resolve, 3000)); 
             fechar();
-
         }catch (error) {
             setErro("Erro ao reprovar empresa", error);
         }
@@ -43,8 +42,8 @@ function PopupReprovar({ fechar }) {
                         onChange={(e) => setCnpj(e.target.value)}
                     />
 
-                    {erro && <p className="text-red-500 text-sm">{erro}</p>}
-                    {mensagem && <p className="text-gray-500 text-sm">{mensagem}</p>}
+                    {erro && <p className="text-red-700 text-sm">{erro}</p>}
+                    {mensagem && <p className="text-gray-700 text-sm">{mensagem}</p>}
 
                     <div className="flex justify-end gap-2 mt-4">
                         <button type="button" onClick={fechar} className="bg-gray-300 px-3 py-1 rounded-lg">

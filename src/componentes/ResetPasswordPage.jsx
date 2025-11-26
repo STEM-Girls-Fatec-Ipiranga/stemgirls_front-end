@@ -75,7 +75,6 @@ function ResetPasswordPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         setMessage('');
 
         if (!isPasswordValid) {
@@ -116,7 +115,6 @@ function ResetPasswordPage() {
                 </p>
                 <form className={Styles.form} style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }} onSubmit={handleSubmit}>
                     
-                    {/* Input da nova senha com estilo corrigido */}
                     <label className={Styles.input_group} style={{maxWidth: '400px'}}>
                         <i className="fi fi-sr-lock icon-modify"></i>
                         <input 
@@ -157,8 +155,8 @@ function ResetPasswordPage() {
                         {isLoading ? 'Salvando...' : 'Redefinir Senha'}
                     </button>
                 </form>
-                {/* Mensagem geral de sucesso ou erro da API */}
-                {message && <p style={{ marginTop: '20px', fontWeight: 'bold', color: '#e74c3c' }}>{message}</p>}
+            
+                {message && <p style={{ marginTop: '20px', fontWeight: 'bold', color: '#4caf50' }}>{message}</p>}
                 
                 <Link to="/login" className={Styles.back_link}>
                     Voltar para o Login

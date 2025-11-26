@@ -1,9 +1,7 @@
-// src/pages/Eventos.jsx
 import React, { useEffect, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
 import CadastroEventos from "./CadastroEventos";
 
-/* imagens pré-selecionadas */
 const imagensDisponiveis = [
   "/src/assets/img/emeninas-digitais.jpeg",
   "/src/assets/img/mulheresfortes.png",
@@ -11,7 +9,7 @@ const imagensDisponiveis = [
   "/src/assets/img/mulheres-tecnologia.jpg",
 ];
 
-const user = JSON.parse(localStorage.getItem("userData"));
+const user = JSON.parse(localStorage.getItem("user"));
 const BACKEND_BASE = "http://localhost:8080";
 
 export default function Eventos() {
@@ -57,7 +55,6 @@ export default function Eventos() {
   const [telefone, setTelefone] = useState("");
   const [instituicao, setInstituicao] = useState("");
 
-  // ---------- Utils ----------
   const aplicarMascaraCPF = (valor) => {
     const cpfLimpo = (valor || "").replace(/\D/g, "");
     let cpfFormatado = cpfLimpo;
@@ -93,7 +90,6 @@ export default function Eventos() {
     return resto === parseInt(c[10]);
   };
 
-  // ---------- Backend ----------
   const listarEventosBackend = async () => {
     try {
       const res = await fetch(`${BACKEND_BASE}/eventos`);
@@ -107,7 +103,6 @@ export default function Eventos() {
 
   useEffect(() => {
     listarEventosBackend();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const salvarEvento = async (eventoObj, isEdit) => {
@@ -356,8 +351,6 @@ export default function Eventos() {
             </Button>
           </>
         )}
-
-
 
       </aside>
 

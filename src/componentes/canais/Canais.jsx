@@ -14,10 +14,8 @@ export default function Canais() {
   const [showNotificacao, setShowNotificacao] = useState(null);
   const [showPopupLogin, setShowPopupLogin] = useState(false);
 
-  // Modal video + like system
-  const [videoAberto, setVideoAberto] = useState(null); // objeto de vídeo aberto
+  const [videoAberto, setVideoAberto] = useState(null); 
 
-  // counts: mapa videoId -> count (persistido)
   const [likeCounts, setLikeCounts] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem("video_like_counts_v1")) || {};
@@ -26,9 +24,9 @@ export default function Canais() {
     }
   });
 
-  // userLiked: set of video ids liked by current user (persistido por usuário)
-  const user = JSON.parse(localStorage.getItem("userData"));
-  const userKey = user?.id || user?.email || "guest";
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  
   const [userLiked, setUserLiked] = useState(() => {
     try {
       const arr = JSON.parse(localStorage.getItem(`user_liked_videos_v1_${userKey}`)) || [];
@@ -38,7 +36,6 @@ export default function Canais() {
     }
   });
 
-  // cache para data: urls
   const playableUrlCache = useRef(new Map());
 
   const canaisPadrao = [
@@ -64,11 +61,10 @@ export default function Canais() {
     },
   ];
 
-  // persistir likeCounts e userLiked quando mudam
   useEffect(() => {
     try {
       localStorage.setItem("video_like_counts_v1", JSON.stringify(likeCounts));
-    } catch {}
+    } catch { }
   }, [likeCounts]);
 
   useEffect(() => {
@@ -77,29 +73,35 @@ export default function Canais() {
         `user_liked_videos_v1_${userKey}`,
         JSON.stringify(Array.from(userLiked))
       );
-    } catch {}
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } catch { }
   }, [userLiked]);
 
-  // Função para transformar data:... em objectURL (cache)
   const getPlayableUrl = useCallback((url) => {
     if (!url) return null;
+    
     if (url.startsWith("data:")) {
       const cached = playableUrlCache.current.get(url);
+      
       if (cached) return cached;
+      
       const arr = url.split(",");
       const mimeMatch = arr[0].match(/data:([^;]+)/);
       const mime = mimeMatch ? mimeMatch[1] : "video/mp4";
-      // Se não tiver parte base64, retornar null
+    
       if (!arr[1]) return null;
+      
       try {
-        const bstr = atob(arr[1] || "");
+        const bstr = atob(arr[1]);
         const u8arr = new Uint8Array(bstr.length);
-        for (let i = 0; i < bstr.length; i++) u8arr[i] = bstr.charCodeAt(i);
+        
+        for (let i = 0; i < bstr.length; i++) 
+          u8arr[i] = bstr.charCodeAt(i);
+        
         const obj = URL.createObjectURL(new Blob([u8arr], { type: mime }));
         playableUrlCache.current.set(url, obj);
+        
         return obj;
-      } catch {
+      } catch(error) {
         return null;
       }
     }
@@ -109,12 +111,13 @@ export default function Canais() {
   // toggle like: se não logado, abre popup login.
   // se já curtiu -> remove like (decrementa contagem, min 0)
   // se não curtiu -> adiciona like (incrementa contagem)
+
   const toggleLike = (videoId) => {
     if (!user) {
-      // força login
       setShowPopupLogin(true);
       return;
     }
+
     const idKey = String(videoId || "");
     setUserLiked((prev) => {
       const has = prev.has(idKey);
@@ -150,7 +153,7 @@ export default function Canais() {
   };
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/canais")
+    fetch("http://localhost:8080/canais")
       .then((res) => {
         if (!res.ok) throw new Error("Erro ao buscar canais");
         return res.json();
@@ -183,6 +186,7 @@ export default function Canais() {
   const feedVideos = [...videos].sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
   const [videosCanal, setVideosCanal] = useState([]);
+  
   useEffect(() => {
     if (!canalSelecionado) {
       setVideosCanal([]);
@@ -206,7 +210,7 @@ export default function Canais() {
     }
     if (!window.confirm("Tem certeza que deseja excluir este canal?")) return;
 
-    fetch(`http://localhost:8080/api/canais/${id}`, { method: "DELETE" })
+    fetch(`http://localhost:8080/canais/${id}`, { method: "DELETE" })
       .then((res) => {
         if (!res.ok) throw new Error("Erro ao excluir");
         setCanais((prev) => prev.filter((c) => c.id !== id));
@@ -230,7 +234,6 @@ export default function Canais() {
 
   const isLogged = !!user;
 
-  // fechar modal com ESC
   useEffect(() => {
     const onKey = (e) => {
       if (e.key === "Escape") setVideoAberto(null);
@@ -239,14 +242,41 @@ export default function Canais() {
     return () => window.removeEventListener("keydown", onKey);
   }, []);
 
-  // Abre modal com vídeo (objeto v)
   const abrirVideo = (v) => {
     setVideoAberto(v);
   };
 
-  // Heart component com transição e acessibilidade
   const Heart = ({ filled, size = 18, className = "" }) => {
-    // usa currentColor para respeitar cor do pai
+    const [usuarioLogado, setUsuarioLogado] = useState({});
+
+    const [user, setUser] = useState({
+      data: localStorage.getItem("user")
+        ? JSON.parse(localStorage.getItem("user"))
+          : {
+                nomeCompleto: "Nome Completo (Sem Login)",
+                nomeUsuario: "stemgirl",
+                email: "exemplo@stemgirls.com.br",
+                role: "USUARIO",
+                sobre: "Digite aqui um pequeno texto sobre você!",
+                joinDate: "2024-01-01T00:00:00Z",
+                profileImage: DEFAULT_PROFILE_IMAGE,
+            }
+    });
+
+    useEffect(() => {
+      if (user.data.nomeUsuario != null) {
+        setUsuarioLogado({
+          nomeUsuario: user.data.nomeUsuario,
+          role: user.data.role
+        });
+      } else if (empresa.data.nomeEmpresa != null) {
+        setUsuarioLogado({
+          nomeUsuario: empresa.data.nomeEmpresa,
+          role: empresa.data.role
+        });
+      }
+    }, []);
+
     return filled ? (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -280,7 +310,6 @@ export default function Canais() {
     );
   };
 
-  // small helper to render a video thumb or poster
   const VideoPreview = ({ v }) => {
     const playable = getPlayableUrl(v.url || "");
     return (
@@ -293,7 +322,7 @@ export default function Canais() {
             loading="lazy"
           />
         ) : playable ? (
-          // show a muted, non-autoplay video element so browsers show a frame (preload metadata)
+          
           <video
             src={playable}
             className="w-full h-full object-cover bg-black"
@@ -306,7 +335,6 @@ export default function Canais() {
           <div className="w-full h-full flex items-center justify-center text-gray-400">Prévia do vídeo</div>
         )}
 
-        {/* overlay: play icon, appears on hover for affordance */}
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
           <div className="bg-black/40 rounded-full p-3 backdrop-blur-sm">
             <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -315,7 +343,6 @@ export default function Canais() {
           </div>
         </div>
 
-        {/* duration / small badge area (if provided) */}
         {v.duration && (
           <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded">{v.duration}</div>
         )}
@@ -325,11 +352,10 @@ export default function Canais() {
 
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-black">
-      {/* SIDEBAR */}
+     
       <aside className="w-80 bg-[#FFF6FF] border-r border-pink-100 p-6 flex flex-col overflow-y-auto shadow-lg">
         <h2 className="text-2xl font-bold text-black text-[22px] mb-4">Canais</h2>
 
-        {/* Search */}
         <div className="relative mb-6">
           <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
           <input
@@ -349,7 +375,6 @@ export default function Canais() {
 
         <PopupLoginAviso isOpen={showPopupLogin} onClose={() => setShowPopupLogin(false)} />
 
-        {/* Search results */}
         {search.trim() ? (
           <div className="mb-6">
             <h3 className="text-lg font-semibold mb-3">Resultados</h3>
@@ -378,47 +403,39 @@ export default function Canais() {
           </div>
         ) : null}
 
-
-
         {/* Meus Canais */}
-        <h3 className="text-xl font-semibold mb-3 text-gray-800">Meus Canais</h3>
-        {meusCanais.length ? (
-          <ul className="space-y-3 mb-4">
-            {meusCanais.map((c) => (
-              <li
-                key={c.id}
-                className="flex items-center gap-3 p-3 hover:bg-pink-50 rounded-xl cursor-pointer"
-                onClick={() => setCanalSelecionado(c)}
-              >
-                <img src={c.fotoPerfil} alt={c.nome} className="w-12 h-12 rounded-full shadow" loading="lazy" />
-                <div>
-                  <div className="text-lg font-semibold">{c.nome}</div>
-                  <div className="text-xs text-gray-500">{c.inscritos ?? 0} inscritos</div>
-                </div>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-gray-500 mb-4">Você ainda não criou canais.</p>
-        )}
-
-        {user?.role === "MODERADOR" && (
-          <button
-            onClick={() => setAbrirCriarCanal(true)}
-            className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
-          >
-            + Criar Canal
-          </button>
-        )}
-
+        {user.role == "MODERADOR" && (
+          <>
+            <h3 className="text-xl font-semibold mb-3 text-gray-800">Meus Canais</h3>
+            
+            {meusCanais.length ? (
+              <ul className="space-y-3 mb-4">
+                {meusCanais.map((c) => (
+                  <li
+                    key={c.id}
+                    className="flex items-center gap-3 p-3 hover:bg-pink-50 rounded-xl cursor-pointer"
+                    onClick={() => setCanalSelecionado(c)}
+                  >
+                    <img src={c.fotoPerfil} alt={c.nome} className="w-12 h-12 rounded-full shadow" loading="lazy" />
+                    <div>
+                      <div className="text-lg font-semibold">{c.nome}</div>
+                      <div className="text-xs text-gray-500">{c.inscritos ?? 0} inscritos</div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            ) : (<p className="text-sm text-gray-500 mb-4">Você ainda não criou canais.</p>)}
+      
             <button
-              onClick={() => setAbrirCriarCanal(true)}
-              className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
+                onClick={() => setAbrirCriarCanal(true)}
+                className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] mb-4 mt-4 rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
             >
-              + Criar Canal
+                + Criar Canal
             </button>
+          </>
+        )}
 
-            <div className="w-full border-b border-pink-400 my-4"></div>
+        <div className="w-full border-b border-pink-400 my-4"></div>
 
         {/* Canais inscritos */}
         <h3 className="text-xl font-semibold mb-3 text-gray-800">Canais inscritos</h3>
@@ -496,11 +513,10 @@ export default function Canais() {
 
               <button
                 onClick={() => toggleInscricao(canalSelecionado.id)}
-                className={`ml-auto px-5 py-2.5 rounded-xl font-semibold transition-all shadow ${
-                  inscritos.includes(canalSelecionado.id)
-                    ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-                    : "bg-pink-500 text-white hover:bg-pink-600"
-                }`}
+                className={`ml-auto px-5 py-2.5 rounded-xl font-semibold transition-all shadow ${inscritos.includes(canalSelecionado.id)
+                  ? "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : "bg-pink-500 text-white hover:bg-pink-600"
+                  }`}
               >
                 {inscritos.includes(canalSelecionado.id) ? "Inscrito" : "Inscrever-se"}
               </button>
@@ -582,9 +598,8 @@ export default function Canais() {
                                 ev.stopPropagation();
                                 toggleLike(vidKey);
                               }}
-                              className={`ml-auto flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 shadow-md ${
-                                liked ? "bg-purple-600 text-white" : "bg-white text-purple-600 border border-purple-300"
-                              } hover:scale-[1.03] active:scale-[0.97]`}
+                              className={`ml-auto flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 shadow-md ${liked ? "bg-purple-600 text-white" : "bg-white text-purple-600 border border-purple-300"
+                                } hover:scale-[1.03] active:scale-[0.97]`}
                               aria-pressed={liked}
                               aria-label={liked ? "Remover curtida" : "Curtir vídeo"}
                               title={liked ? "Você curtiu" : "Curtir"}
@@ -637,9 +652,8 @@ export default function Canais() {
                               ev.stopPropagation();
                               toggleLike(vidKey);
                             }}
-                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 shadow-md ${
-                              liked ? "bg-purple-600 text-white" : "bg-white text-purple-600 border border-purple-300"
-                            } hover:scale-[1.03] active:scale-[0.97]`}
+                            className={`inline-flex items-center gap-2 px-4 py-2 rounded-full font-semibold text-sm transition-all duration-300 shadow-md ${liked ? "bg-purple-600 text-white" : "bg-white text-purple-600 border border-purple-300"
+                              } hover:scale-[1.03] active:scale-[0.97]`}
                             aria-pressed={liked}
                             aria-label={liked ? "Remover curtida" : "Curtir vídeo"}
                           >
@@ -731,9 +745,8 @@ export default function Canais() {
             <div className="flex items-center gap-3">
               <button
                 onClick={() => toggleLike(String(videoAberto.id || videoAberto.title || ""))}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold shadow transition-all ${
-                  userLiked.has(String(videoAberto.id || videoAberto.title || "")) ? "bg-purple-600 text-white" : "bg-pink-500 text-white"
-                }`}
+                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold shadow transition-all ${userLiked.has(String(videoAberto.id || videoAberto.title || "")) ? "bg-purple-600 text-white" : "bg-pink-500 text-white"
+                  }`}
               >
                 <span className="inline-flex items-center">
                   <Heart filled={userLiked.has(String(videoAberto.id || videoAberto.title || ""))} className={`${userLiked.has(String(videoAberto.id || videoAberto.title || "")) ? 'text-white' : 'text-white'}`} />

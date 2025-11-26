@@ -52,8 +52,6 @@ export const PopupLoginAviso = ({ isOpen, onClose }) => {
             Cadastrar-se
           </button>
         
-          
-
         </div>
       </div>
     </div>

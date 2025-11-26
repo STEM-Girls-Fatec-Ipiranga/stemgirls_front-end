@@ -167,7 +167,7 @@ export default function MiniMentes() {
     if (lastObjectUrlRef.current) {
       try {
         URL.revokeObjectURL(lastObjectUrlRef.current);
-      } catch {}
+      } catch { }
       lastObjectUrlRef.current = null;
     }
   }
@@ -252,9 +252,9 @@ export default function MiniMentes() {
         d.map((c) =>
           c.id === editing.categoryId
             ? {
-                ...c,
-                quizzes: c.quizzes.map((q) => (q.id === editing.quizId ? newQuiz : q)),
-              }
+              ...c,
+              quizzes: c.quizzes.map((q) => (q.id === editing.quizId ? newQuiz : q)),
+            }
             : c
         )
       );
@@ -364,6 +364,34 @@ export default function MiniMentes() {
     // note: if the quiz.video is an objectURL previously created, it's already usable.
   }
 
+  const [usuarioLogado, setUsuarioLogado] = useState({});
+
+  const [user, setUser] = useState({
+    data: localStorage.getItem("user")
+      ? JSON.parse(localStorage.getItem("user") || "{}")
+      : {}
+  });
+
+  const [empresa, setEmpresa] = useState({
+    data: localStorage.getItem("empresa")
+      ? JSON.parse(localStorage.getItem("empresa") || "{}")
+      : {}
+  });
+
+  useEffect(() => {
+    if (user.data.nomeUsuario != null) {
+      setUsuarioLogado({
+        nomeUsuario: user.data.nomeUsuario,
+        role: user.data.role
+      });
+    } else if (empresa.data.nomeEmpresa != null) {
+      setUsuarioLogado({
+        nomeUsuario: empresa.data.nomeEmpresa,
+        role: empresa.data.role
+      });
+    }
+  }, []);
+
   // ---------- render ----------
   if (showQuizScreen && active) {
     return (
@@ -376,8 +404,6 @@ export default function MiniMentes() {
       />
     );
   }
-
-    const user = JSON.parse(localStorage.getItem("userData"));
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-white to-pink-50 p-6 text-gray-800 text-sm">
@@ -392,52 +418,51 @@ export default function MiniMentes() {
               </div>
             </div>
 
-          <div className={`space-y-3 ${leftCollapsed ? "flex flex-col items-center" : ""}`}>
-  {data.map((c) => (
-    <button
-      key={c.id}
-      onClick={() => scrollToCategory(c.id)}
-      className={`w-full flex items-center rounded-lg transition hover:scale-[1.01] ${
-        leftCollapsed ? "justify-center" : "justify-start"
-      }`}
-      style={{
-        height: "52px",
-        padding: "0 12px",
-        gap: "14px",
-      }}
-    >
-      {/* Ícone sempre com largura fixa */}
-      <div
-        className={`flex items-center justify-center rounded-xl text-white bg-gradient-to-r ${c.colorFrom} ${c.colorTo}`}
-        style={{
-          width: "42px",
-          height: "42px",
-          flexShrink: 0,        // impede o ícone de reduzir
-        }}
-      >
-        <Icon name={c.id} className="w-5 h-5 text-white" />
-      </div>
+            <div className={`space-y-3 ${leftCollapsed ? "flex flex-col items-center" : ""}`}>
+              {data.map((c) => (
+                <button
+                  key={c.id}
+                  onClick={() => scrollToCategory(c.id)}
+                  className={`w-full flex items-center rounded-lg transition hover:scale-[1.01] ${leftCollapsed ? "justify-center" : "justify-start"
+                    }`}
+                  style={{
+                    height: "52px",
+                    padding: "0 12px",
+                    gap: "14px",
+                  }}
+                >
+                  {/* Ícone sempre com largura fixa */}
+                  <div
+                    className={`flex items-center justify-center rounded-xl text-white bg-gradient-to-r ${c.colorFrom} ${c.colorTo}`}
+                    style={{
+                      width: "42px",
+                      height: "42px",
+                      flexShrink: 0,        // impede o ícone de reduzir
+                    }}
+                  >
+                    <Icon name={c.id} className="w-5 h-5 text-white" />
+                  </div>
 
-      {/* Texto sempre alinhado ao mesmo ponto */}
-      {!leftCollapsed && (
-        <span
-          className="text-sm font-medium text-black"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            height: "42px",
-            lineHeight: "1",
-            whiteSpace: "nowrap", // impede quebra
-          }}
-        >
-          {c.title}
-        </span>
-      )}
-    </button>
-  ))}
-</div>
+                  {/* Texto sempre alinhado ao mesmo ponto */}
+                  {!leftCollapsed && (
+                    <span
+                      className="text-sm font-medium text-black"
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        height: "42px",
+                        lineHeight: "1",
+                        whiteSpace: "nowrap", // impede quebra
+                      }}
+                    >
+                      {c.title}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
 
-</div>
+          </div>
         </aside>
 
         {/* CENTER */}
@@ -464,22 +489,20 @@ export default function MiniMentes() {
               </span>
             </div>
 
-           <div className="flex flex-col justify-center items-center mt-4 w-[30px] h-[300px] lg:w-[600px] lg:h-[250px]">
-          <div className="w-[380px]">
-            <Robo/>
-        </div>
-      </div>
-
-            {user?.role === "MODERADOR" && (
-            <div className="mt-2">
-              <button onClick={() => { setEditing(null); setUploadForm({ title: "", description: "", category: data[0]?.id || "logica", difficulty: "Fácil", videoFile: null, thumbFile: null, quiz: [] }); setUploadPreview({ videoUrl: null, thumbUrl: null }); setShowUpload(true); }} className="px-6 py-2 rounded-full bg-[#F36EC0] text-white font-semibold">
-                Postar Conteúdo
-              </button>
+            <div className="flex flex-col justify-center items-center mt-4 w-[30px] h-[300px] lg:w-[600px] lg:h-[250px]">
+              <div className="w-[380px]">
+                <Robo />
+              </div>
             </div>
+
+            {user.data.role == "MODERADOR" && (
+              <div className="mt-2">
+                <button onClick={() => { setEditing(null); setUploadForm({ title: "", description: "", category: data[0]?.id || "logica", difficulty: "Fácil", videoFile: null, thumbFile: null, quiz: [] }); setUploadPreview({ videoUrl: null, thumbUrl: null }); setShowUpload(true); }} className="px-6 py-2 rounded-full bg-[#F36EC0] text-white font-semibold">
+                  Postar Conteúdo
+                </button>
+              </div>
             )}
           </div>
-            
-         
 
           {/* categories + cards */}
           <div className="mt-8 space-y-10">

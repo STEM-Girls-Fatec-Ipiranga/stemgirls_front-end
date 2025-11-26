@@ -1,19 +1,15 @@
-// ✅ IMPORTS ORIGINAIS
 import fundoSG from "../assets/img/FundoRodape.png";
 import LogoSGbranco from '../assets/img/LogoSGbranco.png';
 
-// ✅ NOVO IMPORT ADICIONADO
 import emailjs from "@emailjs/browser";
 import { useState } from "react";
 
 function Rodape() {
-    // ✅ NOVOS STATES PARA O FORMULÁRIO
     const [feedbackData, setFeedbackData] = useState({
         FeedbackEmail: "",
         FeedbackMessage: ""
     });
 
-    // ✅ NOVA FUNÇÃO DE ENVIO DE EMAIL
     const handleFeedbackSubmit = (e) => {
         e.preventDefault();
 
@@ -50,7 +46,6 @@ function Rodape() {
 
                 <div className="w-full h-[70%] flex flex-row">
 
-                    {/* COLUNA: SOBRE NÓS */}
                     <div className="w-[20%] h-full">
                         <div className="ml-6 mr-6 mt-10 flex flex-col">
                             <p className="font-bold text-[25px] m-2">Sobre nós</p>
@@ -67,7 +62,6 @@ function Rodape() {
                         </div>
                     </div>
 
-                    {/* COLUNA: REDES SOCIAIS */}
                     <div className="w-[20%] h-full">
                         <div className="ml-6 mr-6 mt-10 flex flex-col">
                             <p className="font-bold text-[25px] m-2">Redes sociais</p>
@@ -90,7 +84,6 @@ function Rodape() {
                         </div>
                     </div>
 
-                    {/* COLUNA: FEEDBACK */}
                     <div className="w-[60%] h-full flex justify-end">
                         <form
                             onSubmit={handleFeedbackSubmit} // ✅ ADICIONADO O FORM
@@ -113,7 +106,6 @@ function Rodape() {
                                 required
                             />
 
-                            {/* CAMPO DE MENSAGEM */}
                             <div className="w-full flex flex-row justify-between">
                                 <textarea
                                     value={feedbackData.FeedbackMessage}
