@@ -27,11 +27,22 @@ import CriarCanais from "./componentes/canais/CriarCanais.jsx";
 import PostarVideos from "./componentes/canais/PostarVideos.jsx";
 
 
+
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
 
 function AppContent() {
   const location = useLocation();
+
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://app.embed.im/accessibility.js";
+    script.defer = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);   
 
   // controla se o botão deve aparecer
   const [mostrarBotao, setMostrarBotao] = useState(false);

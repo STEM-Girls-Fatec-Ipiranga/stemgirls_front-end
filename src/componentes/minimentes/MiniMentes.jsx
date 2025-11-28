@@ -4,6 +4,7 @@ import { Code, Calculator, Type, PenTool, Zap, Trash2, Edit2 } from "lucide-reac
 import Robo from "../Robo.jsx";
 
 export default function MiniMentes() {
+ 
   const initial = [
     {
       id: "logica",
@@ -67,6 +68,34 @@ export default function MiniMentes() {
       quizzes: [],
     },
   ];
+
+// ---------- UPLOAD PARA SERVIDOR ----------
+  async function handleUploadToServer() {
+  if (!uploadForm.videoFile) return alert("Escolha um vídeo primeiro!");
+
+  const formData = new FormData();
+  formData.append("file", uploadForm.videoFile);
+  formData.append("titulo", uploadForm.title);
+  formData.append("descricao", uploadForm.description);
+
+  try {
+    const resposta = await fetch("http://localhost:8080/videos/upload", {
+      method: "POST",
+      body: formData,
+    });
+    if (!resposta.ok) {
+      const erro = await resposta.text();
+      console.error("Erro no upload:", erro);
+    } else {
+      console.log("Vídeo enviado com sucesso!");
+    }
+  } catch (err) {
+    console.error("Erro ao enviar vídeo:", err);
+  }
+}
+
+
+
 
   // persisted data (quizzes/categories)
   const [data, setData] = useState(() => {
@@ -500,7 +529,7 @@ export default function MiniMentes() {
                 <button onClick={() => { setEditing(null); setUploadForm({ title: "", description: "", category: data[0]?.id || "logica", difficulty: "Fácil", videoFile: null, thumbFile: null, quiz: [] }); setUploadPreview({ videoUrl: null, thumbUrl: null }); setShowUpload(true); }} className="px-6 py-2 rounded-full bg-[#F36EC0] text-white font-semibold">
                   Postar Conteúdo
                 </button>
-              </div>
+              </div>  
             )}
           </div>
 

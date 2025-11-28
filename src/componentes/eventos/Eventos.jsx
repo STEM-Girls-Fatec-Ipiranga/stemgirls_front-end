@@ -58,6 +58,7 @@ export default function Eventos() {
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const [instituicao, setInstituicao] = useState("");
+  
 
   // modal de confirmação externa (empresa)
   const [confirmEmpresa, setConfirmEmpresa] = useState(null);
@@ -208,8 +209,6 @@ export default function Eventos() {
     for (const k of keys) {
       if (ev[k] && typeof ev[k] === "string" && ev[k].trim()) return ev[k].trim();
     }
-    if (ev.linkPlataforma && typeof ev.linkPlataforma === "string" && ev.linkPlataforma.trim()) return ev.linkPlataforma.trim();
-    return null;
   };
 
   // ---------- UI Helpers ----------
@@ -319,6 +318,30 @@ export default function Eventos() {
     }
     setConfirmEmpresa(null);
   };
+
+  const baixarInscricoes = async (eventoId) => {
+  try {
+    const response = await fetch(
+      `http://localhost:8080/inscricoes/evento/${eventoId}/download`,
+      {
+        method: "GET",
+      }
+    );
+
+    const blob = await response.blob();
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `inscricoes_evento_${eventoId}.csv`;
+    link.click();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Erro ao baixar inscrições:", error);
+  }
+};
+
 
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-gray-800">
@@ -479,14 +502,14 @@ export default function Eventos() {
                     </p>
                     <div className="mt-auto pt-4 flex justify-center gap-3">
                       <button
-                        className="bg-[#F36EC0] text-white font-semibold px-6 py-2 hover:bg-[#e055a8] transition"
+                        className="bg-[#F36EC0] text-white font-semibold rounded-lg px-6 py-2 hover:bg-[#e055a8] transition"
                         onClick={(e) => { e.stopPropagation(); abrirInscricaoComRegras(ev); }}
                       >
                         Participar
                       </button>
 
                       <button
-                        className="bg-white border px-4 py-2 text-sm hover:bg-gray-100 transition"
+                        className="bg-white border border-pink-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-100 transition"
                         onClick={(e) => {
                           e.stopPropagation();
                           abrirDetalhes(ev); // abre detalhes quando clicado no botão também
@@ -494,6 +517,13 @@ export default function Eventos() {
                       >
                         Saiba mais
                       </button>
+                      <button
+                        className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg hover:bg-pink-500 "
+                        onClick={() => baixarInscricoes(ev.id)}
+                >
+                      Baixar inscrições
+                      </button>
+
 
                     </div>
                   </CardContent>
@@ -577,17 +607,7 @@ export default function Eventos() {
                       <div className="text-gray-400">Sem link de inscrição</div>
                     )}
 
-                    {(detalhesEvento.linkPlataforma || detalhesEvento.plataforma || detalhesEvento.link_plataforma) && (
-                      <a
-                        href={detalhesEvento.linkPlataforma || detalhesEvento.plataforma || detalhesEvento.link_plataforma}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="underline text-sm break-words"
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                        Link da plataforma / sala
-                      </a>
-                    )}
+        
                   </div>
                 </div>
 
@@ -681,12 +701,13 @@ export default function Eventos() {
               <div className="flex flex-col gap-2">
                 <button
                   onClick={confirmarRedirecionamentoEmpresa}
-                  className="w-full bg-green-600 text-white py-2 rounded"
+                  className="w-full text-white py-2 rounded"
+                  style={{ background: 'linear-gradient(90deg, #5b3eeb 0%, #c958d0 100%)' }}
                 >
                   Confirmar e Acessar
                 </button>
 
-                <button
+                <button 
                   onClick={() => setConfirmEmpresa(null)}
                   className="w-full bg-gray-300 text-black py-2 rounded"
                 >

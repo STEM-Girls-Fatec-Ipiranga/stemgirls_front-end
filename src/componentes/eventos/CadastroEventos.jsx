@@ -23,7 +23,6 @@ export default function CadastroEventos({
   const [numero, setNumero] = useState("");
   const [complemento, setComplemento] = useState("");
   const [linkInscricao, setLinkInscricao] = useState("");
-  const [linkPlataforma, setLinkPlataforma] = useState("");
   const [descricaoEvento, setDescricaoEvento] = useState("");
   const [imagem, setImagem] = useState(imagensDisponiveis[0] || "");
   const [imagemPreview, setImagemPreview] = useState(imagensDisponiveis[0] || "");
@@ -44,7 +43,6 @@ export default function CadastroEventos({
 
       // PRIORIZA eventoEditando.linkInscricao -> eventoEditando.link
       setLinkInscricao(eventoEditando.linkInscricao || eventoEditando.link || eventoEditando.linkParaInscricao || "");
-      setLinkPlataforma(eventoEditando.linkPlataforma || eventoEditando.plataforma || "");
 
       setDescricaoEvento(eventoEditando.descricao || "");
       setImagem(eventoEditando.imagem || imagensDisponiveis[0] || "");
@@ -104,7 +102,6 @@ export default function CadastroEventos({
     setNumero("");
     setComplemento("");
     setLinkInscricao("");
-    setLinkPlataforma("");
     setDescricaoEvento("");
     const fallback = imagensDisponiveis[0] || "";
     setImagem(fallback);
@@ -177,11 +174,6 @@ export default function CadastroEventos({
           alert("Para eventos presenciais realizados por empresas é necessário informar o link de inscrição.");
           return;
         }
-      } else {
-        if (!linkPlataforma.trim() || !linkInscricao.trim()) {
-          alert("Para eventos remotos realizados por empresas é necessário informar o link da plataforma e o link de inscrição.");
-          return;
-        }
       }
     }
 
@@ -205,7 +197,6 @@ export default function CadastroEventos({
       // garante compatibilidade com front/back
       link: linkInscricao.trim(),
       linkInscricao: linkInscricao.trim(),
-      linkPlataforma: linkPlataforma.trim(),
 
       enderecoCompleto: enderecoFormatado,
       rua: (rua || "").trim(),
@@ -293,18 +284,20 @@ export default function CadastroEventos({
         </div>
       )}
 
-      {modelo === "remoto" && (
-        <div className="flex flex-col gap-2 mb-3">
-          {organizadorTipo === "empresa" ? (
-            <>
-              <input type="text" placeholder="Link da plataforma / sala (empresa)" className="w-full p-2 border rounded-lg" value={linkPlataforma} onChange={(e) => setLinkPlataforma(e.target.value)} />
-              <input type="text" placeholder="Link para inscrição (empresa)" className="w-full p-2 border rounded-lg" value={linkInscricao} onChange={(e) => setLinkInscricao(e.target.value)} />
-            </>
-          ) : (
-            <input type="text" placeholder="Link ou plataforma do evento" className="w-full p-2 border rounded-lg" value={linkInscricao} onChange={(e) => setLinkInscricao(e.target.value)} />
-          )}
-        </div>
-      )}
+     {modelo === "remoto" && (
+  <div className="flex flex-col gap-2 mb-3">
+    {organizadorTipo === "empresa" && (
+      <input
+        type="text"
+        placeholder="Link para inscrição (empresa)"
+        className="w-full p-2 border rounded-lg"
+        value={linkInscricao}
+        onChange={(e) => setLinkInscricao(e.target.value)}
+      />
+    )}
+  </div>
+)}
+
 
       <textarea placeholder="Descrição do evento" className="w-full mb-3 p-2 border rounded-lg" value={descricaoEvento} onChange={(e) => setDescricaoEvento(e.target.value)} />
 

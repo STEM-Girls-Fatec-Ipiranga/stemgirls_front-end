@@ -246,7 +246,7 @@ export default function Canais() {
     setVideoAberto(v);
   };
 
-  const Heart = ({ filled, size = 18, className = "" }) => {
+  const Heart = ({ filled, size = 16, className = "" }) => {
     const [usuarioLogado, setUsuarioLogado] = useState({});
 
     const [user, setUser] = useState({
@@ -603,11 +603,12 @@ export default function Canais() {
                               aria-label={liked ? "Remover curtida" : "Curtir vídeo"}
                               title={liked ? "Você curtiu" : "Curtir"}
                             >
-                              <span className={`${liked ? "text-white" : "text-purple-600"}`}>
-                                <Heart filled={liked} size={18} className="" />
+                              <span className={`${liked ? "text-white" : "text-purple-700"}`}>
+                                <Heart filled={liked} size={16} className="" />
                               </span>
                               <span className="font-semibold">{count > 0 ? count : "Curtir"}</span>
                             </button>
+
                           </div>
                         </div>
                       </article>
@@ -657,7 +658,7 @@ export default function Canais() {
                             aria-label={liked ? "Remover curtida" : "Curtir vídeo"}
                           >
                             <span className={`${liked ? "text-white" : "text-purple-600"}`}>
-                              <Heart filled={liked} size={18} className="" />
+                              <Heart filled={liked} size={16} className="" />
                             </span>
                             <span className="font-semibold">{count > 0 ? count : "Curtir"}</span>
                           </button>
