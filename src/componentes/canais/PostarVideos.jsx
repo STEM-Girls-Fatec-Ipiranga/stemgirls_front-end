@@ -76,7 +76,7 @@ export default function PostarVideos({
     <>
       <div className="fixed inset-0 bg-black bg-opacity-60 flex justify-center items-center z-50 p-4">
         <div className="bg-white p-6 rounded-2xl w-full max-w-2xl overflow-y-auto max-h-[90vh] border border-pink-200">
-          <h2 className="text-2xl font-bold text-pink-600 mb-4 text-center">
+          <h2 className="text-2xl font-bold mb-4 text-center">
             Publicar Novo Vídeo
           </h2>
 
@@ -133,20 +133,20 @@ export default function PostarVideos({
             placeholder="Título do vídeo"
             value={titulo}
             onChange={(e) => setTitulo(e.target.value)}
-            className="border p-2 w-full rounded-lg mb-3"
+            className="w-full mb-4 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
           />
           <textarea
             placeholder="Descrição do vídeo"
             value={desc}
             onChange={(e) => setDesc(e.target.value)}
-            className="border p-2 w-full rounded-lg mb-3"
+            className="mb-3 w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
           />
 
           {/* Canal destino */}
           <select
             value={canalDestino}
             onChange={(e) => setCanalDestino(e.target.value)}
-            className="border p-2 w-full rounded-lg mb-4"
+            className="mb-4 w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
           >
             <option value="">Selecione o canal</option>
             {canais
@@ -162,7 +162,7 @@ export default function PostarVideos({
           <div className="flex gap-3">
             <button
               onClick={publicar}
-              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-2 rounded-lg font-semibold"
+              className="w-full bg-[#F36EC0] text-white py-2 rounded-lg font-semibold"
             >
               Publicar
             </button>

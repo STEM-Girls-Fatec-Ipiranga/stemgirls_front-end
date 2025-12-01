@@ -24,7 +24,7 @@ function Button({ children, onClick, className = "" }) {
   return (
     <button
       onClick={handleClick}
-      className={`bg-pink-500 text-white px-6 py-2 rounded-full hover:bg-pink-600 transition ${className}`}
+      className={`bg-[#F36EC0] text-white font-bold px-8 py-2 rounded-full text-[16px] hover:bg-pink-500 transition ${className}`}
     >
       {children}
     </button>
@@ -138,7 +138,7 @@ export default function Home() {
     { name: "Talita Vitória", role: "Product Owner", title: "Designer UX e Dev Full Stack", image: "/imagens/Foto_Talita.jpg" },
     { name: "Kauane Martins", role: "Scrum Master", title: "Designer UX e Dev Full Stack", image: "/imagens/Foto_kauane.jpg" },
     { name: "Ana Clara", role: "Product Maker", title: "Analista de Qualidade", image: "/imagens/Foto_Ana.jpeg" },
-    { name: "Lethicia Ribeiro", role: "Tester", title: "Analista de Documentação", image: "/imagens/Foto_lelet.jpg" },
+    { name: "Lethicia Ribeiro", role: "Analista de Documentação", title: "Analista de Qualidade", image: "/imagens/Foto_lelet.jpg" },
   ];
 
   const canais = [

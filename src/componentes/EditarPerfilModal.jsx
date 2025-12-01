@@ -1,8 +1,8 @@
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
+import axios from "axios";
 
-// URL de placeholder para imagem de perfil
-const DEFAULT_PROFILE_IMAGE = "https://placehold.co/128x128/9D4EDD/ffffff?text=SG";
+const DEFAULT_PROFILE_IMAGE = "https://res.cloudinary.com/dfykqixct/image/upload/v1764548217/jattroyfofr5zuzdfx73.jpg";
 
 /**
  * Componente do Modal de Edição de Perfil
@@ -14,49 +14,87 @@ const DEFAULT_PROFILE_IMAGE = "https://placehold.co/128x128/9D4EDD/ffffff?text=S
  */
 
 export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
-    // Estado local para armazenar as edições temporariamente
-    const [editedUsername, setEditedUsername] = useState(initialData.nomeUsuario || '');
-    const [editedSobre, setEditedSobre] = useState(initialData.sobre || '');
-    const [editedProfileImage, setEditedProfileImage] = useState(initialData.profileImage || DEFAULT_PROFILE_IMAGE);
+    const [nomeUsuario, setNomeUsuario] = useState("");
+    const [sobre, setSobre] = useState("");
+    const [imagemPerfil, setImagemPerfil] = useState(DEFAULT_PROFILE_IMAGE);
+    const [file, setFile] = useState("");
+    const [erro, setErro] = useState("");
 
-    // Efeito para sincronizar dados iniciais quando o modal abre
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleSave = () => {
+        salvarUsuario();
+    }
+
+    const enviarImagem = async () => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        try {
+            const response = await axios.post(
+                "http://localhost:8080/usuario/upload",
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
+            setImagemPerfil(response.data);
+            console.log(response);
+        } catch (error) {
+            const errorMessage = error.response?.data;
+            console.log(errorMessage);
+            setErro(errorMessage);
+        }
+    }
+
+    const salvarUsuario = async () => {
+        enviarImagem();
+        try {
+            const response = await axios.post("http://localhost:8080/usuario/atualizar", {
+                nomeUsuario: nomeUsuario,
+                sobre: sobre,
+                linkImagemPerfil: imagemPerfil
+            });
+            console.log(response);
+        } catch (error) {
+            const errorMessage = error.response?.data;
+            console.log(errorMessage);
+            setErro(errorMessage);
+        }
+    }
+
     useEffect(() => {
         if (isOpen) {
-            setEditedUsername(initialData.nomeUsuario || '');
-            setEditedSobre(initialData.sobre || '');
-            setEditedProfileImage(initialData.profileImage || DEFAULT_PROFILE_IMAGE);
+            // setEditedUsername(initialData.nomeUsuario || '');
+            // setEditedSobre(initialData.sobre || '');
         }
     }, [isOpen, initialData]);
 
     if (!isOpen) return null;
 
-    const handleImageClick = () => {
-        console.log("Simulando abertura do explorador de arquivos para nova imagem.");
-    };
-
-    const handleSave = () => {
-        const newUserData = {
-            ...initialData,
-            nomeUsuario: editedUsername.trim(),
-            sobre: editedSobre.trim(),
-            profileImage: editedProfileImage,
-        };
-        onSave(newUserData);
-        onClose();
-    };
+    // const handleSave = () => {
+    //     const newUserData = {
+    //         ...initialData,
+    //         nomeUsuario: editedUsername.trim(),
+    //         sobre: editedSobre.trim(),
+    //         profileImage: editedProfileImage,
+    //     };
+    //     onSave(newUserData);
+    //     onClose();
+    // };
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm flex items-center justify-center p-4 z-50">
             <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 sm:p-8 transform transition-all duration-300 scale-100 opacity-100">
-                
+
                 {/* Cabeçalho do Modal */}
                 <div className="flex justify-between items-center mb-6 border-b pb-4">
                     <h2 className="text-2xl font-bold text-gray-800 flex items-center gap-2">
                         <Edit3 className="w-5 h-5 text-pink-500" />
                         Editar Perfil
                     </h2>
-                    <button 
-                        onClick={onClose} 
+                    <button
+                        onClick={onClose}
                         className="p-2 rounded-full hover:bg-gray-100 transition-colors text-gray-500"
                     >
                         <X className="w-6 h-6" />
@@ -64,13 +102,22 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                 </div>
 
                 {/* Seção de Imagem de Perfil */}
+                <form>
+                    <div className="flex flex-col items-center mb-8">
+                        <img src={imagemPerfil} alt="Imagem de Perfil" className="w-24 h-24 rounded-full border-4 border-pink-300 object-cover shadow-md transition-shadow group-hover:shadow-xl" />
+                        <input type="file" onChange={handleFileChange} />
+                        <button className="bg-pink-500" type="button" onClick={enviarImagem}>Enviar Imagem</button>
+                    </div>
+                </form>
+
                 <div className="flex flex-col items-center mb-8">
-                    <div className="relative group cursor-pointer" onClick={handleImageClick}>
-                        <img
+                    <div className="relative group cursor-pointer">
+                        {/* <img
                             src={editedProfileImage}
                             alt="Foto de Perfil"
                             className="w-24 h-24 rounded-full border-4 border-pink-300 object-cover shadow-md transition-shadow group-hover:shadow-xl"
-                        />
+                        /> */}
+
                         <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                             <Camera className="w-6 h-6 text-white" />
                         </div>
@@ -85,8 +132,8 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                     </label>
                     <input
                         type="text"
-                        value={editedUsername}
-                        onChange={(e) => setEditedUsername(e.target.value)}
+                        value={nomeUsuario}
+                        onChange={(e) => setNomeUsuario(e.target.value)}
                         placeholder="Digite o novo nome de usuário"
                         className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                     />
@@ -98,13 +145,26 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                         Sobre Você
                     </label>
                     <textarea
-                        value={editedSobre}
-                        onChange={(e) => setEditedSobre(e.target.value)}
+                        value={sobre}
+                        onChange={(e) => setSobre(e.target.value)}
                         placeholder="Adicione ou altere sobre você aqui"
                         rows={4}
                         className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                        style={{ color: editedSobre ? '#374151' : '#9ca3af' }}
+                    // style={{ color: editedSobre ? '#374151' : '#9ca3af' }}
                     />
+                </div>
+
+                <div>
+                    <p style={{
+                        color: '#e74c3c',
+                        fontSize: '0.8rem',
+                        marginTop: '4px',
+                        paddingLeft: '4px',
+                        fontWeight: '600',
+                    }}>
+
+                        {erro}
+                    </p>
                 </div>
 
                 {/* Botões de Ação */}
@@ -116,7 +176,7 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                         Cancelar
                     </button>
                     <button
-                        onClick={handleSave}
+                        onClick={salvarUsuario}
                         className="px-5 py-2 rounded-lg bg-pink-500 hover:bg-pink-600 text-white transition-colors font-medium shadow-md hover:shadow-lg"
                     >
                         Salvar Alterações

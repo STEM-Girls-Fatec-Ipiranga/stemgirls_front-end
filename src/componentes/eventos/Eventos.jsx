@@ -9,11 +9,23 @@ const imagensDisponiveis = [
   "/src/assets/img/mulheres-tecnologia.jpg",
 ];
 
-const user = JSON.parse(localStorage.getItem("user") || "null");
-const BACKEND_BASE = "http://localhost:8080";
-
 export default function Eventos() {
-  // dados
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const empresa = JSON.parse(localStorage.getItem("empresa"));
+
+  const [usuarioLogado, setUsuarioLogado] = useState({});
+
+  useEffect(() => {
+    if (user)
+      setUsuarioLogado(user);
+
+    if (empresa)
+      setUsuarioLogado(empresa);
+  }, []);
+
+  const BACKEND_BASE = "http://localhost:8080";
+
   const eventosFixos = [
     {
       id: 1,
@@ -58,7 +70,7 @@ export default function Eventos() {
   const [email, setEmail] = useState("");
   const [telefone, setTelefone] = useState("");
   const [instituicao, setInstituicao] = useState("");
-  
+
 
   // modal de confirmação externa (empresa)
   const [confirmEmpresa, setConfirmEmpresa] = useState(null);
@@ -320,32 +332,31 @@ export default function Eventos() {
   };
 
   const baixarInscricoes = async (eventoId) => {
-  try {
-    const response = await fetch(
-      `http://localhost:8080/inscricoes/evento/${eventoId}/download`,
-      {
-        method: "GET",
-      }
-    );
+    try {
+      const response = await fetch(
+        `http://localhost:8080/inscricoes/evento/${eventoId}/download`,
+        {
+          method: "GET",
+        }
+      );
 
-    const blob = await response.blob();
-    const url = window.URL.createObjectURL(blob);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
 
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `inscricoes_evento_${eventoId}.csv`;
-    link.click();
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `inscricoes_evento_${eventoId}.csv`;
+      link.click();
 
-    window.URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("Erro ao baixar inscrições:", error);
-  }
-};
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Erro ao baixar inscrições:", error);
+    }
+  };
 
 
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-gray-800">
-      {/* Sidebar */}
       <aside className="w-[300px] bg-[#FFF6FF] p-6 flex flex-col gap-6 shadow-lg">
         <h1 className="font-bold text-black text-[22px] ml-4">Eventos</h1>
 
@@ -360,7 +371,10 @@ export default function Eventos() {
           />
         </div>
 
-        {//["EMPRESA", "MODERADOR"].includes(user?.role?.toUpperCase()) && (
+
+
+
+        {(usuarioLogado.role == "MODERADOR" || usuarioLogado.role == "EMPRESA") && (
           <>
             <div className="mt-2 ml-4">
               <div className="flex justify-between items-center">
@@ -376,7 +390,6 @@ export default function Eventos() {
                   Ver
                 </p>
               </div>
-
               <div className="flex flex-col gap-2 max-h-64 overflow-auto pr-2 mt-4">
                 {eventosCriados.length === 0 ? (
                   <div className="text-sm text-gray-400">Você ainda não criou eventos.</div>
@@ -417,8 +430,11 @@ export default function Eventos() {
               + Publicar Evento
             </button>
           </>
-        //)
-        }
+        )}
+
+
+
+
 
       </aside>
 
@@ -520,8 +536,8 @@ export default function Eventos() {
                       <button
                         className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg hover:bg-pink-500 "
                         onClick={() => baixarInscricoes(ev.id)}
-                >
-                      Baixar inscrições
+                      >
+                        Baixar inscrições
                       </button>
 
 
@@ -607,7 +623,7 @@ export default function Eventos() {
                       <div className="text-gray-400">Sem link de inscrição</div>
                     )}
 
-        
+
                   </div>
                 </div>
 
@@ -707,7 +723,7 @@ export default function Eventos() {
                   Confirmar e Acessar
                 </button>
 
-                <button 
+                <button
                   onClick={() => setConfirmEmpresa(null)}
                   className="w-full bg-gray-300 text-black py-2 rounded"
                 >

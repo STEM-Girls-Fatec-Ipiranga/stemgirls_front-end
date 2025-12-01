@@ -31,6 +31,12 @@ function Parceiros() {
     const [selectedPartner, setSelectedPartner] = useState<Partner | null>(null);
     const [formData, setFormData] = useState({ companyName: '', email: '' });
 
+    const [popupOpen, setPopupOpen] = useState(false);
+
+    const user = JSON.parse(localStorage.getItem("user"));
+    const empresa = localStorage.getItem("empresa");
+    const moderador = localStorage.getItem("moderador");
+
 
     const benefits = [
         {
@@ -125,7 +131,6 @@ function Parceiros() {
         }
     ];
 
-
     const handleContactSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
@@ -164,11 +169,7 @@ function Parceiros() {
         setShowPartnerModal(true);
     };
 
-    const [popupOpen, setPopupOpen] = useState(false);
 
-    const empresaToken = localStorage.getItem("empresaToken");
-    const moderadorToken = localStorage.getItem("moderadorToken");
-    const user = localStorage.getItem("userData");
 
     return (
         <div className="min-h-screen bg-[#FFF6FF]">
@@ -182,7 +183,7 @@ function Parceiros() {
                     </p>
                     <button
                         onClick={() => {
-                            if (user || empresaToken || moderadorToken) {
+                            if (user || empresa || moderador) {
                                 setShowContactModal(true);
                             } else {
                                 setPopupOpen(true);

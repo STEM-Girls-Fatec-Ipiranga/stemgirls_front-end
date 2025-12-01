@@ -6,6 +6,7 @@ const UsuarioSchema = new mongoose.Schema({
   email: String,
   senha: String,
   sobre: String,
+  imagemPerfil: String,
   role: {
     type: String,
     enum: ["EMPRESA","USUARIO", "MODERADOR"],
@@ -14,8 +15,7 @@ const UsuarioSchema = new mongoose.Schema({
   joinDate: {
     type: Date,
     default: Date.now
-  },
-  profileImage: String
+  }
 });
 
 const Usuario = mongoose.model('Usuario', UsuarioSchema);

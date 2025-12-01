@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import  axios  from "axios";
 import { EditarPerfilModal } from "./EditarPerfilModal";
 
 const DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/gST4tJ1/default-profile.png";
@@ -28,7 +29,7 @@ export default function PerfilUsuario() {
                 email: "exemplo@stemgirls.com.br",
                 sobre: "Digite aqui um pequeno texto sobre você!",
                 joinDate: "2024-01-01T00:00:00Z",
-                profileImage: DEFAULT_PROFILE_IMAGE,
+                profileImage: DEFAULT_PROFILE_IMAGE
             }
     });
 
@@ -46,6 +47,34 @@ export default function PerfilUsuario() {
         navigate("/");
     };
 
+    const [imagemPerfil, setImagemPerfil] = useState(DEFAULT_PROFILE_IMAGE);
+    const [file, setFile] = useState("");
+
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const enviarImagem = async () => {
+        if(!file){
+            alert("Imagem não selecionada!");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("file", file);
+        try{
+            const response = await axios.post(
+                "http://localhost:8080/usuario/upload",
+                formData,
+                { headers: { "Content-Type": "multipart/form-data" } }
+            );
+            setImagemPerfil(response.data);
+            console.log(response);
+        }catch(error){
+            console.log(error);
+        }
+    }
+
     return (
         <>
             <div className="min-h-screen bg-pink-50 p-4 sm:p-6 lg:p-8 font-inter">
@@ -62,6 +91,12 @@ export default function PerfilUsuario() {
                                         onError={(e: any) => { e.target.onerror = null; e.target.src = DEFAULT_PROFILE_IMAGE; }}
                                     />
                                 </div>
+
+                                {/* <input type="file" accept="image/*" onChange={handleFileChange}/>
+                                <button className="bg-pink-500" type="button" onClick={enviarImagem}>Enviar Imagem</button>
+                                <img src={imagemPerfil} alt="Imagem de perfil" /> */}
+
+
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
                                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{user.data.nomeCompleto}</h2>
                                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
@@ -77,6 +112,7 @@ export default function PerfilUsuario() {
                                         <Edit3 className="w-4 h-4" />
                                         Editar Perfil
                                     </button>
+                                    
                                 </div>
                             </div>
 
