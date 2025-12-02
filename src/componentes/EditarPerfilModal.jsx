@@ -2,7 +2,7 @@ import { User, Mail, Calendar, Edit3, LogOut, Camera, X } from "lucide-react";
 import { useState, useCallback, useEffect } from "react";
 import axios from "axios";
 
-const DEFAULT_PROFILE_IMAGE = "https://res.cloudinary.com/dfykqixct/image/upload/v1764548217/jattroyfofr5zuzdfx73.jpg";
+const DEFAULT_PROFILE_IMAGE = "https://res.cloudinary.com/dfykqixct/image/upload/v1764633385/wkjfmbhioe1tkd14ivhb.jpg";
 
 /**
  * Componente do Modal de Edição de Perfil
@@ -14,19 +14,23 @@ const DEFAULT_PROFILE_IMAGE = "https://res.cloudinary.com/dfykqixct/image/upload
  */
 
 export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
-    const [nomeUsuario, setNomeUsuario] = useState("");
+    const [user, setUser] = useState({
+        data: localStorage.getItem("user")
+            ? JSON.parse(localStorage.getItem("user"))
+            : {}
+    });
+
     const [sobre, setSobre] = useState("");
-    const [imagemPerfil, setImagemPerfil] = useState(DEFAULT_PROFILE_IMAGE);
     const [file, setFile] = useState("");
     const [erro, setErro] = useState("");
+    const [preview, setPreview] = useState(DEFAULT_PROFILE_IMAGE);
 
     const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
+        const file = e.target.files[0];
+        const imageURL = URL.createObjectURL(file);
+        setPreview(imageURL);
+        setFile(file);
     };
-
-    const handleSave = () => {
-        salvarUsuario();
-    }
 
     const enviarImagem = async () => {
         const formData = new FormData();
@@ -38,8 +42,12 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                 formData,
                 { headers: { "Content-Type": "multipart/form-data" } }
             );
-            setImagemPerfil(response.data);
-            console.log(response);
+        
+            const link = response.data;
+            console.log("link imagem "+response.data);
+            
+            salvarUsuario(link);
+
         } catch (error) {
             const errorMessage = error.response?.data;
             console.log(errorMessage);
@@ -47,28 +55,23 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
         }
     }
 
-    const salvarUsuario = async () => {
-        enviarImagem();
+    const salvarUsuario = async (imagemPerfil) => {        
         try {
-            const response = await axios.post("http://localhost:8080/usuario/atualizar", {
-                nomeUsuario: nomeUsuario,
+            const response = await axios.put("http://localhost:8080/usuario/atualizar", {
+                email: user.data.email,
                 sobre: sobre,
                 linkImagemPerfil: imagemPerfil
             });
+            localStorage.setItem("user", JSON.stringify(response.data));
             console.log(response);
+            onClose();
+            window.location.reload();
         } catch (error) {
             const errorMessage = error.response?.data;
             console.log(errorMessage);
             setErro(errorMessage);
         }
     }
-
-    useEffect(() => {
-        if (isOpen) {
-            // setEditedUsername(initialData.nomeUsuario || '');
-            // setEditedSobre(initialData.sobre || '');
-        }
-    }, [isOpen, initialData]);
 
     if (!isOpen) return null;
 
@@ -104,41 +107,13 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                 {/* Seção de Imagem de Perfil */}
                 <form>
                     <div className="flex flex-col items-center mb-8">
-                        <img src={imagemPerfil} alt="Imagem de Perfil" className="w-24 h-24 rounded-full border-4 border-pink-300 object-cover shadow-md transition-shadow group-hover:shadow-xl" />
-                        <input type="file" onChange={handleFileChange} />
-                        <button className="bg-pink-500" type="button" onClick={enviarImagem}>Enviar Imagem</button>
+                        <img src={preview} alt="Imagem de Perfil" className="w-24 h-24 rounded-full border-4 border-pink-300 object-cover shadow-md transition-shadow group-hover:shadow-xl" />
+
+                        <div className="flex justify-center items-center w-full m-6">
+                            <input className="w-[128px] file:mx-0" type="file" onChange={handleFileChange} />
+                        </div>  
                     </div>
                 </form>
-
-                <div className="flex flex-col items-center mb-8">
-                    <div className="relative group cursor-pointer">
-                        {/* <img
-                            src={editedProfileImage}
-                            alt="Foto de Perfil"
-                            className="w-24 h-24 rounded-full border-4 border-pink-300 object-cover shadow-md transition-shadow group-hover:shadow-xl"
-                        /> */}
-
-                        <div className="absolute inset-0 bg-black bg-opacity-40 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Camera className="w-6 h-6 text-white" />
-                        </div>
-                    </div>
-                    <p className="text-sm text-gray-500 mt-2">Clique para alterar a foto</p>
-                </div>
-
-                {/* Campo Nome de Usuário */}
-                <div className="mb-6">
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Nome de Usuário Atual: <span className="font-semibold text-pink-600">@{initialData.nomeUsuario}</span>
-                    </label>
-                    <input
-                        type="text"
-                        value={nomeUsuario}
-                        onChange={(e) => setNomeUsuario(e.target.value)}
-                        placeholder="Digite o novo nome de usuário"
-                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                    />
-                </div>
-
                 {/* Campo Sobre */}
                 <div className="mb-8">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -149,8 +124,7 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                         onChange={(e) => setSobre(e.target.value)}
                         placeholder="Adicione ou altere sobre você aqui"
                         rows={4}
-                        className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                    // style={{ color: editedSobre ? '#374151' : '#9ca3af' }}
+                        className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                     />
                 </div>
 
@@ -176,7 +150,7 @@ export const EditarPerfilModal = ({ isOpen, initialData, onClose, onSave }) => {
                         Cancelar
                     </button>
                     <button
-                        onClick={salvarUsuario}
+                        onClick={enviarImagem}
                         className="px-5 py-2 rounded-lg bg-pink-500 hover:bg-pink-600 text-white transition-colors font-medium shadow-md hover:shadow-lg"
                     >
                         Salvar Alterações

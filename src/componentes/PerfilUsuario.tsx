@@ -5,7 +5,7 @@ import { useState } from "react";
 import  axios  from "axios";
 import { EditarPerfilModal } from "./EditarPerfilModal";
 
-const DEFAULT_PROFILE_IMAGE = "https://i.ibb.co/gST4tJ1/default-profile.png";
+const DEFAULT_PROFILE_IMAGE = "https://res.cloudinary.com/dfykqixct/image/upload/v1764633385/wkjfmbhioe1tkd14ivhb.jpg";
 
 export default function PerfilUsuario() {
     const navigate = useNavigate();
@@ -19,7 +19,6 @@ export default function PerfilUsuario() {
             })
             : "Data Indisponível";
 
-
     const [user, setUser] = useState({
         data: localStorage.getItem("user")
             ? JSON.parse(localStorage.getItem("user") || "{}")
@@ -29,7 +28,7 @@ export default function PerfilUsuario() {
                 email: "exemplo@stemgirls.com.br",
                 sobre: "Digite aqui um pequeno texto sobre você!",
                 joinDate: "2024-01-01T00:00:00Z",
-                profileImage: DEFAULT_PROFILE_IMAGE
+                linkImagemPerfil: DEFAULT_PROFILE_IMAGE
             }
     });
 
@@ -47,34 +46,6 @@ export default function PerfilUsuario() {
         navigate("/");
     };
 
-    const [imagemPerfil, setImagemPerfil] = useState(DEFAULT_PROFILE_IMAGE);
-    const [file, setFile] = useState("");
-
-    const handleFileChange = (e) => {
-        setFile(e.target.files[0]);
-    };
-
-    const enviarImagem = async () => {
-        if(!file){
-            alert("Imagem não selecionada!");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append("file", file);
-        try{
-            const response = await axios.post(
-                "http://localhost:8080/usuario/upload",
-                formData,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            );
-            setImagemPerfil(response.data);
-            console.log(response);
-        }catch(error){
-            console.log(error);
-        }
-    }
-
     return (
         <>
             <div className="min-h-screen bg-pink-50 p-4 sm:p-6 lg:p-8 font-inter">
@@ -85,17 +56,12 @@ export default function PerfilUsuario() {
                             <div className="relative -mt-16 sm:-mt-20 mb-6 flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
                                 <div className="relative">
                                     <img
-                                        src={user.data.profileImage}
+                                        src={user.data.linkImagemPerfil ? user.data.linkImagemPerfil : DEFAULT_PROFILE_IMAGE }
                                         alt={user.data.nomeCompleto}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                         onError={(e: any) => { e.target.onerror = null; e.target.src = DEFAULT_PROFILE_IMAGE; }}
                                     />
                                 </div>
-
-                                {/* <input type="file" accept="image/*" onChange={handleFileChange}/>
-                                <button className="bg-pink-500" type="button" onClick={enviarImagem}>Enviar Imagem</button>
-                                <img src={imagemPerfil} alt="Imagem de perfil" /> */}
-
 
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
                                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{user.data.nomeCompleto}</h2>
