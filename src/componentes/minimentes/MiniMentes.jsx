@@ -44,8 +44,8 @@ export default function MiniMentes() {
       quizzes: [],
     },
     {
-      id: "programacao",
-      title: "Programação",
+      id: "linguagens",
+      title: "Linguagens",
       colorFrom: "from-orange-400",
       colorTo: "to-red-400",
       icon: "Type",
@@ -69,33 +69,6 @@ export default function MiniMentes() {
     },
   ];
 
-// ---------- UPLOAD PARA SERVIDOR ----------
-  async function handleUploadToServer() {
-  if (!uploadForm.videoFile) return alert("Escolha um vídeo primeiro!");
-
-  const formData = new FormData();
-  formData.append("file", uploadForm.videoFile);
-  formData.append("titulo", uploadForm.title);
-  formData.append("descricao", uploadForm.description);
-
-  try {
-    const resposta = await fetch("http://localhost:8080/videos/upload", {
-      method: "POST",
-      body: formData,
-    });
-    if (!resposta.ok) {
-      const erro = await resposta.text();
-      console.error("Erro no upload:", erro);
-    } else {
-      console.log("Vídeo enviado com sucesso!");
-    }
-  } catch (err) {
-    console.error("Erro ao enviar vídeo:", err);
-  }
-}
-
-
-
 
   // persisted data (quizzes/categories)
   const [data, setData] = useState(() => {
@@ -106,7 +79,19 @@ export default function MiniMentes() {
       return initial;
     }
   });
-  useEffect(() => localStorage.setItem("minim-data-v1", JSON.stringify(data)), [data]);
+  useEffect(() => {
+  const sanitized = data.map(category => ({
+    ...category,
+    quizzes: category.quizzes.map(q => ({
+      ...q,
+      video: undefined,       // não salva no localStorage
+      thumbnail: undefined,   // não salva no localStorage
+    }))
+  }));
+
+  localStorage.setItem("minim-data-v1", JSON.stringify(sanitized));
+}, [data]);
+
 
   // refs for category scrolling
   const refs = useRef({});
@@ -132,7 +117,20 @@ export default function MiniMentes() {
       return { points: 1247, accuracy: 87, streak: 12, badges: 3 };
     }
   });
-  useEffect(() => localStorage.setItem("minim-stats-v1", JSON.stringify(userStats)), [userStats]);
+
+ useEffect(() => {
+  const sanitized = data.map(category => ({
+    ...category,
+    quizzes: category.quizzes.map(q => ({
+      ...q,
+      video: undefined,       // não salva no localStorage
+      thumbnail: undefined,   // não salva no localStorage
+    }))
+  }));
+
+  localStorage.setItem("minim-data-v1", JSON.stringify(sanitized));
+}, [data]);
+
 
   // uploader modal state (reused for edit)
   const [showUpload, setShowUpload] = useState(false);
@@ -253,64 +251,89 @@ export default function MiniMentes() {
     }));
   }
 
-  function buildQuizFromForm() {
-    return {
-      id: editing && editing.quizId ? editing.quizId : `u-${Date.now()}`,
-      title: uploadForm.title || "Sem título",
-      difficulty: uploadForm.difficulty,
-      // Prefer preview URLs (objectURL or dataURL) when available; if editing and no new preview, try to preserve existing stored video/thumbnail
-      video: uploadPreview.videoUrl || "",
-      thumbnail: uploadPreview.thumbUrl || "",
-      description: uploadForm.description || "",
-      quiz: uploadForm.quiz.map((q) => ({
-        question: q.question,
-        options: q.options.slice(0, 4).concat(Array(Math.max(0, 4 - q.options.length)).fill("")), // ensure 4
-        answer: Number(q.answer || 0),
-      })),
-    };
+  async function buildQuizFromForm() {
+  let videoBase64 = uploadPreview.videoUrl || "";
+  let thumbBase64 = uploadPreview.thumbUrl || "";
+
+  if (uploadForm.videoFile) {
+    videoBase64 = await fileToBase64(uploadForm.videoFile);
   }
 
-  function submitUpload(e) {
-    e.preventDefault();
+  if (uploadForm.thumbFile) {
+    thumbBase64 = await fileToBase64(uploadForm.thumbFile);
+  }
 
-    const newQuiz = buildQuizFromForm();
+  return {
+    id: editing?.quizId || `u-${Date.now()}`,
+    title: uploadForm.title,
+    difficulty: uploadForm.difficulty,
+    video: videoBase64,
+    thumbnail: thumbBase64,
+    description: uploadForm.description,
+    quiz: uploadForm.quiz.map((q) => ({
+      question: q.question,
+      options: q.options,
+      answer: Number(q.answer),
+    })),
+  };}
 
-    if (editing && editing.categoryId && editing.quizId) {
-      // update existing quiz in that category
-      setData((d) =>
-        d.map((c) =>
-          c.id === editing.categoryId
-            ? {
+
+
+
+  async function submitUpload(e) {
+  e.preventDefault();
+
+  const newQuiz = await buildQuizFromForm();
+
+  if (editing && editing.categoryId && editing.quizId) {
+    // editar existente
+    setData((d) =>
+      d.map((c) =>
+        c.id === editing.categoryId
+          ? {
               ...c,
-              quizzes: c.quizzes.map((q) => (q.id === editing.quizId ? newQuiz : q)),
+              quizzes: c.quizzes.map((q) =>
+                q.id === editing.quizId ? newQuiz : q
+              ),
             }
-            : c
-        )
-      );
-    } else {
-      // create new quiz at top of selected category
-      setData((d) =>
-        d.map((c) =>
-          c.id === uploadForm.category ? { ...c, quizzes: [newQuiz, ...c.quizzes] } : c
-        )
-      );
-    }
-
-    // close modal but keep objectURL active (used by player). We will revoke when replaced or on unmount.
-    setShowUpload(false);
-    setEditing(null);
-    setUploadForm({
-      title: "",
-      description: "",
-      category: "logica",
-      difficulty: "Fácil",
-      videoFile: null,
-      thumbFile: null,
-      quiz: [],
-    });
-    setUploadPreview({ videoUrl: null, thumbUrl: null });
-    // Do NOT revokeLastObjectUrl() here; we want the created blob to persist for preview/playback.
+          : c
+      )
+    );
+  } else {
+    // criar novo
+    setData((d) =>
+      d.map((c) =>
+        c.id === uploadForm.category
+          ? { ...c, quizzes: [newQuiz, ...c.quizzes] }
+          : c
+      )
+    );
   }
+
+  setShowUpload(false);
+  setEditing(null);
+  setUploadForm({
+    title: "",
+    description: "",
+    category: "logica",
+    difficulty: "Fácil",
+    videoFile: null,
+    thumbFile: null,
+    quiz: [],
+  });
+  setUploadPreview({ videoUrl: null, thumbUrl: null });
+}
+
+   // Converte um arquivo em Base64
+function fileToBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
 
   // cleanup on unmount
   useEffect(() => {
@@ -663,8 +686,8 @@ export default function MiniMentes() {
             </div>
 
             <div className="mt-4 grid grid-cols-1 gap-3">
-              <input value={uploadForm.title} onChange={(e) => setUploadForm((f) => ({ ...f, title: e.target.value }))} placeholder="Título" className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" />
-              <textarea value={uploadForm.description} onChange={(e) => setUploadForm((f) => ({ ...f, description: e.target.value }))} placeholder="Descrição" className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" rows={3} />
+              <input value={uploadForm.title} onChange={(e) => setUploadForm((f) => ({ ...f, title: e.target.value }))} placeholder="Título" className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" />
+              <textarea value={uploadForm.description} onChange={(e) => setUploadForm((f) => ({ ...f, description: e.target.value }))} placeholder="Descrição" className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" rows={3} />
 
               <div className="grid grid-cols-2 gap-2">
                 <select value={uploadForm.category} onChange={(e) => setUploadForm((f) => ({ ...f, category: e.target.value }))} className="p-3 rounded border border-gray-200 bg-gray-100 text-gray-700">
@@ -736,12 +759,24 @@ export default function MiniMentes() {
               </div>
 
               <div className="mt-4 flex justify-end gap-3">
-                <button type="button" onClick={() => { setShowUpload(false); setEditing(null); }} className="px-4 py-2 rounded border">
-                  Cancelar
-                </button>
-                <button type="submit" className="px-4 py-2 rounded bg-pink-500 text-white">
-                  {editing ? "Salvar alterações" : "Publicar"}
-                </button>
+                <button
+  type="button"
+  onClick={() => {
+    setShowUpload(false);
+    setEditing(null);
+  }}
+  className="px-4 py-2 rounded border"
+>
+  Cancelar
+</button>
+
+<button
+  type="submit"
+  className="px-4 py-2 rounded bg-pink-500 text-white hover:bg-pink-600 transition"
+>
+  {editing ? "Salvar alterações" : "Publicar"}
+</button>
+
               </div>
             </div>
           </form>

@@ -82,21 +82,40 @@ const CriarComunidadeModal: React.FC<CriarComunidadeModalProps> = ({
 
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Foto da comunidade
-            </label>
-            <div className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center">
-              <Upload className="h-6 w-6 text-gray-400 mx-auto mb-2" />
-              <p className="text-sm text-gray-500">Cole uma URL de imagem</p>
-              <input
-                type="url"
-                value={avatar}
-                onChange={(e) => setAvatar(e.target.value)}
-                placeholder="https://exemplo.com/imagem.jpg"
-                className="ww-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-              />
-            </div>
-          </div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Foto da comunidade
+  </label>
+
+  <div
+    className="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer"
+    onClick={() => document.getElementById("inputArquivoAvatar")?.click()}
+  >
+    <Upload className="h-6 w-6 text-gray-400 mx-auto mb-2" />
+
+    <p className="text-sm text-gray-500">
+      Clique para enviar uma imagem do seu dispositivo
+    </p>
+
+    <input
+      id="inputArquivoAvatar"
+      type="file"
+      accept="image/*"
+      className="hidden"
+      onChange={(e) => {
+        const arquivo = e.target.files?.[0];
+        if (!arquivo) return;
+
+        const leitor = new FileReader();
+        leitor.onloadend = () => {
+          setAvatar(leitor.result as string); // Base64
+          localStorage.setItem("avatarComunidadeTemp", leitor.result as string);
+        };
+        leitor.readAsDataURL(arquivo);
+      }}
+        />
+      </div>
+    </div>
+
           
 
           {avatar && (

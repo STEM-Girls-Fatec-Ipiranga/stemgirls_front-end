@@ -247,13 +247,13 @@ export default function CadastroEventos({
         </div>
       </div>
 
-      <input type="text" placeholder="Nome da empresa (se aplicável)" className="w-full mb-3 p-2 border rounded-lg" value={empresaNome} onChange={(e) => setEmpresaNome(e.target.value)} />
+      <input type="text" placeholder="Nome da empresa (se aplicável)" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={empresaNome} onChange={(e) => setEmpresaNome(e.target.value)} />
 
-      <input type="text" placeholder="Nome do evento" className="w-full mb-3 p-2 border rounded-lg" value={tituloEvento} onChange={(e) => setTituloEvento(e.target.value)} />
+      <input type="text" placeholder="Nome do evento" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={tituloEvento} onChange={(e) => setTituloEvento(e.target.value)} />
 
       <div className="flex gap-2 mb-3">
-        <input type="date" className="flex-1 p-2 border rounded-lg" value={dataEvento} onChange={(e) => setDataEvento(e.target.value)} />
-        <input type="time" className="flex-1 p-2 border rounded-lg" value={horaEvento} onChange={(e) => setHoraEvento(e.target.value)} />
+        <input type="date" className="flex-1 p-2 bg-gray-100 text-gray-700 border rounded-lg" value={dataEvento} onChange={(e) => setDataEvento(e.target.value)} />
+        <input type="time" className="flex-1 p-2 border rounded-lg bg-gray-100 text-gray-700" value={horaEvento} onChange={(e) => setHoraEvento(e.target.value)} />
       </div>
 
       <div className="flex gap-2 mb-3">
@@ -263,43 +263,43 @@ export default function CadastroEventos({
 
       {modelo === "presencial" && (
         <div className="flex flex-col gap-2 mb-3">
-          <input type="text" placeholder="CEP" className="w-full p-2 border rounded-lg" value={cep} onChange={(e) => preencherEndereco(e.target.value)} />
+          <input type="text" placeholder="CEP" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={cep} onChange={(e) => preencherEndereco(e.target.value)} />
 
           <div className="flex gap-2">
-            <input type="text" placeholder="Cidade" className="flex-1 p-2 border rounded-lg" value={cidade} readOnly />
-            <input type="text" placeholder="Estado" className="flex-1 p-2 border rounded-lg" value={estado} readOnly />
+            <input type="text" placeholder="Cidade" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={cidade} readOnly />
+            <input type="text" placeholder="Estado" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={estado} readOnly />
           </div>
 
-          <input type="text" placeholder="Bairro" className="w-full p-2 border rounded-lg" value={bairro} readOnly />
-          <input type="text" placeholder="Rua" className="w-full p-2 border rounded-lg" value={rua} readOnly />
+          <input type="text" placeholder="Bairro" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={bairro} readOnly />
+          <input type="text" placeholder="Rua" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={rua} readOnly />
 
           <div className="flex gap-2">
-            <input type="text" placeholder="Número" className="flex-1 p-2 border rounded-lg" value={numero} onChange={(e) => setNumero(e.target.value)} />
-            <input type="text" placeholder="Complemento" className="flex-1 p-2 border rounded-lg" value={complemento} onChange={(e) => setComplemento(e.target.value)} />
+            <input type="text" placeholder="Número" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={numero} onChange={(e) => setNumero(e.target.value)} />
+            <input type="text" placeholder="Complemento" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={complemento} onChange={(e) => setComplemento(e.target.value)} />
           </div>
 
           {organizadorTipo === "empresa" && (
-            <input type="text" placeholder="Link para formulário de inscrição (empresa)" className="w-full p-2 border rounded-lg mt-2" value={linkInscricao} onChange={(e) => setLinkInscricao(e.target.value)} />
+            <input type="text" placeholder="Link para formulário de inscrição (empresa)" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={linkInscricao} onChange={(e) => setLinkInscricao(e.target.value)} />
           )}
         </div>
       )}
 
-     {modelo === "remoto" && (
-  <div className="flex flex-col gap-2 mb-3">
-    {organizadorTipo === "empresa" && (
-      <input
-        type="text"
-        placeholder="Link para inscrição (empresa)"
-        className="w-full p-2 border rounded-lg"
-        value={linkInscricao}
-        onChange={(e) => setLinkInscricao(e.target.value)}
-      />
-    )}
-  </div>
-)}
+      {modelo === "remoto" && (
+        <div className="flex flex-col gap-2 mb-3">
+          {organizadorTipo === "empresa" && (
+            <input
+              type="text"
+              placeholder="Link para inscrição (empresa)"
+              className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+              value={linkInscricao}
+              onChange={(e) => setLinkInscricao(e.target.value)}
+            />
+          )}
+        </div>
+      )}
 
 
-      <textarea placeholder="Descrição do evento" className="w-full mb-3 p-2 border rounded-lg" value={descricaoEvento} onChange={(e) => setDescricaoEvento(e.target.value)} />
+      <textarea placeholder="Descrição do evento" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={descricaoEvento} onChange={(e) => setDescricaoEvento(e.target.value)} />
 
       <div className="mb-3">
         <label className="font-semibold block mb-1">Imagem do evento</label>

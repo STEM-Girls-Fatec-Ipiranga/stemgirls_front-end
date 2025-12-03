@@ -533,12 +533,14 @@ export default function Eventos() {
                       >
                         Saiba mais
                       </button>
+                      {normalizeOrganizadorTipo(ev) === "stemgirls" && (
                       <button
                         className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg hover:bg-pink-500 "
                         onClick={() => baixarInscricoes(ev.id)}
                       >
                         Baixar inscrições
                       </button>
+                      )}
 
 
                     </div>
@@ -660,35 +662,35 @@ export default function Eventos() {
               <p className="font-semibold mb-3">{inscricaoEvento.titulo}</p>
 
               <input
-                className="w-full p-2 border rounded mb-2"
+                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                 placeholder="Nome"
                 value={nome}
                 onChange={(e) => setNome(e.target.value)}
               />
 
               <input
-                className="w-full p-2 border rounded mb-2"
+                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                 placeholder="CPF"
                 value={cpf}
                 onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
               />
 
               <input
-                className="w-full p-2 border rounded mb-2"
+                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
 
               <input
-                className="w-full p-2 border rounded mb-2"
+                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                 placeholder="Telefone"
                 value={telefone}
                 onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
               />
 
               <input
-                className="w-full p-2 border rounded mb-3"
+                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                 placeholder="Instituição"
                 value={instituicao}
                 onChange={(e) => setInstituicao(e.target.value)}

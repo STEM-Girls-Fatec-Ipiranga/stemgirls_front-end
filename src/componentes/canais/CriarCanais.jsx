@@ -22,11 +22,18 @@ export default function CriarCanais({ setCanais, canais, onClose, setShowNotific
     if (fotoPerfil) formData.append("fotoPerfil", fotoPerfil);
     formData.append("owner", "me");
 
-    fetch("http://localhost:8080/api/canais", {
+    fetch("http://localhost:8080/canais", {
       method: "POST",
       body: formData,
     })
-      .then((res) => res.json())
+     .then(async (res) => {
+  if (!res.ok) {
+    const text = await res.text();
+    throw new Error(text);
+  }
+  return res.json();
+})
+
       .then((data) => {
         setCanais([...canais, data]);
         setShowNotificacao("✅ Canal criado!");

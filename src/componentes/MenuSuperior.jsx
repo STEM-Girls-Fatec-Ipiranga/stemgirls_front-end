@@ -146,7 +146,6 @@ const MenuSuperior = () => {
                 )}
               </AnimatePresence>
 
-
               <div className="flex flex-row items-center">
                 <p className="font-semibold text-white text-right">
                   {`@${usuarioLogado.nomeUsuario}`}

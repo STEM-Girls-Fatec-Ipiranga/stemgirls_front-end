@@ -660,7 +660,7 @@ export default function Canais() {
                             <span className={`${liked ? "text-white" : "text-purple-600"}`}>
                               <Heart filled={liked} size={16} className="" />
                             </span>
-                            <span className="font-semibold">{count > 0 ? count : "Curtir"}</span>
+                            <span className="font-semibold">{count > -1 ? count : "Curtir"}</span>
                           </button>
                         </div>
                       </div>

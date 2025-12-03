@@ -88,15 +88,20 @@ function AppContent() {
       </Routes>
 
       {/* Botão de voltar ao topo */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-        className={`fixed bottom-6 right-6 bg-pink-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-lg text-2xl hover:bg-pink-600 transition-opacity duration-300 ${
-          mostrarBotao ? "opacity-100" : "opacity-0 pointer-events-none"
-        }`}
-        style={{ zIndex: 9999 }}
-      >
-        <ArrowUp size={22} strokeWidth={2.5} />
-      </button>
+     <button
+  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+  className={`fixed right-6 bg-pink-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-xl text-2xl hover:bg-pink-600 transition-opacity duration-300 ${
+    mostrarBotao ? "opacity-100" : "opacity-0 pointer-events-none"
+  }`}
+  style={{
+    bottom: "100px",     // ⬅ deixa mais pra cima  
+    zIndex: 999999999,  // ⬅ MUITO alto, impossível esconder  
+    position: "fixed"
+  }}
+>
+  <ArrowUp size={22} strokeWidth={2.5} />
+</button>
+
 
       {mostrarRodape && <Rodape />}
     </GoogleOAuthProvider>
