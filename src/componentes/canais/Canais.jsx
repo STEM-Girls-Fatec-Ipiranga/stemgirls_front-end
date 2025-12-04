@@ -24,9 +24,30 @@ export default function Canais() {
     }
   });
 
+const normalizeVideos = (arr) => {
+  if (!Array.isArray(arr)) return [];
+
+  return arr.map(v => {
+    const thumb =
+      v.thumbnail ||
+      v.thumbnailPath ||   // <-- PRINCIPAL
+      v.thumbnailUrl ||
+      v.thumb ||
+      v.poster ||
+      v.preview ||
+      v.thumbnailBase64 ||
+      null;
+
+    return {
+      ...v,
+      _thumbRaw: thumb,
+    };
+  });
+};
 
   const user = JSON.parse(localStorage.getItem("user"));
-  
+
+  const userKey = user?.id || "guest";
   const [userLiked, setUserLiked] = useState(() => {
     try {
       const arr = JSON.parse(localStorage.getItem(`user_liked_videos_v1_${userKey}`)) || [];
@@ -60,6 +81,30 @@ export default function Canais() {
       owner: "system",
     },
   ];
+useEffect(() => {
+  const onCreated = (e) => {
+    const created = e?.detail;
+    if (!created) return;
+
+    // atualiza feed geral (state videos)
+    setVideos((prev) => {
+      // evitar duplicata: se já existir id, ignorar
+      if (prev.some((p) => String(p.id) === String(created.id))) return prev;
+      return [created, ...prev];
+    });
+
+    // se o vídeo for do canal atualmente aberto, adiciona também
+    if (canalSelecionado && String(created.canalId) === String(canalSelecionado.id)) {
+      setVideosCanal((prev) => {
+        if (prev.some((p) => String(p.id) === String(created.id))) return prev;
+        return [created, ...prev];
+      });
+    }
+  };
+
+  window.addEventListener("videos:created", onCreated);
+  return () => window.removeEventListener("videos:created", onCreated);
+}, [canalSelecionado]);
 
   useEffect(() => {
     try {
@@ -113,44 +158,37 @@ export default function Canais() {
   // se não curtiu -> adiciona like (incrementa contagem)
 
   const toggleLike = (videoId) => {
-    if (!user) {
-      setShowPopupLogin(true);
-      return;
+  if (!user) {
+    setShowPopupLogin(true);
+    return;
+  }
+
+  const idKey = String(videoId || "");
+
+  setUserLiked((prev) => {
+    const next = new Set(prev);
+    const has = next.has(idKey);
+
+    if (has) {
+      next.delete(idKey);
+    } else {
+      next.add(idKey);
     }
 
-    const idKey = String(videoId || "");
-    setUserLiked((prev) => {
-      const has = prev.has(idKey);
-      const next = new Set(prev);
-      if (has) {
-        next.delete(idKey);
-        setLikeCounts((prevCounts) => {
-          const prevVal = Number(prevCounts[idKey] || 0);
-          const nextCounts = { ...prevCounts, [idKey]: Math.max(0, prevVal - 1) };
-          return nextCounts;
-        });
-      } else {
-        next.add(idKey);
-        setLikeCounts((prevCounts) => {
-          const prevVal = Number(prevCounts[idKey] || 0);
-          const nextCounts = { ...prevCounts, [idKey]: prevVal + 1 };
-          return nextCounts;
-        });
-      }
-      return next;
-    });
-  };
+    return next;
+  });
 
-  const toggleInscricao = (id) => {
-    const ja = inscritos.includes(id);
-    const novos = ja ? inscritos.filter((x) => x !== id) : [...inscritos, id];
-    setInscritos(novos);
-    setCanais((prev) =>
-      prev.map((c) =>
-        c.id === id ? { ...c, inscritos: Number(c.inscritos || 0) + (ja ? -1 : 1) } : c
-      )
-    );
-  };
+  setLikeCounts((prevCounts) => {
+    const prevVal = Number(prevCounts[idKey] || 0);
+    const hasLiked = userLiked.has(idKey); // verifica estado antigo
+    return {
+      ...prevCounts,
+      [idKey]: hasLiked ? Math.max(0, prevVal - 1) : prevVal + 1,
+    };
+  });
+};
+
+
 
   useEffect(() => {
     fetch("http://localhost:8080/canais")
@@ -179,7 +217,7 @@ export default function Canais() {
         if (!res.ok) throw new Error("Erro ao buscar vídeos");
         return res.json();
       })
-      .then((data) => setVideos(Array.isArray(data) ? data : []))
+      .then((data) => setVideos(normalizeVideos(data)))
       .catch(() => setVideos([]));
   }, []);
 
@@ -197,7 +235,7 @@ export default function Canais() {
         if (!res.ok) throw new Error("Erro ao buscar vídeos do canal");
         return res.json();
       })
-      .then((data) => setVideosCanal(Array.isArray(data) ? data : []))
+      .then((data) => setVideosCanal(normalizeVideos(data)))
       .catch(() => setVideosCanal([]));
   }, [canalSelecionado]);
 
@@ -310,44 +348,75 @@ export default function Canais() {
   };
 
   const VideoPreview = ({ v }) => {
-    const playable = getPlayableUrl(v.url || "");
-    return (
-      <div className="relative group w-full h-48 bg-gray-100 overflow-hidden">
-        {v.thumb ? (
-          <img
-            src={v.thumb}
-            alt={v.title}
-            className="w-full h-full object-cover"
-            loading="lazy"
-          />
-        ) : playable ? (
-          
-          <video
-            src={playable}
-            className="w-full h-full object-cover bg-black"
-            muted
-            playsInline
-            preload="metadata"
-            controls={false}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">Prévia do vídeo</div>
-        )}
+  const playable = getPlayableUrl(v.url || "");
 
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
-          <div className="bg-black/40 rounded-full p-3 backdrop-blur-sm">
-            <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 3v18l15-9L5 3z" fill="white" />
-            </svg>
-          </div>
-        </div>
+  // 1) detecta todos os campos possíveis que seu backend pode usar
+  const rawThumb = v._thumbRaw;
+    v.thumbnail ||
+    v.thumbnailUrl ||
+    v.thumbnailPath ||
+    v.thumb ||
+    v.poster ||
+    v.preview ||
+    v.thumbnailBase64 ||
+    null;
 
-        {v.duration && (
-          <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded">{v.duration}</div>
-        )}
-      </div>
-    );
+  // 2) monta a URL final (aceita data:, http(s), ou path começando com /uploads)
+  const makeThumbUrl = (thumb) => {
+    if (!thumb) return null;
+    if (thumb.startsWith("data:")) return thumb;
+    if (thumb.startsWith("http://") || thumb.startsWith("https://")) return thumb;
+    // evita // na URL
+    const path = thumb.replace(/^\/+/, "");
+    return `http://localhost:8080/${path}`;
   };
+
+  const thumbSrc = makeThumbUrl(rawThumb);
+
+  // 3) estado para detectar se a imagem carregou corretamente
+  const [imgOk, setImgOk] = useState(null); // null = não testado, true=ok, false=erro
+
+  useEffect(() => {
+    if (!thumbSrc) {
+      setImgOk(false);
+      return;
+    }
+    setImgOk(null);
+    const img = new Image();
+    img.onload = () => setImgOk(true);
+    img.onerror = () => setImgOk(false);
+    // força bypass cache adicionando timestamp (útil durante desenvolvimento)
+    img.src = thumbSrc + (thumbSrc.includes("?") ? "&" : "?") + `t=${Date.now()}`;
+    return () => {
+      img.onload = null;
+      img.onerror = null;
+    };
+  }, [thumbSrc, v.id]);
+
+  return (
+    <div className="relative group w-full h-48 bg-gray-100 overflow-hidden">
+      {imgOk ? (
+        <img src={thumbSrc} alt={v.title} className="w-full h-full object-cover" loading="lazy" />
+      ) : playable ? (
+        <video src={playable} className="w-full h-full object-cover bg-black" muted playsInline preload="metadata" controls={false} />
+      ) : (
+        <div className="w-full h-full flex items-center justify-center text-gray-400">Prévia do vídeo</div>
+      )}
+
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="bg-black/40 rounded-full p-3 backdrop-blur-sm">
+          <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 3v18l15-9L5 3z" fill="white" />
+          </svg>
+        </div>
+      </div>
+
+      {v.duration && <div className="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-0.5 rounded">{v.duration}</div>}
+    </div>
+  );
+};
+
+
 
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-black">
@@ -724,9 +793,9 @@ export default function Canais() {
                   controls
                   className="w-full h-[420px] md:h-[480px] rounded-xl object-cover bg-black"
                 />
-              ) : videoAberto.thumb ? (
+              ) : videoAberto.thumbnail ? (
                 <img
-                  src={videoAberto.thumb}
+                  src={videoAberto.thumbnail}
                   alt={videoAberto.title}
                   className="w-full h-[420px] md:h-[480px] rounded-xl object-cover"
                   loading="lazy"
