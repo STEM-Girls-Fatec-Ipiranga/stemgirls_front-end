@@ -6,7 +6,7 @@ import "../../src/index.css";
 import { CirclePlay, Instagram, Linkedin, Github } from 'lucide-react';
 
 import thumbPitch from "../assets/img/ThumbPitch.jpg";
-import videoPitch from "../assets/img/pitch-STEMGirls.MP4";
+//import videoPitch from "../assets/img/pitch-STEMGirls.MP4";
 
 import FotoTalita from "../assets/img/Foto_Talita.jpeg";
 import FotoKauane from "../assets/img/Foto_Kauane.jpg";
