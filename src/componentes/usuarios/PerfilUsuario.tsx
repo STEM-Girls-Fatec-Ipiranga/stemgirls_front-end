@@ -23,7 +23,7 @@ export default function PerfilUsuario() {
         data: localStorage.getItem("user")
             ? JSON.parse(localStorage.getItem("user") || "{}")
             : {
-                nomeCompleto: "Nome Completo (Sem Login)",
+                nome: "Nome Completo (Sem Login)",
                 nomeUsuario: "stemgirl",
                 email: "exemplo@stemgirls.com.br",
                 sobre: "Digite aqui um pequeno texto sobre você!",
@@ -57,14 +57,14 @@ export default function PerfilUsuario() {
                                 <div className="relative">
                                     <img
                                         src={user.data.linkImagemPerfil ? user.data.linkImagemPerfil : DEFAULT_PROFILE_IMAGE }
-                                        alt={user.data.nomeCompleto}
+                                        alt={user.data.nome}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                         onError={(e: any) => { e.target.onerror = null; e.target.src = DEFAULT_PROFILE_IMAGE; }}
                                     />
                                 </div>
 
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
-                                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{user.data.nomeCompleto}</h2>
+                                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{user.data.nome}</h2>
                                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                                         <User className="w-4 h-4 text-purple-600" />
                                         <span className="text-gray-600 text-[17px]">@{user.data.nomeUsuario}</span>

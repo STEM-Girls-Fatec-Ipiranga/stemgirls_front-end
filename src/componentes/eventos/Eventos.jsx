@@ -1,32 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { ArrowLeft, Search } from "lucide-react";
-import CadastroEventos from "./CadastroEventos";
-
-const imagensDisponiveis = [
-  "/src/assets/img/emeninas-digitais.jpeg",
-  "/src/assets/img/mulheresfortes.png",
-  "/src/assets/img/mulherwomakers.jpeg",
-  "/src/assets/img/mulheres-tecnologia.jpg",
-];
+import CadastroEvento from "./CadastroEvento";
+import Evento from "./Evento";
+import MeusEventos from "./MeusEventos";
+import axios from "axios";
 
 export default function Eventos() {
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const empresa = JSON.parse(localStorage.getItem("empresa"));
+  const imagensDisponiveis = [
+    "/src/assets/img/emeninas-digitais.jpeg",
+    "/src/assets/img/mulheresfortes.png",
+    "/src/assets/img/mulherwomakers.jpeg",
+    "/src/assets/img/mulheres-tecnologia.jpg",
+  ];
 
-  const [usuarioLogado, setUsuarioLogado] = useState({});
-
-  useEffect(() => {
-    if (user)
-      setUsuarioLogado(user);
-
-    if (empresa)
-      setUsuarioLogado(empresa);
-  }, []);
-
-  const BACKEND_BASE = "http://localhost:8080";
-
-  const eventosFixos = [
+  const eventosMock = [
     {
       id: 1,
       titulo: "Reunião meninas digitais",
@@ -34,8 +22,7 @@ export default function Eventos() {
       hora: "19:00",
       tipo: "ao-vivo",
       local: "São Paulo",
-      descricao:
-        "Reunião para trocar ideias e conhecimentos sobre o projeto buscando o aprimoramento.",
+      descricao: "Reunião para trocar ideias e conhecimentos sobre o projeto buscando o aprimoramento.",
       imagem: "/src/assets/img/mulheres-tecnologia.jpg",
       organizador: "Stem Girls",
       organizadorTipo: "stemgirls",
@@ -56,90 +43,69 @@ export default function Eventos() {
     },
   ];
 
-  const [eventosCriados, setEventosCriados] = useState([]);
+  const BACKEND_URL = "http://localhost:8080";
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  const [usuarioLogado, setUsuarioLogado] = useState({});
+
+  const [eventos, setEventos] = useState([]);
+  const [meusEventos, setMeusEventos] = useState([]);
+
+  const [eventoEditando, setEventoEditando] = useState(null);
+  const [eventoParaExcluir, setEventoParaExcluir] = useState(null);
+
   const [filtro, setFiltro] = useState("todos");
   const [localidade, setLocalidade] = useState("");
-  const [detalhesEvento, setDetalhesEvento] = useState(null);
-  const [eventoParaExcluir, setEventoParaExcluir] = useState(null);
+  
   const [telaCadastro, setTelaCadastro] = useState(false);
   const [telaMeusEventos, setTelaMeusEventos] = useState(false);
-  const [eventoEditando, setEventoEditando] = useState(null);
-  const [inscricaoEvento, setInscricaoEvento] = useState(null);
-  const [nome, setNome] = useState("");
-  const [cpf, setCpf] = useState("");
-  const [email, setEmail] = useState("");
-  const [telefone, setTelefone] = useState("");
-  const [instituicao, setInstituicao] = useState("");
 
-
-  // modal de confirmação externa (empresa)
   const [confirmEmpresa, setConfirmEmpresa] = useState(null);
 
-  // máscaras / validação CPF / telefone
-  const aplicarMascaraCPF = (valor) => {
-    const cpfLimpo = (valor || "").replace(/\D/g, "");
-    let cpfFormatado = cpfLimpo;
-    if (cpfLimpo.length > 3) cpfFormatado = cpfLimpo.substring(0, 3) + "." + cpfLimpo.substring(3);
-    if (cpfLimpo.length > 6) cpfFormatado = cpfFormatado.substring(0, 7) + "." + cpfFormatado.substring(7);
-    if (cpfLimpo.length > 9) cpfFormatado = cpfFormatado.substring(0, 11) + "-" + cpfFormatado.substring(11);
-    return cpfFormatado.substring(0, 14);
-  };
-
-  const aplicarMascaraTelefone = (valor) => {
-    const tel = (valor || "").replace(/\D/g, "");
-    let t = tel;
-    if (tel.length > 0) t = "(" + tel.substring(0, 2) + ") " + tel.substring(2);
-    if (tel.length > 6) t = t.substring(0, 10) + "-" + t.substring(10);
-    return t.substring(0, 15);
-  };
-
-  const validarCPF = (cpf) => {
-    const c = (cpf || "").replace(/\D/g, "");
-    if (c.length !== 11) return false;
-    if (/^(\d)\1+$/.test(c)) return false;
-
-    let soma = 0;
-    for (let i = 1; i <= 9; i++) soma += parseInt(c[i - 1]) * (11 - i);
-    let resto = (soma * 10) % 11;
-    resto = resto >= 10 ? 0 : resto;
-    if (resto !== parseInt(c[9])) return false;
-
-    soma = 0;
-    for (let i = 1; i <= 10; i++) soma += parseInt(c[i - 1]) * (12 - i);
-    resto = (soma * 10) % 11;
-    resto = resto >= 10 ? 0 : resto;
-    return resto === parseInt(c[10]);
-  };
-
-  // busca eventos no backend (quando disponível)
-  const listarEventosBackend = async () => {
+  const listarEventos = async () => {
     try {
-      const res = await fetch(`${BACKEND_BASE}/eventos`);
-      if (!res.ok) throw new Error();
-      const dados = await res.json();
-      setEventosCriados(Array.isArray(dados) ? dados : []);
-    } catch (e) {
-      // se falhar, mantém só os criados locais vazios (ou você pode mostrar mensagem)
-      setEventosCriados([]);
+      const response = await axios.get(`${BACKEND_URL}/evento`);     
+      setEventos(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.log("Erro ao buscar eventos:", error);
     }
   };
 
+  const listarMeusEventos = async () => {
+    try{
+      const response = await axios.get(`${BACKEND_URL}/evento/organizador/${user.id}`);
+      setMeusEventos(response.data);
+    }catch(error){
+      console.log("Erro ao buscar meus eventos:", error);
+    }
+  }
+
+  const todosEventos = [...eventosMock, ...eventos];
+
+  const eventosFiltrados = todosEventos.filter((ev) => {
+    const tipoMatch = filtro === "todos" || (ev.tipo || ev.tipoEvento || "").toLowerCase() === filtro;
+    const localMatch = (ev.local || ev.cidade || "").toLowerCase().includes(localidade.toLowerCase());
+    return tipoMatch && localMatch;
+  });
+
   useEffect(() => {
-    listarEventosBackend();
+    if (user)
+      setUsuarioLogado(user);
+  
+    listarEventos();
+    listarMeusEventos();
   }, []);
 
   const salvarEvento = async (eventoObj, isEdit) => {
     try {
-      // garante as chaves que usamos no front
       eventoObj.organizadorTipo = (eventoObj.organizadorTipo || eventoObj.organizerType || eventoObj.organizador || "").toString().trim().toLowerCase();
-      // assegura que exista campo "organizador" (compatibilidade)
       if (!eventoObj.organizador && eventoObj.empresa) eventoObj.organizador = eventoObj.empresa;
 
       eventoObj.linkInscricao = eventoObj.linkInscricao || eventoObj.link || eventoObj.linkParaInscricao || "";
 
       if (isEdit) {
-        // se estiver integrando backend: tenta atualizar
-        const res = await fetch(`${BACKEND_BASE}/eventos/${eventoObj.id}`, {
+        const res = await fetch(`http://localhost:8080/eventos/${eventoObj.id}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(eventoObj),
@@ -147,7 +113,7 @@ export default function Eventos() {
         if (!res.ok) throw new Error();
         alert("Evento atualizado!");
       } else {
-        const res = await fetch(`${BACKEND_BASE}/eventos`, {
+        const res = await fetch(`http://localhost:8080/eventos`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(eventoObj),
@@ -162,10 +128,10 @@ export default function Eventos() {
     } catch (e) {
       // fallback: se backend não responder, atualiza localmente (útil durante desenvolvimento)
       if (!isEdit) {
-        setEventosCriados((prev) => [...prev, eventoObj]);
+        setEventos((prev) => [...prev, eventoObj]);
         alert("Evento armazenado localmente (backend indisponível).");
       } else {
-        setEventosCriados((prev) => prev.map((ev) => (ev.id === eventoObj.id ? eventoObj : ev)));
+        setEventos((prev) => prev.map((ev) => (ev.id === eventoObj.id ? eventoObj : ev)));
         alert("Alteração aplicada localmente (backend indisponível).");
       }
       setTelaCadastro(false);
@@ -180,65 +146,16 @@ export default function Eventos() {
         method: "DELETE",
       });
       if (!res.ok) throw new Error();
-      setEventosCriados((prev) => prev.filter((e) => e.id !== eventoParaExcluir.id));
+      setEventos((prev) => prev.filter((e) => e.id !== eventoParaExcluir.id));
       alert("Evento excluído!");
       setEventoParaExcluir(null);
     } catch (e) {
       // fallback local
-      setEventosCriados((prev) => prev.filter((e) => e.id !== eventoParaExcluir.id));
+      setEventos((prev) => prev.filter((e) => e.id !== eventoParaExcluir.id));
       alert("Evento removido localmente (backend indisponível).");
       setEventoParaExcluir(null);
     }
   };
-
-  // ---------- Feed + filtros ----------
-  const todosOsEventos = [...eventosFixos, ...eventosCriados];
-  const eventosFiltrados = todosOsEventos.filter((ev) => {
-    const tipoMatch = filtro === "todos" || (ev.tipo || ev.tipoEvento || "").toLowerCase() === filtro;
-    const localMatch = (ev.local || ev.cidade || "").toLowerCase().includes(localidade.toLowerCase());
-    return tipoMatch && localMatch;
-  });
-
-  // ---------- Helpers ----------
-  const normalizeOrganizadorTipo = (ev) => {
-    if (!ev) return "";
-    const t = (ev.organizadorTipo || ev.organizerType || "").toString().trim().toLowerCase();
-    if (t) return t === "empresa" ? "empresa" : t === "stemgirls" ? "stemgirls" : t;
-    // fallback: tenta inferir pelo nome
-    const nome = (ev.organizador || ev.empresa || ev.organizer || "").toString().toLowerCase();
-    if (!nome) return "";
-    if (nome.includes("stem")) return "stemgirls";
-    // assume empresa se não for stem
-    return "empresa";
-  };
-
-  const isStemGirls = (ev) => normalizeOrganizadorTipo(ev) === "stemgirls";
-  const isEmpresa = (ev) => normalizeOrganizadorTipo(ev) === "empresa";
-
-  const pegarLinkInscricao = (ev) => {
-    if (!ev) return null;
-    const keys = ["linkInscricao", "link", "linkParaInscricao", "link_inscricao", "urlInscricao", "inscricaoLink"];
-    for (const k of keys) {
-      if (ev[k] && typeof ev[k] === "string" && ev[k].trim()) return ev[k].trim();
-    }
-  };
-
-  // ---------- UI Helpers ----------
-  const Card = ({ children, className = "", onClick }) => (
-    <div
-      role={onClick ? "button" : "group"}
-      tabIndex={onClick ? 0 : -1}
-      className={`bg-white rounded-xl shadow-md flex flex-col h-full ${className}`}
-      onClick={onClick}
-      onKeyDown={(e) => { if (onClick && (e.key === "Enter" || e.key === " ")) onClick(); }}
-    >
-      {children}
-    </div>
-  );
-
-  const CardContent = ({ children, className = "" }) => (
-    <div className={`p-4 flex flex-col flex-1 ${className}`}>{children}</div>
-  );
 
   const Button = ({ children, className = "", ...props }) => (
     <button className={`px-4 py-2 rounded-lg font-semibold ${className}`} {...props}>
@@ -246,74 +163,6 @@ export default function Eventos() {
     </button>
   );
 
-  const abrirDetalhes = (ev) => setDetalhesEvento(ev);
-
-  // NOVO: abrir inscrição respeitando regras: stem => popup interno; empresa => modal de confirmação (não abre direto)
-  const abrirInscricaoComRegras = (ev) => {
-    if (!ev) return;
-    // usa normalização robusta
-    if (isStemGirls(ev)) {
-      setInscricaoEvento(ev);
-      const usuario = JSON.parse(localStorage.getItem("user") || "null");
-      if (usuario) {
-        setNome(usuario.nome || "");
-        setEmail(usuario.email || "");
-      }
-      return;
-    }
-
-    if (isEmpresa(ev)) {
-      const link = pegarLinkInscricao(ev);
-      if (link) {
-        // mostra modal de confirmação para redirecionamento (não abre imediatamente)
-        setConfirmEmpresa({ evento: ev, link });
-        return;
-      } else {
-        alert("Nenhum link de inscrição foi fornecido para este evento de empresa.");
-        return;
-      }
-    }
-
-    // fallback: trata como interno
-    setInscricaoEvento(ev);
-  };
-
-  const enviarInscricao = async () => {
-    if (!inscricaoEvento) return;
-
-    if (!nome || !cpf || !email || !telefone || !instituicao) return alert("Preencha todos os dados!");
-    if (!validarCPF(cpf)) return alert("CPF inválido!");
-
-    try {
-      const resposta = await fetch(`${BACKEND_BASE}/inscricoes`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          eventoId: String(inscricaoEvento._id ?? inscricaoEvento.id),
-          nome,
-          cpf,
-          email,
-          telefone,
-          instituicao,
-        }),
-      });
-
-      if (!resposta.ok) throw new Error("Erro ao enviar inscrição");
-
-      alert("Inscrição realizada com sucesso!");
-      setInscricaoEvento(null);
-      setNome("");
-      setCpf("");
-      setEmail("");
-      setTelefone("");
-      setInstituicao("");
-    } catch (erro) {
-      console.error("ERRO NO BACK-END:", erro);
-      alert("Erro ao realizar inscrição. Verifique o backend.");
-    }
-  };
-
-  // confirma redirecionamento para evento empresa (usa alerta simples vindo da sua escolha A)
   const confirmarRedirecionamentoEmpresa = () => {
     if (!confirmEmpresa) return;
     const link = confirmEmpresa.link;
@@ -322,8 +171,6 @@ export default function Eventos() {
       setConfirmEmpresa(null);
       return;
     }
-
-    // usa o alert de confirmação simples (Opção A)
     const quero = window.confirm("Você será direcionado para uma página externa. Deseja continuar?");
     if (quero) {
       window.open(link, "_blank", "noopener,noreferrer");
@@ -331,32 +178,9 @@ export default function Eventos() {
     setConfirmEmpresa(null);
   };
 
-  const baixarInscricoes = async (eventoId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/inscricoes/evento/${eventoId}/download`,
-        {
-          method: "GET",
-        }
-      );
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = `inscricoes_evento_${eventoId}.csv`;
-      link.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error("Erro ao baixar inscrições:", error);
-    }
-  };
-
-
   return (
     <div className="flex min-h-screen bg-[#FFF6FF] text-gray-800">
+
       <aside className="w-[300px] bg-[#FFF6FF] p-6 flex flex-col gap-6 shadow-lg">
         <h1 className="font-bold text-black text-[22px] ml-4">Eventos</h1>
 
@@ -370,9 +194,6 @@ export default function Eventos() {
             onChange={(e) => setLocalidade(e.target.value)}
           />
         </div>
-
-
-
 
         {(usuarioLogado.role == "MODERADOR" || usuarioLogado.role == "EMPRESA") && (
           <>
@@ -391,10 +212,10 @@ export default function Eventos() {
                 </p>
               </div>
               <div className="flex flex-col gap-2 max-h-64 overflow-auto pr-2 mt-4">
-                {eventosCriados.length === 0 ? (
+                {Eventos.length === 0 ? (
                   <div className="text-sm text-gray-400">Você ainda não criou eventos.</div>
                 ) : (
-                  eventosCriados.map((ev) => (
+                  Eventos.map((ev) => (
                     <div key={ev.id ?? ev._id} className="flex items-center justify-between bg-white p-2 rounded shadow-sm">
                       <div className="truncate text-sm">{ev.titulo}</div>
                       <div className="flex gap-1">
@@ -431,62 +252,22 @@ export default function Eventos() {
             </button>
           </>
         )}
-
-
-
-
-
       </aside>
 
-      {/* Conteúdo */}
       <main className="flex-1 p-8">
-        {telaCadastro ? (
-          <CadastroEventos
+        { telaCadastro ? (
+          <CadastroEvento
+            user={user}
             eventoEditando={eventoEditando}
-            onSalvar={salvarEvento}
-            onCancelar={() => { setTelaCadastro(false); setEventoEditando(null); }}
-            imagensDisponiveis={imagensDisponiveis}
+            fechar={() => { setTelaCadastro(false); setEventoEditando(null); }}
           />
         ) : telaMeusEventos ? (
           <>
             <ArrowLeft className="m-2 cursor-pointer" onClick={() => setTelaMeusEventos(false)} />
-            <h2 className="text-2xl font-bold mb-6">Meus Eventos</h2>
-            {eventosCriados.length === 0 ? (
-              <div>Nenhum evento criado.</div>
-            ) : (
-              <div className="grid md:grid-cols-2 gap-6 items-stretch">
-                {eventosCriados.map((ev) => (
-                  <Card key={ev.id ?? ev._id} className="border-2 border-pink-300">
-                    <img src={ev.imagem || imagensDisponiveis[0]} className="w-full h-40 object-cover rounded-t-xl" alt={ev.titulo} />
-                    <CardContent>
-                      <h3 className="font-bold text-lg break-words">{ev.titulo}</h3>
-                      <p className="text-pink-600">{ev.data} • {ev.hora}</p>
-                      <p className="text-sm italic text-gray-600 break-words">
-                        {(ev.tipo || "").toUpperCase()} - {(ev.local || "")}
-                      </p>
-                      <p className="mt-2 text-sm break-words">{ev.descricao}</p>
-                      <div className="flex gap-2 mt-4">
-                        <button
-                          className="bg-yellow-400 px-3 py-2 rounded"
-                          onClick={() => {
-                            setTelaCadastro(true);
-                            setEventoEditando(ev);
-                          }}
-                        >
-                          Editar
-                        </button>
-                        <button
-                          className="bg-red-500 text-white px-3 py-2 rounded"
-                          onClick={() => setEventoParaExcluir(ev)}
-                        >
-                          Excluir
-                        </button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
+            <MeusEventos 
+              eventos={meusEventos}
+              user={user}
+            />
           </>
         ) : (
           <>
@@ -503,210 +284,19 @@ export default function Eventos() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-6 items-stretch">
-              {eventosFiltrados.map((ev) => (
-                <Card
-                  key={ev.id ?? ev._id}
-                  className="border-2 border-pink-300 cursor-pointer"
-                  onClick={() => abrirDetalhes(ev)}
-                >
-                  <img src={ev.imagem || imagensDisponiveis[0]} className="w-full h-40 object-cover rounded-t-xl" alt={ev.titulo} />
-                  <CardContent>
-                    <h3 className="font-bold text-lg break-words">{ev.titulo}</h3>
-                    <p className="text-pink-600">{ev.data} • {ev.hora}</p>
-                    <p className="text-sm italic text-gray-600 break-words">
-                      {(ev.tipo || "").toUpperCase()} - {(ev.local || "")}
-                    </p>
-                    <div className="mt-auto pt-4 flex justify-center gap-3">
-                      <button
-                        className="bg-[#F36EC0] text-white font-semibold rounded-lg px-6 py-2 hover:bg-[#e055a8] transition"
-                        onClick={(e) => { e.stopPropagation(); abrirInscricaoComRegras(ev); }}
-                      >
-                        Participar
-                      </button>
-
-                      <button
-                        className="bg-white border border-pink-300 px-4 py-2 rounded-lg text-sm hover:bg-gray-100 transition"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          abrirDetalhes(ev); // abre detalhes quando clicado no botão também
-                        }}
-                      >
-                        Saiba mais
-                      </button>
-                      {normalizeOrganizadorTipo(ev) === "stemgirls" && (
-                      <button
-                        className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg hover:bg-pink-500 "
-                        onClick={() => baixarInscricoes(ev.id)}
-                      >
-                        Baixar inscrições
-                      </button>
-                      )}
-
-
-                    </div>
-                  </CardContent>
-                </Card>
+              {eventos.map((evento, index) => (
+                <Evento 
+                  key={index}
+                  evento={evento}
+                  user={usuarioLogado}
+                />
               ))}
 
-              {eventosFiltrados.length === 0 && (
+              {eventos.length === 0 && (
                 <div className="text-center text-gray-500 col-span-full">Nenhum evento encontrado.</div>
               )}
             </div>
           </>
-        )}
-
-        {/* Modal Detalhes */}
-        {detalhesEvento && (
-          <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start p-4 overflow-y-auto" onClick={() => setDetalhesEvento(null)}>
-            <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl mt-10 mb-10 max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-              <div className="flex gap-4 p-6 flex-wrap">
-                <img
-                  src={detalhesEvento.imagem || imagensDisponiveis[0]}
-                  alt={detalhesEvento.titulo}
-                  className="w-40 h-28 object-cover rounded-lg flex-shrink-0"
-                />
-
-                <div className="flex-1 min-w-[200px]">
-                  <h2 className="text-2xl font-bold break-words">{detalhesEvento.titulo}</h2>
-
-                  <p className="text-pink-600 mt-1">
-                    {detalhesEvento.data} • {detalhesEvento.hora}
-                  </p>
-
-                  <p className="text-sm italic text-gray-600 mt-1">
-                    {(detalhesEvento.tipo || "").toUpperCase()} — {(detalhesEvento.local || "")}
-                  </p>
-
-                  <p className="mt-2 text-sm text-gray-700 whitespace-pre-wrap break-words leading-relaxed">
-                    {detalhesEvento.descricao || "Sem descrição fornecida."}
-                  </p>
-                </div>
-              </div>
-
-              <div className="border-t px-6 py-4">
-                <h4 className="font-semibold mb-2">Endereço</h4>
-
-                <div className="text-sm text-gray-700 mb-4 break-words">
-                  {(detalhesEvento.endereco ||
-                    detalhesEvento.enderecoCompleto ||
-                    detalhesEvento.rua ||
-                    detalhesEvento.logradouro) ? (
-                    <div className="break-words">
-                      <div>{detalhesEvento.endereco || detalhesEvento.enderecoCompleto || detalhesEvento.rua || detalhesEvento.logradouro}</div>
-                      <div>
-                        {detalhesEvento.numero ? `Nº ${detalhesEvento.numero}` : ""}{" "}
-                        {detalhesEvento.bairro ? `- ${detalhesEvento.bairro}` : ""}
-                      </div>
-                      <div>
-                        {(detalhesEvento.cidade || detalhesEvento.localidade) ? `${detalhesEvento.cidade || detalhesEvento.localidade}` : ""}{" "}
-                        {detalhesEvento.estado ? `- ${detalhesEvento.estado}` : ""}{" "}
-                        {detalhesEvento.cep ? `, CEP: ${detalhesEvento.cep}` : ""}
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="text-gray-400">Endereço completo não informado.</div>
-                  )}
-                </div>
-
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Links</h4>
-                  <div className="text-sm text-gray-700 flex flex-col gap-2">
-                    {pegarLinkInscricao(detalhesEvento) ? (
-                      <button
-                        className="underline text-sm text-left break-words"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          window.open(pegarLinkInscricao(detalhesEvento), "_blank", "noopener,noreferrer");
-                        }}
-                      >
-                        Link para inscrição
-                      </button>
-                    ) : (
-                      <div className="text-gray-400">Sem link de inscrição</div>
-                    )}
-
-
-                  </div>
-                </div>
-
-                <div className="flex justify-between items-center">
-                  <div className="flex gap-2 items-center"></div>
-
-                  <div className="flex gap-2">
-                    <button
-                      className="bg-gray-200 px-4 py-2 rounded-lg"
-                      onClick={() => setDetalhesEvento(null)}
-                    >
-                      Fechar
-                    </button>
-
-                    <button
-                      className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#e055a8] transition"
-                      onClick={() => abrirInscricaoComRegras(detalhesEvento)}
-                    >
-                      Participar
-                    </button>
-
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Modal Inscrição (interno - apenas StemGirls ou eventos sem link externo) */}
-        {inscricaoEvento && (
-          <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
-            <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
-              <h2 className="text-xl font-bold">Inscrição</h2>
-              <p className="font-semibold mb-3">{inscricaoEvento.titulo}</p>
-
-              <input
-                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                placeholder="Nome"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
-              />
-
-              <input
-                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                placeholder="CPF"
-                value={cpf}
-                onChange={(e) => setCpf(aplicarMascaraCPF(e.target.value))}
-              />
-
-              <input
-                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-
-              <input
-                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                placeholder="Telefone"
-                value={telefone}
-                onChange={(e) => setTelefone(aplicarMascaraTelefone(e.target.value))}
-              />
-
-              <input
-                className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                placeholder="Instituição"
-                value={instituicao}
-                onChange={(e) => setInstituicao(e.target.value)}
-              />
-
-              <div className="flex justify-between">
-                <button className="bg-gray-300 px-4 py-2 rounded-lg" onClick={() => setInscricaoEvento(null)}>
-                  Cancelar
-                </button>
-
-                <button className="bg-pink-500 text-white px-4 py-2 rounded-lg" onClick={enviarInscricao}>
-                  Confirmar
-                </button>
-              </div>
-            </div>
-          </div>
         )}
 
         {/* Modal confirmar redirecionamento evento empresa (usado apenas para manter estado; a confirmação final usa window.confirm) */}
@@ -736,7 +326,6 @@ export default function Eventos() {
           </div>
         )}
 
-        {/* Modal excluir */}
         {eventoParaExcluir && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
             <div className="bg-white p-6 rounded-xl w-96">

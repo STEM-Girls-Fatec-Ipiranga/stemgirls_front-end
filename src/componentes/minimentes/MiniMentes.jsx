@@ -794,12 +794,12 @@ export default function MiniMentes() {
                         <div className="font-semibold">Pergunta {qi + 1}</div>
                         <button type="button" onClick={() => removeQuizQuestion(qi)} className="text-sm text-red-500">Remover</button>
                       </div>
-                      <input value={qq.question} onChange={(e) => updateQuizQuestion(qi, "question", e.target.value)} placeholder="Pergunta" className="p-2 mt-2 rounded border w-full placeholder-white" />
+                      <input value={qq.question} onChange={(e) => updateQuizQuestion(qi, "question", e.target.value)} placeholder="Pergunta" className="w-full pl-4 pr-4 py-2 border mt-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-gray-100 font-semibold" />
                       <div className="grid grid-cols-1 gap-2 mt-2 placeholder-white">
-                        {qq.options.map((opt, oi) => (<input key={oi} value={opt} onChange={(e) => updateQuizOption(qi, oi, e.target.value)} placeholder={`Opção ${oi + 1}`} className="p-2 rounded border w-full placeholder-white" />))}
+                        {qq.options.map((opt, oi) => (<input key={oi} value={opt} onChange={(e) => updateQuizOption(qi, oi, e.target.value)} placeholder={`Opção ${oi + 1}`} className="p-2 rounded border w-full pl-4 pr-4 py-2 border mt-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-gray-100 text-black font-semibold" />))}
                         <div className="flex items-center gap-2 mt-2">
                           <div className="text-xs">Resposta correta:</div>
-                          <select value={qq.answer} onChange={(e) => updateQuizQuestion(qi, "answer", e.target.value)} className="p-2 rounded border">
+                          <select value={qq.answer} onChange={(e) => updateQuizQuestion(qi, "answer", e.target.value)} className="w-full pl-4 pr-4 py-2 border mt-2 border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent bg-gray-100 text-gray-700">
                             {qq.options.map((_, oi) => (<option key={oi} value={oi}>Opção {oi + 1}</option>))}
                           </select>
                         </div>

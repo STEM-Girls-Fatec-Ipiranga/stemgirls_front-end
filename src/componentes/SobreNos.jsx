@@ -5,6 +5,9 @@ import fundoSG from "../assets/img/FundoSGcolorido.jpg";
 import "../../src/index.css";
 import { CirclePlay, Instagram, Linkedin, Github } from 'lucide-react';
 
+import thumbPitch from "../assets/img/ThumbPitch.jpg";
+import videoPitch from "../assets/img/pitch-STEMGirls.MP4";
+
 import FotoTalita from "../assets/img/Foto_Talita.jpeg";
 import FotoKauane from "../assets/img/Foto_Kauane.jpg";
 import FotoAna from "../assets/img/Foto_Ana.jpg";
@@ -191,12 +194,32 @@ export default function SobreNos() {
       </div>
 
       {/* Seção de vídeo */}
+
+
+      {/* Seção de vídeo */}
       <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
+        <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-10">Apresentação</h2>
+
+        <div className="w-[65%] h-[70%] bg-gray-300 rounded-[20px] overflow-hidden">
+          <video
+            className="w-full h-full object-cover"
+            poster={thumbPitch}
+            controls
+          >
+            <source src={videoPitch} type="video/mp4" />
+            Seu navegador não suporta vídeos.
+          </video>
+        </div>
+      </div>
+
+
+
+      {/* <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
         <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-10">Apresentação</h2>
         <div className="w-[65%] h-[70%] text-center bg-gray-300 rounded-[20px] flex items-center justify-center">
           <CirclePlay className="w-12 h-12 text-white" />
         </div>
-      </div>
+      </div> */}
 
 
       {/* Seção Missão Visão e Valores */}
@@ -263,16 +286,16 @@ export default function SobreNos() {
                 <p className="text-sm font-bold text-pink-600">{membro.cargo}</p>
                 <p className="text-sm">{membro.descricao}</p>
                 <div className="w-[130px] h-6 mt-4 flex felx-row justify-around items-center">
-                  
-                    <a href={membro.instagram} target="_blank" rel="noopener noreferrer">
-                      <Instagram />
-                    </a>
-                    <a href={membro.linkedin} target="_blank" rel="noopener noreferrer">
-                      <Linkedin />
-                    </a>
-                    <a href={membro.github} target="_blank" rel="noopener noreferrer">
-                      <Github />
-                    </a>
+
+                  <a href={membro.instagram} target="_blank" rel="noopener noreferrer">
+                    <Instagram />
+                  </a>
+                  <a href={membro.linkedin} target="_blank" rel="noopener noreferrer">
+                    <Linkedin />
+                  </a>
+                  <a href={membro.github} target="_blank" rel="noopener noreferrer">
+                    <Github />
+                  </a>
 
                 </div>
               </div>
