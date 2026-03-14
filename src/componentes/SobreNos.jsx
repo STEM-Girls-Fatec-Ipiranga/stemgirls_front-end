@@ -200,7 +200,7 @@ export default function SobreNos() {
       <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
         <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-10">Apresentação</h2>
 
-        <div className="w-[65%] h-[70%] bg-gray-300 rounded-[20px] overflow-hidden">
+        {/* <div className="w-[65%] h-[70%] bg-gray-300 rounded-[20px] overflow-hidden">
           <video
             className="w-full h-full object-cover"
             poster={thumbPitch}
@@ -208,7 +208,7 @@ export default function SobreNos() {
           >
             <source src={videoPitch} type="video/mp4" />
             Seu navegador não suporta vídeos.
-          </video>
+          </video> */}
         </div>
       </div>
 
