@@ -97,48 +97,6 @@ export default function Eventos() {
     listarMeusEventos();
   }, []);
 
-  const salvarEvento = async (eventoObj, isEdit) => {
-    try {
-      eventoObj.organizadorTipo = (eventoObj.organizadorTipo || eventoObj.organizerType || eventoObj.organizador || "").toString().trim().toLowerCase();
-      if (!eventoObj.organizador && eventoObj.empresa) eventoObj.organizador = eventoObj.empresa;
-
-      eventoObj.linkInscricao = eventoObj.linkInscricao || eventoObj.link || eventoObj.linkParaInscricao || "";
-
-      if (isEdit) {
-        const res = await fetch(`http://localhost:8080/eventos/${eventoObj.id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(eventoObj),
-        });
-        if (!res.ok) throw new Error();
-        alert("Evento atualizado!");
-      } else {
-        const res = await fetch(`http://localhost:8080/eventos`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(eventoObj),
-        });
-        if (!res.ok) throw new Error();
-        alert("Evento criado!");
-      }
-
-      await listarEventosBackend();
-      setTelaCadastro(false);
-      setEventoEditando(null);
-    } catch (e) {
-      // fallback: se backend não responder, atualiza localmente (útil durante desenvolvimento)
-      if (!isEdit) {
-        setEventos((prev) => [...prev, eventoObj]);
-        alert("Evento armazenado localmente (backend indisponível).");
-      } else {
-        setEventos((prev) => prev.map((ev) => (ev.id === eventoObj.id ? eventoObj : ev)));
-        alert("Alteração aplicada localmente (backend indisponível).");
-      }
-      setTelaCadastro(false);
-      setEventoEditando(null);
-    }
-  };
-
   const confirmarExcluirEvento = async () => {
     if (!eventoParaExcluir) return;
     try {
