@@ -39,10 +39,10 @@ Acesso pelo link fornecido ao rodar o projeto no terminal
 - Página interativa com atividades introdutórias à programação, incluindo quizzes, vídeos e um mascote 3D
 
 # Autoras
-Ana Clara Fontineles e Costa
-Kauane Martins Soares
-Lethicia Ribeiro 
-Talita Vitória Moreira da Costa
+- Ana Clara Fontineles e Costa
+- Kauane Martins Soares
+- Lethicia Ribeiro 
+- Talita Vitória Moreira da Costa
 
 
 
