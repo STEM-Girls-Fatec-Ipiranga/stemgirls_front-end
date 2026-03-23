@@ -1,12 +1,40 @@
-# React + Vite
+# Stem Girls 
+Projeto desenvolvido com o objetivo de incentivar meninas na área de tecnologia, oferecendo uma plataforma interativa com conteúdos, recursos e funcionalidades sociais.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+1. Clone o repositório:
+```bash
+git clone https://github.com/seu-usuario/stem-girls.git
+cd stem-girls
+npm install
+npm start
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Acesse:
+http://localhost:3000
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+---
+
+### 3. 🛠️ Tecnologias utilizadas
+
+```md
+## 🛠️ Tecnologias
+
+- HTML
+- CSS
+- JavaScript
+- React
+- Node.js
+
+## 📱 Funcionalidades
+
+- Cadastro e login de usuários
+- Publicação de conteúdos (fotos, vídeos)
+- Interação entre usuários
+- Interface intuitiva
+
+## 👩‍💻 Autora
+
+Desenvolvido por Kauane Martins
+
