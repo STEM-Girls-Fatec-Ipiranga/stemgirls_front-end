@@ -20,6 +20,7 @@ bash
 git clone https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_front-end.git
 cd stemgirls_front-end
 npm install
+npm install @splinetool/react-spline
 npm start
 
 # Back-End
