@@ -22,7 +22,7 @@ git clone https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_front-end.git
 cd stemgirls_front-end
 npm install
 npm install @splinetool/react-spline
-npm start
+npm start/npm run dev
 
 # Back-End
 git clone https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_back-end.git
