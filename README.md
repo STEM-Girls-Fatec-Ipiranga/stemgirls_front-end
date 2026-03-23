@@ -3,7 +3,8 @@ Projeto desenvolvido com o objetivo de incentivar meninas e mulheres a ingressar
 
 # Tecnologias utilizadas
 - Java 
-- JDK 17  
+- JDK 17
+- JavaScript
 - Spring Boot 3.4.5
 - React 19.0.0  
 - Tailwind CSS 4.1.13  
