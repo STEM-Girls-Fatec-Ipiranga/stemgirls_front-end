@@ -5,7 +5,7 @@ import { useState } from "react";
 import  axios  from "axios";
 import { EditarPerfilModal } from "./EditarPerfilModal";
 
-const DEFAULT_PROFILE_IMAGE = "https://res.cloudinary.com/dfykqixct/image/upload/v1764633385/wkjfmbhioe1tkd14ivhb.jpg";
+const DEFAULT_PROFILE_IMAGE = "../../assets/default-profile.png";
 
 export default function PerfilUsuario() {
     const navigate = useNavigate();
@@ -20,31 +20,12 @@ export default function PerfilUsuario() {
             : "Data Indisponível";
 
     const [user, setUser] = useState({
-        data: localStorage.getItem("user")
-            ? JSON.parse(localStorage.getItem("user") || "{}")
-            : {
-                nome: "Nome Completo (Sem Login)",
-                nomeUsuario: "stemgirl",
-                email: "exemplo@stemgirls.com.br",
-                sobre: "Digite aqui um pequeno texto sobre você!",
-                joinDate: "2024-01-01T00:00:00Z",
-                linkImagemPerfil: DEFAULT_PROFILE_IMAGE
-            }
+        data: JSON.parse(localStorage.getItem("user") || "null")   
     });
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const toggleModal = () => setIsModalOpen(!isModalOpen);
-
-    const handleSave = (newUserData: any) => {
-        setUser(newUserData);
-        localStorage.setItem("user", JSON.stringify(newUserData));
-    };
-
-    const handleLogout = () => {
-        localStorage.removeItem("user");
-        localStorage.removeItem("user");
-        navigate("/");
-    };
+    const [abrirModal, setAbrirModal] = useState(false);
+    const abrir = () => setAbrirModal(true);
+    const fechar = () => setAbrirModal(false);
 
     return (
         <>
@@ -72,7 +53,7 @@ export default function PerfilUsuario() {
                                 </div>
                                 <div className="flex gap-3 mt-4 sm:mt-0 flex-shrink-0">
                                     <button
-                                        onClick={toggleModal}
+                                        onClick={abrir}
                                         className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
                                     >
                                         <Edit3 className="w-4 h-4" />
@@ -132,10 +113,9 @@ export default function PerfilUsuario() {
             </div>
 
             <EditarPerfilModal
-                isOpen={isModalOpen}
-                onClose={toggleModal}
-                onSave={handleSave}
-                initialData={user.data}
+                abrir={abrirModal}
+                fechar={fechar}
+                user={user.data}
             />
         </>
     );
