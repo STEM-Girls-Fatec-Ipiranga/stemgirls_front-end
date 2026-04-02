@@ -1,12 +1,52 @@
-# React + Vite
+# Stem Girls 
+Projeto desenvolvido com o objetivo de incentivar meninas e mulheres a ingressarem e permanecerem na área de tecnologia através de uma plataforma interativa com conteúdos, atividades e funcionalidades sociais.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Tecnologias utilizadas
+- Node.js
+- Java 
+- JDK 17.0.9 
+- Spring Boot 3.5.12
+- JavaScript
+- React 19.0.0  
+- Tailwind CSS 4.1.13  
+- MongoDB 8.0  
+- Maven 3.x  
+- React Router DOM 7.6.2  
+- Axios 1.10.0  
+- Framer Motion 12.23.24  
+- Cloudinary (armazenamento de imagens) 2.0.0
 
-Currently, two official plugins are available:
+# Clone o repositório:
+bash
+# Front-End
+git clone https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_front-end.git
+cd stemgirls_front-end
+npm install
+npm install @splinetool/react-spline
+npm start/npm run dev
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+# Back-End
+git clone https://github.com/STEM-Girls-Fatec-Ipiranga/stemgirls_back-end.git
+cd stemgirls_back-end
+npm install
+mvn spring-boot:run
 
-## Expanding the ESLint configuration
+Acesso pelo link fornecido ao rodar o projeto no terminal
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+# Principais funcionalidades
+- Sistema completo de cadastro e login de usuários, com recuperação de senha  
+- Publicação de conteúdos, permitindo o compartilhamento de fotos, vídeos e textos  
+- Interação entre usuárias por meio de curtidas e post em comunidades  
+- Gerenciamento de perfil, com edição de informações pessoais  
+- Divulgação de eventos que a participação pode gerar certificados
+- Página interativa com atividades introdutórias à programação, incluindo quizzes, vídeos e um mascote 3D
+
+# Autoras
+- Ana Clara Fontineles e Costa
+- Kauane Martins Soares
+- Lethicia Ribeiro 
+- Talita Vitória Moreira da Costa
+
+
+
+
