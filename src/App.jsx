@@ -4,28 +4,29 @@ import { ArrowUp, Import } from "lucide-react";
 
 import Home from "./componentes/Home.jsx";
 import Comunidades from "./componentes/comunidades/Comunidades.tsx";
-import Login from "./componentes/Login.jsx";
-import ForgotPasswordPage from "./componentes/ForgotPasswordPage.jsx";
-import ResetPasswordPage from "./componentes/ResetPasswordPage.jsx";
+import Login from "./componentes/usuarios/LoginUsuario.jsx";
+import ForgotPasswordPage from "./componentes/usuarios/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "./componentes/usuarios/ResetPasswordPage.jsx";
 import Historia from "./componentes/Historia.jsx";
 import SobreNos from "./componentes/SobreNos.jsx";
 import MiniMentes from "./componentes/minimentes/MiniMentes.jsx";
 import Eventos from "./componentes/eventos/Eventos.jsx";
-import ImportarVideos from "./componentes/eventos/CadastroEventos.jsx";
-import LoginEmpresa from "./componentes/LoginEmpresa.jsx";
-import PerfilUsuario from "./componentes/PerfilUsuario.tsx";
+
+import LoginEmpresa from "./componentes/usuarios/LoginEmpresa.jsx";
+import PerfilUsuario from "./componentes/usuarios/PerfilUsuario.tsx";
 import Canais from "./componentes/canais/Canais.jsx";
 import Parceiros from "./componentes/Parceiros.tsx";
 import Quiz from "./componentes/minimentes/Quiz.jsx";
 import TermosDeUso from "./componentes/TermosDeUso.jsx";
-import PerfilEmpresa from "./componentes/PerfilEmpresa.tsx";
+import PerfilEmpresa from "./componentes/usuarios/PerfilEmpresa.tsx";
 import Robo from "./componentes/Robo.jsx";
 
 import MenuSuperior from "./componentes/MenuSuperior.jsx";
 import Rodape from "./componentes/Rodape.jsx";
 import CriarCanais from "./componentes/canais/CriarCanais.jsx";
 import PostarVideos from "./componentes/canais/PostarVideos.jsx";
-
+import EventoMiniatura from "./componentes/eventos/EventoMiniatura.jsx";
+import Evento from "./componentes/eventos/Evento.jsx";
 
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -71,16 +72,23 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/termos-de-uso" element={<TermosDeUso />} />
         <Route path="/login-empresa" element={<LoginEmpresa />} />
+        
         <Route path="/comunidades" element={<Comunidades />} />
         <Route path="/historia" element={<Historia />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
+        
         <Route path="/perfil" element={<PerfilUsuario />} />
         <Route path="/perfil-empresa" element={<PerfilEmpresa />} />
+        <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
+        
         <Route path="/eventos" element={<Eventos />} />
+        <Route path="/eventos" element={<EventoMiniatura />} />
+        <Route path="/evento" element={<Evento/>} />
+        
         <Route path="/minimentes" element={<MiniMentes />} />
         <Route path="/canais" element={<Canais />} />
         <Route path="/parceiros" element={<Parceiros />} />
-        <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
+        
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/criar-canais" element={<CriarCanais />} />
         <Route path="/postar-videos" element={<PostarVideos />} />

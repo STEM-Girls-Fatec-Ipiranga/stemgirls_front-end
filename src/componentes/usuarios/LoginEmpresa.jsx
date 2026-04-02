@@ -1,5 +1,5 @@
-import Styles from '../css/LoginEmpresa.module.css';
-import LogoSG from '../assets/img/LogoSGbranco.png';
+import Styles from '../../css/LoginEmpresa.module.css';
+import LogoSG from '../../assets/img/LogoSGbranco.png';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
@@ -10,7 +10,7 @@ function LoginEmpresa() {
     const navigate = useNavigate();
 
     const [registerForm, setRegisterForm] = useState({
-        nomeEmpresa: '',
+        nome: '',
         cnpj: '',
         telefone: '',
         email: '',
@@ -98,7 +98,7 @@ function LoginEmpresa() {
 
         try {
             const response = await axios.post("http://localhost:8080/empresa/criar", {
-                nomeEmpresa: registerForm.nomeEmpresa,
+                nome: registerForm.nome,
                 cnpj: registerForm.cnpj,
                 email: registerForm.email,
                 senha: registerForm.senha,
@@ -110,7 +110,8 @@ function LoginEmpresa() {
             const empresa = response.data;
 
             const empresaData = {
-                nomeEmpresa: empresa.nomeEmpresa,
+                id: empresa.id,
+                nome: empresa.nome,
                 cnpj: empresa.cnpj,
                 email: empresa.email,
                 senha: empresa.senha,
@@ -119,10 +120,11 @@ function LoginEmpresa() {
                 status: empresa.status
             };
 
-            localStorage.setItem("empresa", JSON.stringify(empresaData));
+            localStorage.setItem("user", JSON.stringify(empresaData));
             
             alert("Cadastro realizado! Nossa equipe está analisando seus dados. Você será notificado por e-mail quando for aprovado.");
             setModo("sgnup");
+
         } catch (error) {
             const errorMsg = error.response?.data.mensagem || "Erro ao cadastrar";
             setStatusMessage(errorMsg);
@@ -145,7 +147,8 @@ function LoginEmpresa() {
             const empresa = response.data;
 
             const empresaData = {
-                nomeEmpresa: empresa.nomeEmpresa,
+                id: empresa.id,
+                nome: empresa.nome,
                 cnpj: empresa.cnpj,
                 email: empresa.email,
                 senha: empresa.senha,
@@ -162,7 +165,7 @@ function LoginEmpresa() {
             }else if(empresa.status == "REPROVADO"){
                 setStatusMessage("Infelizmente, seu cadastro foi reprovado. Entre em contato conosco para mais informações.");
             }else{
-                localStorage.setItem("empresa", JSON.stringify(empresaData));
+                localStorage.setItem("user", JSON.stringify(empresaData));
             }
 
             setShowSuccessLoginPopup(true);
@@ -246,7 +249,7 @@ function LoginEmpresa() {
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
                             <i className="far fa-user icon-modify"></i>
-                            <input type="text" name="nomeEmpresa" placeholder="Digite o nome da empresa" value={registerForm.nomeEmpresa} onChange={handleChange} required />
+                            <input type="text" name="nome" placeholder="Digite o nome da empresa" value={registerForm.nome} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-br-at icon-modify"></i>

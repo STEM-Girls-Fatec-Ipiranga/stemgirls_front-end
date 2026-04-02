@@ -1,6 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+
 import { motion } from "framer-motion";
+import EventoMiniatura from "./eventos/EventoMiniatura.jsx";
+
 import { useNavigate } from "react-router-dom";
 import Tumb1 from "../assets/img/minha-historia-thumb.png";
 import Tumb2 from "../assets/img/mulheres-tecnologia-thumb.png";
@@ -12,10 +15,8 @@ function Card({ children, className = "" }) {
 }
 
 function Button({ children, onClick, className = "" }) {
-  // Botão que chama a função recebida e garante um scrollTo(0) após navegação
   const handleClick = (e) => {
     if (typeof onClick === "function") onClick(e);
-    // pequeno delay para garantir que a rota foi trocada em SPA antes de rolar ao topo
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }, 60);
@@ -34,7 +35,6 @@ function Button({ children, onClick, className = "" }) {
 export default function Home() {
   const navigate = useNavigate();
 
-  // ----------------------- CARROSSEL -----------------------
   const slides = [
     { id: 1, type: "video", src: "imagens/mulheres-tecnologia.mp4", alt: "Evolução" },
     { id: 2, type: "video", src: "imagens/super-dicas.mp4", poster: Thumb3, alt: "Super Dicas" },
@@ -124,7 +124,6 @@ export default function Home() {
     return () => document.head.removeChild(style);
   }, []);
 
-  // Dados das seções
   const communities = [
     { id: 1, group: "Meninas Digitais", image: "imagens/evolucao.png", title: "Palestras Mulheres na Tecnologia", description: "Encontro dinâmico que conecta mulheres apaixonadas por tecnologia." },
     { id: 2, group: "Meninas Digitais", image: "imagens/palestrawomakers.jpeg", title: "Workshop de Programação", description: "Aprenda técnicas de programação com especialistas do setor." },
@@ -147,6 +146,13 @@ export default function Home() {
     { nome: "@TalitaCode", seguidores: "60mil Seguidores", img: "/imagens/Foto_Talita.jpg" },
     { nome: "@AnaTech", seguidores: "39mil Seguidores", img: "/imagens/Foto_Ana.jpeg" },
   ];
+
+  const eventos = [
+    { id: 1, img: "/imagens/meninas-digitais.jpeg", titulo: "Tecnologia e Inclusão", local: "São Paulo - SP" },
+    { id: 2, img: "/imagens/mulher-importante.png", titulo: "Programação", local: "Belo Horizonte - MG" },
+    { id: 3, img: "/imagens/mulheres-tecnologia.jpg", titulo: "Conferência", local: "Porto Alegre - RS" },
+    { id: 4, img: "/imagens/techwoman.jpeg", titulo: "Hackathon para Elas", local: "Recife - PE" },
+  ]
 
   return (
     <div className="bg-pink-50 text-gray-800 font-sans min-h-screen">
@@ -234,7 +240,8 @@ export default function Home() {
           </p>
 
           <h3 className="font-semibold text-gray-800 text-lg mb-4">Meninas Digitais</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 cursor-pointer">
             {communities.filter(c => c.group === "Meninas Digitais").map(c => (
               <Card
                 key={c.id}
@@ -250,7 +257,8 @@ export default function Home() {
           </div>
 
           <h3 className="font-semibold text-gray-800 text-lg mt-8 mb-4">WoMakers Code</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 cursor-pointer">
             {communities.filter(c => c.group === "WoMakers Code").map(c => (
               <Card
                 key={c.id}
@@ -282,127 +290,88 @@ export default function Home() {
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[
-              { img: "/imagens/meninas-digitais.jpeg", titulo: "Tecnologia e Inclusão", local: "São Paulo - SP" },
-              { img: "/imagens/mulher-importante.png", titulo: "Programação", local: "Belo Horizonte - MG" },
-              { img: "/imagens/mulheres-tecnologia.jpg", titulo: "Conferência", local: "Porto Alegre - RS" },
-              { img: "/imagens/techwoman.jpeg", titulo: "Hackathon para Elas", local: "Recife - PE" },
-            ].map((evento, index) => (
-              <motion.div
-                key={index}
-                whileHover={{ scale: 1.07 }}
-                transition={{ duration: 0.4, ease: "easeInOut" }}
-                className="cursor-pointer"
-              >
-                <Card className="border border-pink-200 shadow-lg p-3 hover:shadow-xl transition-shadow duration-300 h-[380px] flex flex-col justify-between ">
-                  <div>
-                    <motion.img
-                      src={evento.img}
-                      alt={evento.titulo}
-                      className="w-full h-40 object-cover rounded"
-                      whileHover={{ scale: 1.05 }}
-                      transition={{ duration: 0.4, ease: "easeInOut" }}
-                    />
-                    <div className="p-4">
-                      <h4 className="font-bold text-lg mb-2">{evento.titulo}</h4>
-                      <p className="text-sm text-gray-600">
-                        resumo do evento, com destaque para networking, inovação e aprendizado.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="px-4 pb-3">
-                    <p className="text-pink-500 font-semibold">{evento.local}</p>
-                  </div>
-                </Card>
-              </motion.div>
+            {eventos.map((evento) => (
+              <EventoMiniatura key={evento.id} img={evento.img} titulo={evento.titulo} local={evento.local} />
             ))}
           </div>
         </section>
 
         <div className="border-b border-pink-200 my-10 max-w-6xl mx-auto"></div>
 
-       {/* Canais */}
-<section className="w-full bg-[#FFEFF7] py-12">
-  <div className="max-w-6xl mx-auto">
+        {/* Canais */}
+        <section className="w-full bg-[#FFEFF7] py-12">
+          <div className="max-w-6xl mx-auto">
 
-    {/* Título */}
-   <div className="flex justify-between items-center mb-4 w-full">
-  <h2 className="text-3xl font-bold text-gray-800">Canais</h2>
+            <div className="flex justify-between items-center mb-4 w-full">
+              <h2 className="text-3xl font-bold text-gray-800">Canais</h2>
 
-  <Button
-    onClick={() => navigate("/canais")}
-    className="rounded-full text-sm bg-[#F36EC0]"
-  >
-    Saiba mais
-  </Button>
-</div>
-
-
-    {/* Texto */}
-    <p className="text-gray-800 max-w-3xl mb-10">
-      Você pode navegar pela aba Comunidades e se divertir com a postagem da sua comunidade predileta,
-      descobrir novas comunidades e até mesmo criar e publicar na sua própria!
-    </p>
-
-    {/* Lista de Canais */}
-    <div className="flex flex-wrap gap-6 justify-start">
-
-      {canais.map((canal, index) => (
-        <motion.div
-          key={index}
-          whileHover={{ scale: 1.03 }}
-          transition={{ duration: 0.3 }}
-          className="w-60 bg-[#fff6ff] rounded-xl p-4 shadow-sm cursor-pointer border border-pink-300"
-        >
-          {/* Card interno */}
-          <div className="flex items-center gap-3">
-
-            {/* Foto */}
-            <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-pink-300">
-              <img
-                src={canal.img}
-                alt={canal.nome}
-                className="w-full h-full object-cover"
-              />
+              <Button
+                onClick={() => navigate("/canais")}
+                className="rounded-full text-sm bg-[#F36EC0]"
+              >
+                Saiba mais
+              </Button>
             </div>
 
-            {/* Texto */}
-            <div className="flex-1">
-              <p className="font-semibold text-gray-900 text-sm">{canal.nome}</p>
-              <p className="text-xs text-gray-700">{canal.seguidores}</p>
-            </div>
+            <p className="text-gray-800 max-w-3xl mb-10">
+              Você pode navegar pela aba Comunidades e se divertir com a postagem da sua comunidade predileta,
+              descobrir novas comunidades e até mesmo criar e publicar na sua própria!
+            </p>
 
+            <div className="flex flex-wrap gap-6 justify-start">
+
+              {canais.map((canal, index) => (
+                <motion.div
+                  key={index}
+                  whileHover={{ scale: 1.03 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-60 bg-[#fff6ff] rounded-xl p-4 shadow-sm cursor-pointer border border-pink-300"
+                >
+            
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-pink-300">
+                      <img
+                        src={canal.img}
+                        alt={canal.nome}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+
+                    <div className="flex-1">
+                      <p className="font-semibold text-gray-900 text-sm">{canal.nome}</p>
+                      <p className="text-xs text-gray-700">{canal.seguidores}</p>
+                    </div>
+
+                  </div>
+
+                  <button
+                    className="mt-3 w-full bg-pink-400 text-white text-sm py-1 rounded-full hover:bg-pink-700 transition"
+                  >
+                    Inscrever-se
+                  </button>
+                </motion.div>
+              ))}
+
+            </div>
           </div>
-
-          {/* Botão */}
-          <button
-            className="mt-3 w-full bg-pink-400 text-white text-sm py-1 rounded-full hover:bg-pink-700 transition"
-          >
-            Inscrever-se
-          </button>
-        </motion.div>
-      ))}
-
-    </div>
-  </div>
-</section>
+        </section>
 
         <div className="border-b border-pink-200 my-10 max-w-6xl mx-auto"></div>
 
         {/* MiniMentes (nova sessão conforme imagem) */}
         <section className="max-w-6xl mx-auto py-10">
-         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-3xl font-bold ">MiniMentes</h2>
-           </div>
-           <p className="text-gray-700 mb-6"> O MiniMentes é uma sessão desenvolvida para apoiar quem está dando os primeiros 
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-3xl font-bold ">MiniMentes</h2>
+          </div>
+          <p className="text-gray-700 mb-6"> O MiniMentes é uma sessão desenvolvida para apoiar quem está dando os primeiros
             passos no mundo da tecnologia.</p>
           <div className="bg-white rounded-3xl shadow-xl border border-pink-300 p-10 relative flex flex-col md:flex-row items-center gap-6">
-           
+
             <div className="md:w-2/3">
               <h2 className="text-4xl font-extrabold text-pink-600 mb-4 leading-tight">
                 Venha conhecer o <span className="text-purple-600">MiniMentes</span>
               </h2>
-              
+
               <p className="text-gray-700 mb-6 leading-relaxed text-lg">
                 Aqui você tem atividades interativas, quizzes, vídeos educativos, e uma experiência de aprendizado incrível!!
               </p>
@@ -410,12 +379,12 @@ export default function Home() {
             </div>
             <div className="md:w-1/3 flex justify-center">
 
-              
-                 <div className="">
-                     <Robo/>
-                 </div>
-              
-              
+
+              <div className="">
+                <Robo />
+              </div>
+
+
             </div>
           </div>
         </section>
@@ -445,75 +414,75 @@ export default function Home() {
             ))}
           </div>
         </section>
-        
+
         {/* Card adicional STEM Girls Fatec Ipiranga */}
-<div className="mt-8 flex justify-center">
-  <Card
-    className="
+        <div className="mt-8 flex justify-center">
+          <Card
+            className="
       border border-pink-300 shadow-lg p-6
       hover:-translate-y-1 hover:scale-105 hover:shadow-pink-200
       transition-all duration-300
       w-[1150px]">
 
-    <h3 className="font-bold text-xl mb-3 text-pink-600">
-      Equipe STEM Girls Fatec Ipiranga
-    </h3>
+            <h3 className="font-bold text-xl mb-3 text-pink-600">
+              Equipe STEM Girls Fatec Ipiranga
+            </h3>
 
-    <p className="text-gray-700 mb-2">
-      Em março de 2024 foi criada uma Equipe no Microsoft Teams da Fatec
-      Ipiranga e divulgada para as alunas dos cursos de TI da Fatec, nomeada
-      STEM Girls Fatec Ipiranga. Nessa equipe foi apresentado o projeto
-      Equipe STEM Girls.
-    </p>
+            <p className="text-gray-700 mb-2">
+              Em março de 2024 foi criada uma Equipe no Microsoft Teams da Fatec
+              Ipiranga e divulgada para as alunas dos cursos de TI da Fatec, nomeada
+              STEM Girls Fatec Ipiranga. Nessa equipe foi apresentado o projeto
+              Equipe STEM Girls.
+            </p>
 
-    <p className="text-gray-700 mb-2">
-      A partir da criação do comitê gestor foram realizadas as seguintes
-      atividades: cronograma de reuniões semanais ou quinzenais, proposta
-      e escolha de outro nome, criação de um logo, elaboração de um plano
-      de trabalho para cada equipe.
-    </p>
+            <p className="text-gray-700 mb-2">
+              A partir da criação do comitê gestor foram realizadas as seguintes
+              atividades: cronograma de reuniões semanais ou quinzenais, proposta
+              e escolha de outro nome, criação de um logo, elaboração de um plano
+              de trabalho para cada equipe.
+            </p>
 
-    <p className="text-gray-700">
-      Reunião presencial para o fechamento do semestre e roda de conversa,
-      na qual foram tratados temas importantes e definidas as próximas ações.
-    </p>
-  </Card>
-</div>
+            <p className="text-gray-700">
+              Reunião presencial para o fechamento do semestre e roda de conversa,
+              na qual foram tratados temas importantes e definidas as próximas ações.
+            </p>
+          </Card>
+        </div>
 
-<div className="border-b border-pink-200 my-10 max-w-6xl mx-auto"></div>
+        <div className="border-b border-pink-200 my-10 max-w-6xl mx-auto"></div>
 
-{/* História das Mulheres na TI */}
-<section className="max-w-6xl mx-auto py-10 relative bg-pink-100 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-10 overflow-hidden">
+        {/* História das Mulheres na TI */}
+        <section className="max-w-6xl mx-auto py-10 relative bg-pink-100 rounded-2xl p-6 flex flex-col md:flex-row items-center gap-10 overflow-hidden">
 
-  <div className="md:w-1/2 relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
-    <h2 className="text-4xl font-extrabold text-pink-600 mb-4 leading-tight">
-      Mulheres que Transformaram a Tecnologia
-    </h2>
+          <div className="md:w-1/2 relative z-10 flex flex-col items-center md:items-start text-center md:text-left">
+            <h2 className="text-4xl font-extrabold text-pink-600 mb-4 leading-tight">
+              Mulheres que Transformaram a Tecnologia
+            </h2>
 
-    <p className="text-gray-700 mb-6 leading-relaxed">
-      Conheça trajetórias inspiradoras de mulheres que quebraram barreiras,
-      inovaram e impactaram o mundo da tecnologia. Cada história é uma
-      inspiração para o futuro da ciência e da engenharia!
-    </p>
+            <p className="text-gray-700 mb-6 leading-relaxed">
+              Conheça trajetórias inspiradoras de mulheres que quebraram barreiras,
+              inovaram e impactaram o mundo da tecnologia. Cada história é uma
+              inspiração para o futuro da ciência e da engenharia!
+            </p>
 
-    <Button onClick={() => navigate("/historia")} className="rounded-full px-6 py-3 bg-[#F36EC0]">
-      Saiba mais
-    </Button>
-  </div>
+            <Button onClick={() => navigate("/historia")} className="rounded-full px-6 py-3 bg-[#F36EC0]">
+              Saiba mais
+            </Button>
+          </div>
 
-  <div className="md:w-1/2 relative flex justify-center">
-    <img
-      src="/imagens/muleresfortes.png"
-      alt="Pioneiras da Tecnologia"
-      className="w-full h-full object-contain relative z-10"
-    />
+          <div className="md:w-1/2 relative flex justify-center">
+            <img
+              src="/imagens/muleresfortes.png"
+              alt="Pioneiras da Tecnologia"
+              className="w-full h-full object-contain relative z-10"
+            />
 
-    {/* Elementos de fundo restritos à div da imagem */}
-    <div className="absolute bottom-0 right-0 w-72 h-72 bg-pink-300 opacity-20 rounded-full overflow-hidden"></div>
-    <div className="absolute top-0 left-0 w-64 h-64 bg-pink-400 opacity-20 rounded-full overflow-hidden"></div>
-  </div>
+            {/* Elementos de fundo restritos à div da imagem */}
+            <div className="absolute bottom-0 right-0 w-72 h-72 bg-pink-300 opacity-20 rounded-full overflow-hidden"></div>
+            <div className="absolute top-0 left-0 w-64 h-64 bg-pink-400 opacity-20 rounded-full overflow-hidden"></div>
+          </div>
 
-</section>
+        </section>
 
 
 

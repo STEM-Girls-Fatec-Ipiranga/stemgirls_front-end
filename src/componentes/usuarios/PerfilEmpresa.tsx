@@ -18,10 +18,10 @@ export default function PerfilEmpresa() {
             : "Data Indisponível";
 
     const [empresa, setEmpresa] = useState({
-            data: localStorage.getItem("empresa")
-                ? JSON.parse(localStorage.getItem("empresa") || "{}")
+            data: localStorage.getItem("user")
+                ? JSON.parse(localStorage.getItem("user") || "{}")
                 : {
-                    nomeEmpresa: "Meninas Mulheres",
+                    nome: "Meninas Mulheres",
                     cnpj: "",
                     email: "meninasmulheres@exemplo.com.br",
                     senha: "********",
@@ -36,12 +36,12 @@ export default function PerfilEmpresa() {
 
     const handleSave = (newEmpresaData: any) => {
         setEmpresa(newEmpresaData);
-        localStorage.setItem("empresa", JSON.stringify(newEmpresaData));
+        localStorage.setItem("user", JSON.stringify(newEmpresaData));
     };
 
     const handleLogout = () => {
-        localStorage.removeItem("empresa");
-        localStorage.removeItem("empresa");
+        localStorage.removeItem("user");
+        localStorage.removeItem("user");
         navigate("/");
     };
 
@@ -56,7 +56,7 @@ export default function PerfilEmpresa() {
                                 <div className="relative">
                                     <img
                                         src={empresa.data.profileImage}
-                                        alt={empresa.data.nomeEmpresa}
+                                        alt={empresa.data.nome}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                         onError={(
                                             e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -69,7 +69,7 @@ export default function PerfilEmpresa() {
                                 </div>
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
                                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                                        {empresa.data.nomeEmpresa}
+                                        {empresa.data.nome}
                                     </h2>
                                     <div className="flex text-pink-600 items-center justify-center sm:justify-start gap-2">
                                         <Star />

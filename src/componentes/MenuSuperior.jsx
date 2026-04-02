@@ -47,12 +47,6 @@ const MenuSuperior = () => {
       : {}
   });
 
-  const [empresa, setEmpresa] = useState({
-    data: localStorage.getItem("empresa")
-      ? JSON.parse(localStorage.getItem("empresa") || "{}")
-      : {}
-  });
-
   const [usuarioLogado, setUsuarioLogado] = useState({});
 
   useEffect(() => {
@@ -60,11 +54,6 @@ const MenuSuperior = () => {
       setUsuarioLogado({
         nomeUsuario: user.data.nomeUsuario,
         role: user.data.role
-      });
-    } else if (empresa.data.nomeEmpresa != null) {
-      setUsuarioLogado({
-        nomeUsuario: empresa.data.nomeEmpresa,
-        role: empresa.data.role
       });
     }
   }, []);
@@ -78,9 +67,7 @@ const MenuSuperior = () => {
 
   const handleConfirmLogout = () => {
     localStorage.removeItem("user");
-    localStorage.removeItem("empresa");
     setUser(null);
-    setEmpresa(null);
     setIsLogoutModalOpen(false);
     navigate("/");
   };
@@ -117,7 +104,7 @@ const MenuSuperior = () => {
           </div>
 
           {/* Botão Cadastre-se - Desktop */}
-          {user == null && empresa == null && (
+          {user == null && (
             <div className="hidden md:flex items-center gap-4">
               <Link to="/login">
                 <button
@@ -156,8 +143,8 @@ const MenuSuperior = () => {
                   aria-label="Menu do usuário"
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                 >
-                  {/* <CircleUser size={45} /> */}
-                  <img src={user.data.linkImagemPerfil ? user.data.linkImagemPerfil : DEFAULT_PROFILE_IMAGE} className="w-14 h-14 rounded-[100%] border-[3px] border-pink-400 object-cover group-hover:shadow-xl"/>
+                  <CircleUser size={45} />
+                  {/* <img src={user.data.linkImagemPerfil ? user.data.linkImagemPerfil : DEFAULT_PROFILE_IMAGE} className="w-14 h-14 rounded-[100%] border-[3px] border-pink-400 object-cover group-hover:shadow-xl"/> */}
                 </button>
               </div>
 
@@ -276,7 +263,7 @@ const MenuSuperior = () => {
       )}
 
       {/* MODAL DE CONFIRMAÇÃO DE SAÍDA (INLINE) */}
-      {(user || empresa) && isLogoutModalOpen && (
+      {user && isLogoutModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
 
           {/* Container do Popup Branco */}

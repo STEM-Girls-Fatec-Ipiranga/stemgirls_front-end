@@ -1,6 +1,5 @@
-import Styles from '../css/Login.module.css';
-//import Styles from '../css/Global.module.css';
-import LogoSG from '../assets/img/LogoSG.png';
+import Styles from '../../css/Login.module.css';
+import LogoSG from '../../assets/img/LogoSG.png';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
@@ -11,7 +10,7 @@ function Login() {
     const navigate = useNavigate();
 
     const [registerForm, setRegisterForm] = useState({
-        nomeCompleto: '',
+        nome: '',
         nomeUsuario: '',
         email: '',
         senha: ''
@@ -98,7 +97,7 @@ function Login() {
 
         try {
             const response = await axios.post("http://localhost:8080/usuario/criar", {
-                nomeCompleto: registerForm.nomeCompleto,
+                nome: registerForm.nome,
                 nomeUsuario: registerForm.nomeUsuario,
                 email: registerForm.email,
                 senha: registerForm.senha,
@@ -109,8 +108,9 @@ function Login() {
             const user = response.data;
 
             const userData = {
+                id: user.id,
+                nome: user.nome,
                 nomeUsuario: user.nomeUsuario,
-                nomeCompleto: user.nomeCompleto,
                 email: user.email,
                 senha: user.senha,
                 role: user.role,
@@ -119,12 +119,11 @@ function Login() {
             };
 
             localStorage.setItem("user", JSON.stringify(userData));
-
             setShowSuccessPopup(true);
-
             setTimeout(() => {
                 navigate("/");
             }, 900);
+
         } catch (error) {
             const errorMessage = error.response?.data || error.message;
             console.error("Erro no cadastro:", errorMessage);
@@ -147,8 +146,9 @@ function Login() {
             const user = response.data;
 
             const userData = {
+                id: user.id,
+                nome: user.nome,
                 nomeUsuario: user.nomeUsuario,
-                nomeCompleto: user.nomeCompleto,
                 email: user.email,
                 senha: user.senha,
                 role: user.role,
@@ -157,7 +157,6 @@ function Login() {
             };
 
             localStorage.setItem("user", JSON.stringify(userData));
-
             setShowSuccessLoginPopup(true);
 
             setTimeout(() => {
@@ -171,7 +170,6 @@ function Login() {
         }
     };
 
-    //lógica animação
     const [modo, setModo] = useState("");
     const [classeAtual, setClasseAtual] = useState("");
     useEffect(() => {
@@ -230,7 +228,7 @@ function Login() {
             <Link to="/">
                 <button className="absolute top-4 left-0 w-24 flex flex-row justify-around"><ArrowLeft /> Voltar</button>
             </Link>
-            {/*-------------------------- PRIMEIRO ESTADO (CADASTRO) --------------------------*/}
+        
             <div className={`${Styles.content} ${Styles.primeiro_content}`}>
                 <div className={Styles.primeira_coluna}>
                     <figure className={Styles.logo_login}>
@@ -248,7 +246,7 @@ function Login() {
                     <form className={Styles.form} onSubmit={handleRegisterSubmit}>
                         <label className={Styles.input_group}>
                             <i className="far fa-user icon-modify"></i>
-                            <input type="text" name="nomeCompleto" placeholder="Digite seu nome completo" value={registerForm.nomeCompleto} onChange={handleChange} required />
+                            <input type="text" name="nome" placeholder="Digite seu nome completo" value={registerForm.nome} onChange={handleChange} required />
                         </label>
                         <label className={Styles.input_group}>
                             <i className="fi fi-br-at icon-modify"></i>
