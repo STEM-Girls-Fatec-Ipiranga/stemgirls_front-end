@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { ArrowUp, Import } from "lucide-react";
 
 import Home from "./componentes/Home.jsx";
-import Comunidades from "./componentes/comunidades/Comunidades.tsx";
+import Comunidades from "./componentes/comunidades/Comunidades.jsx";
 import Login from "./componentes/usuarios/LoginUsuario.jsx";
 import ForgotPasswordPage from "./componentes/usuarios/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./componentes/usuarios/ResetPasswordPage.jsx";
@@ -28,7 +28,6 @@ import PostarVideos from "./componentes/canais/PostarVideos.jsx";
 import EventoMiniatura from "./componentes/eventos/EventoMiniatura.jsx";
 import Evento from "./componentes/eventos/Evento.jsx";
 
-
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
 
@@ -43,14 +42,13 @@ function AppContent() {
     return () => {
       document.body.removeChild(script);
     };
-  }, []);   
+  }, []);
 
-  // controla se o botão deve aparecer
   const [mostrarBotao, setMostrarBotao] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setMostrarBotao(window.scrollY > 300); // aparece depois de 300px
+      setMostrarBotao(window.scrollY > 300);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -72,50 +70,47 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/termos-de-uso" element={<TermosDeUso />} />
         <Route path="/login-empresa" element={<LoginEmpresa />} />
-        
+
         <Route path="/comunidades" element={<Comunidades />} />
         <Route path="/historia" element={<Historia />} />
         <Route path="/sobre-nos" element={<SobreNos />} />
-        
+
         <Route path="/perfil" element={<PerfilUsuario />} />
         <Route path="/perfil-empresa" element={<PerfilEmpresa />} />
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
-        
+
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/eventos" element={<EventoMiniatura />} />
-        <Route path="/evento" element={<Evento/>} />
-        
+        <Route path="/evento" element={<Evento />} />
+
         <Route path="/minimentes" element={<MiniMentes />} />
         <Route path="/canais" element={<Canais />} />
         <Route path="/parceiros" element={<Parceiros />} />
-        
+
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/criar-canais" element={<CriarCanais />} />
         <Route path="/postar-videos" element={<PostarVideos />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
       </Routes>
 
-      {/* Botão de voltar ao topo */}
-     <button
-  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-  className={`fixed right-6 bg-pink-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-xl text-2xl hover:bg-pink-600 transition-opacity duration-300 ${
-    mostrarBotao ? "opacity-100" : "opacity-0 pointer-events-none"
-  }`}
-  style={{
-    bottom: "100px",     // ⬅ deixa mais pra cima  
-    zIndex: 999999999,  // ⬅ MUITO alto, impossível esconder  
-    position: "fixed"
-  }}
->
-  <ArrowUp size={22} strokeWidth={2.5} />
-</button>
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+        className={`fixed right-6 bg-pink-500 text-white w-12 h-12 flex items-center justify-center rounded-full shadow-xl text-2xl hover:bg-pink-600 transition-opacity duration-300 ${mostrarBotao ? "opacity-100" : "opacity-0 pointer-events-none"
+          }`}
+        style={{
+          bottom: "100px",     
+          zIndex: 999999999,  
+          position: "fixed"
+        }}
+      >
+        <ArrowUp size={22} strokeWidth={2.5} />
+      </button>
 
 
       {mostrarRodape && <Rodape />}
     </GoogleOAuthProvider>
   );
 }
-
 
 export default function App() {
   return <AppContent />;

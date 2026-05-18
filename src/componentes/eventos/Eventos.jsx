@@ -45,8 +45,7 @@ export default function Eventos() {
 
   const BACKEND_URL = "http://localhost:8080";
 
-  const user = JSON.parse(localStorage.getItem("user"));
-  const [usuarioLogado, setUsuarioLogado] = useState({});
+  const [user, setUser] = useState({});
 
   const [eventos, setEventos] = useState([]);
   const [meusEventos, setMeusEventos] = useState([]);
@@ -56,7 +55,7 @@ export default function Eventos() {
 
   const [filtro, setFiltro] = useState("todos");
   const [localidade, setLocalidade] = useState("");
-  
+
   const [telaCadastro, setTelaCadastro] = useState(false);
   const [telaMeusEventos, setTelaMeusEventos] = useState(false);
 
@@ -64,22 +63,27 @@ export default function Eventos() {
 
   const listarEventos = async () => {
     try {
-      const response = await axios.get(`${BACKEND_URL}/evento`);     
+      const response = await axios.get(`${BACKEND_URL}/evento`);
       setEventos(response.data);
-      console.log(response.data);
     } catch (error) {
       console.log("Erro ao buscar eventos:", error);
     }
   };
 
   const listarMeusEventos = async () => {
-    try{
+    try {
       const response = await axios.get(`${BACKEND_URL}/evento/organizador/${user.id}`);
       setMeusEventos(response.data);
-    }catch(error){
+    } catch (error) {
       console.log("Erro ao buscar meus eventos:", error);
     }
   }
+
+  useEffect(() => {
+    let data = localStorage.getItem("user");
+    setUser(JSON.parse(data));
+    listarEventos();
+  }, []);
 
   const todosEventos = [...eventosMock, ...eventos];
 
@@ -88,14 +92,6 @@ export default function Eventos() {
     const localMatch = (ev.local || ev.cidade || "").toLowerCase().includes(localidade.toLowerCase());
     return tipoMatch && localMatch;
   });
-
-  useEffect(() => {
-    if (user)
-      setUsuarioLogado(user);
-  
-    listarEventos();
-    listarMeusEventos();
-  }, []);
 
   const confirmarExcluirEvento = async () => {
     if (!eventoParaExcluir) return;
@@ -108,7 +104,6 @@ export default function Eventos() {
       alert("Evento excluído!");
       setEventoParaExcluir(null);
     } catch (e) {
-      // fallback local
       setEventos((prev) => prev.filter((e) => e.id !== eventoParaExcluir.id));
       alert("Evento removido localmente (backend indisponível).");
       setEventoParaExcluir(null);
@@ -153,7 +148,7 @@ export default function Eventos() {
           />
         </div>
 
-        {(usuarioLogado.role == "MODERADOR" || usuarioLogado.role == "EMPRESA") && (
+        {(user?.role == "MODERADOR" || user?.role == "EMPRESA") && (
           <>
             <div className="mt-2 ml-4">
               <div className="flex justify-between items-center">
@@ -213,7 +208,7 @@ export default function Eventos() {
       </aside>
 
       <main className="flex-1 p-8">
-        { telaCadastro ? (
+        {telaCadastro ? (
           <CadastroEvento
             user={user}
             eventoEditando={eventoEditando}
@@ -222,7 +217,7 @@ export default function Eventos() {
         ) : telaMeusEventos ? (
           <>
             <ArrowLeft className="m-2 cursor-pointer" onClick={() => setTelaMeusEventos(false)} />
-            <MeusEventos 
+            <MeusEventos
               eventos={meusEventos}
               user={user}
             />
@@ -243,10 +238,10 @@ export default function Eventos() {
 
             <div className="grid md:grid-cols-2 gap-6 items-stretch">
               {eventos.map((evento, index) => (
-                <Evento 
+                <Evento
                   key={index}
                   evento={evento}
-                  user={usuarioLogado}
+                  user={user}
                 />
               ))}
 
@@ -257,7 +252,6 @@ export default function Eventos() {
           </>
         )}
 
-        {/* Modal confirmar redirecionamento evento empresa (usado apenas para manter estado; a confirmação final usa window.confirm) */}
         {confirmEmpresa && (
           <div className="fixed inset-0 z-60 bg-black bg-opacity-50 flex justify-center items-center p-4">
             <div className="bg-white p-6 rounded-xl w-full max-w-md shadow-xl">

@@ -2,7 +2,6 @@ import React, { useEffect } from "react";
 import { User, Mail, Calendar, Edit3, LogOut, Camera, X, ArrowLeft } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import  axios  from "axios";
 import { EditarPerfilModal } from "./EditarPerfilModal";
 
 const DEFAULT_PROFILE_IMAGE = "../../assets/default-profile.png";
@@ -19,9 +18,19 @@ export default function PerfilUsuario() {
             })
             : "Data Indisponível";
 
-    const [user, setUser] = useState({
-        data: JSON.parse(localStorage.getItem("user") || "null")   
-    });
+    const [user, setUser] = useState({nome: "", nomeUsuario: "", email: "", sobre: "", telefone: "", dataEntrada: "", linkImagemPerfil: ""});
+
+    useEffect(() => {
+        let userEmail = localStorage.getItem("userEmail");
+        if (userEmail) {
+            fetch(`http://localhost:8080/usuario/encontrar/${userEmail}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    setUser(data);
+                });
+        }        
+    }, []);
 
     const [abrirModal, setAbrirModal] = useState(false);
     const abrir = () => setAbrirModal(true);
@@ -37,18 +46,18 @@ export default function PerfilUsuario() {
                             <div className="relative -mt-16 sm:-mt-20 mb-6 flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
                                 <div className="relative">
                                     <img
-                                        src={user.data.linkImagemPerfil ? user.data.linkImagemPerfil : DEFAULT_PROFILE_IMAGE }
-                                        alt={user.data.nome}
+                                        src={user.linkImagemPerfil ? user.linkImagemPerfil : DEFAULT_PROFILE_IMAGE }
+                                        alt={user.nome}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                         onError={(e: any) => { e.target.onerror = null; e.target.src = DEFAULT_PROFILE_IMAGE; }}
                                     />
                                 </div>
 
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
-                                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{user.data.nome}</h2>
+                                    <h2 className="text-2xl sm:text-3xl font-bold text-white mb-1">{user.nome}</h2>
                                     <div className="flex items-center justify-center sm:justify-start gap-2 mb-2">
                                         <User className="w-4 h-4 text-purple-600" />
-                                        <span className="text-gray-600 text-[17px]">@{user.data.nomeUsuario}</span>
+                                        <span className="text-gray-600 text-[17px]">@{user.nomeUsuario}</span>
                                     </div>
                                 </div>
                                 <div className="flex gap-3 mt-4 sm:mt-0 flex-shrink-0">
@@ -59,7 +68,7 @@ export default function PerfilUsuario() {
                                         <Edit3 className="w-4 h-4" />
                                         Editar Perfil
                                     </button>
-                                    
+
                                 </div>
                             </div>
 
@@ -68,7 +77,7 @@ export default function PerfilUsuario() {
                                     <div className="bg-purple-50 rounded-xl p-6 border border-purple-100">
                                         <h3 className="text-xl font-semibold text-gray-900 mb-3 border-b border-purple-200 pb-2">Sobre</h3>
                                         <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                            {user.data.sobre?.trim() || "Nenhum texto 'Sobre' adicionado ainda. Clique em 'Editar Perfil' para adicionar um!"}
+                                            {user.sobre?.trim() || "Nenhum texto 'Sobre' adicionado ainda. Clique em 'Editar Perfil' para adicionar um!"}
                                         </p>
                                     </div>
                                 </div>
@@ -81,14 +90,14 @@ export default function PerfilUsuario() {
                                                 <Calendar className="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Membro desde</p>
-                                                    <p className="font-medium text-gray-800">{formatDate(user.data.joinDate)}</p>
+                                                    <p className="font-medium text-gray-800">{formatDate(user.dataEntrada)}</p>
                                                 </div>
                                             </div>
                                             <div className="flex items-start gap-3 text-gray-700">
                                                 <Mail className="w-5 h-5 text-purple-600 flex-shrink-0 mt-1" />
                                                 <div>
                                                     <p className="text-sm text-gray-500">Email de login</p>
-                                                    <p className="font-medium text-gray-800 break-all">{user.data.email}</p>
+                                                    <p className="font-medium text-gray-800 break-all">{user.email}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -115,7 +124,7 @@ export default function PerfilUsuario() {
             <EditarPerfilModal
                 abrir={abrirModal}
                 fechar={fechar}
-                user={user.data}
+                user={user}
             />
         </>
     );

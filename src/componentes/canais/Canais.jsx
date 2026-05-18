@@ -81,6 +81,7 @@ const normalizeVideos = (arr) => {
       owner: "system",
     },
   ];
+
 useEffect(() => {
   const onCreated = (e) => {
     const created = e?.detail;
@@ -88,7 +89,6 @@ useEffect(() => {
 
     // atualiza feed geral (state videos)
     setVideos((prev) => {
-      // evitar duplicata: se já existir id, ignorar
       if (prev.some((p) => String(p.id) === String(created.id))) return prev;
       return [created, ...prev];
     });
@@ -100,6 +100,7 @@ useEffect(() => {
         return [created, ...prev];
       });
     }
+    
   };
 
   window.addEventListener("videos:created", onCreated);

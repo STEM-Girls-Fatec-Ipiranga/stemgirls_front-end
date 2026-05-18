@@ -13,26 +13,47 @@ export const EditarPerfilModal = ({ abrir, fechar, user }) => {
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         const imageURL = URL.createObjectURL(file);
-        setPreview(imageURL);
+        setPreview(user.linkImagemPerfil);
         setFile(file);
     }
 
     const salvarAlteracoes = async () => {
-        const formData = new FormData();
-        formData.append("file", file);
+        if (file) {
+            const formData = new FormData();
+            formData.append("file", file);
 
+            try {
+                const response = await axios.post(
+                    "http://localhost:8080/usuario/upload",
+                    formData,
+                    { headers: { "Content-Type": "multipart/form-data" } }
+                );
+
+                const link = response.data;
+                console.log("link imagem " + response.data);
+
+                atualizarImagemPerfil(link);
+
+            } catch (error) {
+                const errorMessage = error.response?.data;
+                console.log(errorMessage);
+                setErro(errorMessage);
+            }
+        }
+        if(sobre){
+            atualizarSobrePerfil();
+        }
+    }
+
+    const atualizarImagemPerfil = async (linkImagem) => {
         try {
-            const response = await axios.post(
-                "http://localhost:8080/usuario/upload",
-                formData,
-                { headers: { "Content-Type": "multipart/form-data" } }
-            );
-        
-            const link = response.data;
-            console.log("link imagem "+response.data);
+            const response = await axios.put("http://localhost:8080/usuario/atualizar", {
+                email: user.email,
+                linkImagemPerfil: linkImagem
+            });
             
-            atualizarUsuario(link);
-
+            fechar();
+            window.location.reload();
         } catch (error) {
             const errorMessage = error.response?.data;
             console.log(errorMessage);
@@ -40,15 +61,13 @@ export const EditarPerfilModal = ({ abrir, fechar, user }) => {
         }
     }
 
-    const atualizarUsuario = async (imagemPerfil) => {        
+    const atualizarSobrePerfil = async () => {
         try {
             const response = await axios.put("http://localhost:8080/usuario/atualizar", {
                 email: user.email,
-                sobre: sobre,
-                linkImagemPerfil: imagemPerfil
+                sobre: sobre
             });
-            localStorage.setItem("user", JSON.stringify(response.data));
-            console.log(response);
+           
             fechar();
             window.location.reload();
         } catch (error) {
@@ -83,10 +102,10 @@ export const EditarPerfilModal = ({ abrir, fechar, user }) => {
 
                         <div className="flex justify-center items-center w-full m-6">
                             <input className="w-[128px] file:mx-0" type="file" onChange={handleFileChange} />
-                        </div>  
+                        </div>
                     </div>
                 </form>
-        
+
                 <div className="mb-8">
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                         Sobre Você

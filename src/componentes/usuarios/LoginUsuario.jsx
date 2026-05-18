@@ -106,20 +106,9 @@ function Login() {
             });
 
             const user = response.data;
-
-            const userData = {
-                id: user.id,
-                nome: user.nome,
-                nomeUsuario: user.nomeUsuario,
-                email: user.email,
-                senha: user.senha,
-                role: user.role,
-                joinDate: user.joinDate,
-                profileImage: user.profileImage
-            };
-
-            localStorage.setItem("user", JSON.stringify(userData));
+            localStorage.setItem("user", JSON.stringify(user));
             setShowSuccessPopup(true);
+
             setTimeout(() => {
                 navigate("/");
             }, 900);
@@ -144,19 +133,7 @@ function Login() {
             });
 
             const user = response.data;
-
-            const userData = {
-                id: user.id,
-                nome: user.nome,
-                nomeUsuario: user.nomeUsuario,
-                email: user.email,
-                senha: user.senha,
-                role: user.role,
-                joinDate: user.joinDate,
-                profileImage: user.profileImage
-            };
-
-            localStorage.setItem("user", JSON.stringify(userData));
+            localStorage.setItem("user", JSON.stringify(user));
             setShowSuccessLoginPopup(true);
 
             setTimeout(() => {

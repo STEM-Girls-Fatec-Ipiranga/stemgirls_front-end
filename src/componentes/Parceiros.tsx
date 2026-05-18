@@ -169,8 +169,6 @@ function Parceiros() {
         setShowPartnerModal(true);
     };
 
-
-
     return (
         <div className="min-h-screen bg-[#FFF6FF]">
             <section className="relative py-24 px-6">

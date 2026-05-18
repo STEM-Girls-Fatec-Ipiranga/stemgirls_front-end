@@ -1,19 +1,18 @@
 
-export default function DetalhesEvento({ evento, fechar}) {
+export default function DetalhesEvento({ evento, fechar }) {
     return (
         <>
             <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start p-4 overflow-y-auto" onClick={fechar}>
                 <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl mt-10 mb-10 max-h-[90vh] overflow-y-auto">
-                    <div className="flex gap-4 p-6 flex-wrap">
+                    <div className="flex flex-col gap-4 p-6">
                         <img
                             src={evento.imagem}
                             alt={evento.titulo}
-                            className="w-40 h-28 object-cover rounded-lg flex-shrink-0"
+                            className="w-[100%] h-[200px] object-cover rounded-lg flex-shrink-0"
                         />
 
                         <div className="flex-1 min-w-[200px]">
                             <h2 className="text-2xl font-bold break-words">{evento.titulo}</h2>
-                            <p>{evento.id}</p>
                             <p className="text-pink-600 mt-1">
                                 {evento.data} • {evento.hora}
                             </p>
@@ -57,23 +56,29 @@ export default function DetalhesEvento({ evento, fechar}) {
                         </div>
 
                         <div className="flex justify-between items-center">
-                            <div className="flex gap-2 items-center"></div>
-
-                            <div className="flex gap-2">
+                            <div>
                                 <button
-                                    className="bg-gray-200 px-4 py-2 rounded-lg"
+                                    className="bg-gray-200 px-3 py-1 rounded-lg"
                                     onClick={fechar}
                                 >
                                     Fechar
                                 </button>
+                            </div>
+                            <div className="flex gap-2">
 
                                 <button
-                                    className="bg-[#F36EC0] text-white px-4 py-2 rounded-lg font-semibold hover:bg-[#e055a8] transition"
+                                    className="border border-[#F36EC0] text-[#F36EC0] text-sm px-3 py-1 rounded-lg font-semibold hover:bg-[#F36EC0] hover:text-white transition"
+                                    // onClick={() => abrirInscricaoComRegras(detalhesEvento)}
+                                >
+                                    Baixar inscrições
+                                </button>
+
+                                <button
+                                    className="bg-[#F36EC0] text-white text-sm px-3 py-1 rounded-lg font-semibold hover:bg-[#e055a8] transition"
                                     // onClick={() => abrirInscricaoComRegras(detalhesEvento)}
                                 >
                                     Participar
                                 </button>
-
                             </div>
                         </div>
                     </div>

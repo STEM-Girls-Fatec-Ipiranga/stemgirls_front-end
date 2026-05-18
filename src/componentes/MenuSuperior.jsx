@@ -41,22 +41,8 @@ const MenuSuperior = () => {
     { label: "Parceiros", path: "/parceiros" },
   ];
 
-  const [user, setUser] = useState({
-    data: localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user") || "{}")
-      : {}
-  });
-
+  const [user, setUser] = useState({});
   const [usuarioLogado, setUsuarioLogado] = useState({});
-
-  useEffect(() => {
-    if (user.data.nomeUsuario != null) {
-      setUsuarioLogado({
-        nomeUsuario: user.data.nomeUsuario,
-        role: user.data.role
-      });
-    }
-  }, []);
 
   const navigate = useNavigate();
 
@@ -72,22 +58,24 @@ const MenuSuperior = () => {
     navigate("/");
   };
 
+  useEffect(() => {
+    let data = localStorage.getItem("user");
+    setUser(JSON.parse(data));
+  }, []);
+
   return (
     <header className="w-full bg-gradient-to-r from-purple-500 to-pink-500 shadow-lg" style={{
       background: 'linear-gradient(90deg, #af5fe4 0%, #f36ec0 100%)'
     }}>
-      {/* Primeira linha */}
       <div className="px-4 py-4 lg:px-8">
         <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
 
-          {/* Logo */}
           <div className="flex justify-start">
             <div className="w-[150px]">
               <img src={LogoSG} alt="Logo" className="w-full object-contain" />
             </div>
           </div>
 
-          {/* Barra de pesquisa - Desktop */}
           <div className="hidden md:flex flex-1 max-w-2xl mx-8 relative">
             <div className="relative w-full">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white w-5 h-5" />
@@ -103,7 +91,6 @@ const MenuSuperior = () => {
             </div>
           </div>
 
-          {/* Botão Cadastre-se - Desktop */}
           {user == null && (
             <div className="hidden md:flex items-center gap-4">
               <Link to="/login">
@@ -121,7 +108,7 @@ const MenuSuperior = () => {
           {user != null && (
             <div className="flex flex-row items-center relative justify-around w-[250px]">
 
-              {user.data.role == "MODERADOR" && (
+              {user?.role == "MODERADOR" && (
                 <button onClick={() => setMostrarNotificacoes(!mostrarNotificacoes)}>
                   <Bell />
                 </button>
@@ -135,7 +122,7 @@ const MenuSuperior = () => {
 
               <div className="flex flex-row items-center">
                 <p className="font-semibold text-white text-right">
-                  {`@${usuarioLogado.nomeUsuario}`}
+                  {`@${user.nomeUsuario}`}
                 </p>
 
                 <button
@@ -144,10 +131,8 @@ const MenuSuperior = () => {
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
                 >
                   <CircleUser size={45} />
-                  {/* <img src={user.data.linkImagemPerfil ? user.data.linkImagemPerfil : DEFAULT_PROFILE_IMAGE} className="w-14 h-14 rounded-[100%] border-[3px] border-pink-400 object-cover group-hover:shadow-xl"/> */}
                 </button>
               </div>
-
 
               {isProfileOpen && (
                 <div className="absolute right-4 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20 border border-[#af5fe4]">
@@ -162,7 +147,7 @@ const MenuSuperior = () => {
                   >
                     <User size={19} /> Perfil
                     
-                  </Link>
+                    </Link>
 
                   <button
                     className="flex w-full items-center gap-2 px-4 py-2 text-purple-900 hover:bg-gray-200 transition-colors"
@@ -199,7 +184,6 @@ const MenuSuperior = () => {
               placeholder="No que está pensando?"
               className="w-full pl-12 pr-4 py-3 rounded-full bg-white text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50 transition-all duration-200 font-quicksand"
             />
-
           </div>
         </div>
       </div>
@@ -221,7 +205,6 @@ const MenuSuperior = () => {
         </div>
       </div>
 
-      {/* Menu Mobile */}
       {isMobileMenuOpen && (
         <div className="md:hidden border-t border-white border-opacity-20 bg-black bg-opacity-10 backdrop-blur-sm">
           <div className="px-4 py-4">
@@ -237,20 +220,7 @@ const MenuSuperior = () => {
                 </Link>
               ))}
 
-              {/* Botões mobile */}
               <div className="flex items-center justify-between pt-4 border-t border-white border-opacity-20">
-                {/* <button
-                  // onClick={toggleTheme}
-                  className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-all duration-200"
-                  aria-label="Alternar tema"
-                >
-                  {isDarkMode ? (
-                    <Sun className="w-6 h-6 text-white" />
-                  ) : (
-                    <Moon className="w-6 h-6 text-white" />
-                  )}
-                </button> */}
-
                 <button className="px-6 py-2 bg-white text-pink-500 rounded-full font-quicksand font-semibold hover:bg-opacity-90 transition-all duration-200" style={{
                   color: '#f36ec0'
                 }}>
@@ -262,11 +232,9 @@ const MenuSuperior = () => {
         </div>
       )}
 
-      {/* MODAL DE CONFIRMAÇÃO DE SAÍDA (INLINE) */}
       {user && isLogoutModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 transition-opacity duration-300">
 
-          {/* Container do Popup Branco */}
           <div
             className="bg-white rounded-xl p-8 max-w-sm mx-4 shadow-2xl"
             style={{
@@ -282,7 +250,6 @@ const MenuSuperior = () => {
               Tem certeza de que deseja sair da sua conta?
             </p>
 
-            {/* Botões de Ação */}
             <div className="flex justify-end space-x-3">
               <button
                 onClick={() => setIsLogoutModalOpen(false)}
@@ -300,7 +267,6 @@ const MenuSuperior = () => {
           </div>
         </div>
       )}
-
     </header>
   );
 };

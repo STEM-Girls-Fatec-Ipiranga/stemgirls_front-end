@@ -1,11 +1,13 @@
 import { use, useState, useEffect } from "react";
 import DetalhesEvento from "./DetalhesEvento";
 import InscricaoEvento from "./InscricaoEvento";
+import FormCertificado from "./FormCertificado";
 import axios from "axios";
 
-export default function Evento({ evento, user }) {
+export default function Evento({ user, evento }) {
     const [detalhes, setDetalhes] = useState(false);
     const [inscricao, setInscricao] = useState(false);
+    const [formCertificado, setFormCertificado] = useState(false);
 
     const [userInscrito, setUserInscrito] = useState(null);
 
@@ -27,6 +29,14 @@ export default function Evento({ evento, user }) {
         setInscricao(false);
     }
 
+    const abrirFormCertificado = (e) => {
+        setFormCertificado(true);
+    }
+
+    const fecharFormCertificado = (e) => {
+        setFormCertificado(false);
+    }
+
     const verificarInscricao = async () => {
         try {
             const response = await axios.get(`${BACKEND_URL}/inscricao/${user.id}/${evento.id}`);
@@ -37,7 +47,7 @@ export default function Evento({ evento, user }) {
     }
 
     const baixarInscricoes = async () => {
-        try{
+        try {
             const response = await axios.get(
                 `${BACKEND_URL}/evento/${evento.id}/download/inscricoes`,
                 { responseType: 'blob' }
@@ -49,7 +59,7 @@ export default function Evento({ evento, user }) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        }catch (error) {
+        } catch (error) {
             console.log("Erro baixar inscrições", error);
         }
     }
@@ -63,14 +73,28 @@ export default function Evento({ evento, user }) {
             <div
                 className="bg-white rounded-xl shadow-md flex flex-col h-full border-2 border-pink-300 cursor-pointer"
             >
-                <img src={evento.imagem} className="w-full h-40 object-cover rounded-t-xl" alt={evento.titulo} />
-                <div className="p-4 flex flex-col flex-1">
-                    <h3 className="font-bold text-lg break-words">{evento.titulo}</h3>
-                    <p className="text-pink-600">{evento.data} • {evento.hora}</p>
-                    <p className="text-sm italic text-gray-600 break-words">
-                        {(evento.modalidade).toUpperCase()} - {(evento.endereco.cidade)}
-                    </p>
-                    <div className="mt-auto pt-4 flex justify-center gap-3">
+                <img src={evento.imagem} className="w-full h-40 object-cover rounded-t-xl" alt={evento.titulo} onClick={abrirDetalhes} />
+
+                <div className="flex flex-col p-4">
+                    <div onClick={abrirDetalhes}>
+                        <h3 className="font-bold text-lg break-words">{evento.titulo}</h3>
+                        <p className="text-pink-600">{evento.data} • {evento.hora}</p>
+                        <p className="text-sm italic text-gray-600 break-words">
+                            {(evento.modalidade).toUpperCase()} - {(evento.endereco.cidade)}
+                        </p>
+                    </div>
+
+                    <div className="flex mt-4 gap-3 h-full justify-end">
+                        <button
+                            className="bg-white border border-pink-500 px-3 py-1 rounded-lg text-sm hover:bg-gray-100 transition text-pink-500 text-sm"
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                abrirFormCertificado();
+                            }}
+                        >
+                            Obter certificado
+                        </button>
+
                         {
                             userInscrito ? (
                                 <>
@@ -88,7 +112,7 @@ export default function Evento({ evento, user }) {
                             ) : (
                                 <>
                                     <button
-                                        className="bg-[#F36EC0] text-white font-semibold rounded-lg px-5 py-2 hover:bg-[#e055a8] transition"
+                                        className="bg-[#F36EC0] text-white text-sm font-semibold rounded-lg px-3 py-1 hover:bg-[#e055a8] transition"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             abrirInscricao();
@@ -100,25 +124,6 @@ export default function Evento({ evento, user }) {
                                 </>
                             )
                         }
-
-                        <button
-                            className="bg-white border border-pink-500 px-3 py-1 rounded-lg text-sm hover:bg-gray-100 transition text-pink-500"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                abrirDetalhes();
-                            }}
-                        >
-                            Saiba mais
-                        </button>
-
-                        {(user.role === "MODERADOR") && (
-                            <button
-                                className="bg-[#F36EC0] text-white px-5 py-2 rounded-lg hover:bg-pink-500"
-                                onClick={() => baixarInscricoes()}
-                            >
-                                Baixar inscrições
-                            </button>
-                        )}
                     </div>
                 </div>
             </div>
@@ -135,6 +140,13 @@ export default function Evento({ evento, user }) {
                     evento={evento}
                     user={user}
                     fechar={fecharInscricao}
+                />
+            )}
+
+            {formCertificado && (
+                <FormCertificado
+                    evento={evento}
+                    fechar={fecharFormCertificado}
                 />
             )}
         </>

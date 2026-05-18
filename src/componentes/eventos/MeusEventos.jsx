@@ -2,7 +2,6 @@ import Evento from "./Evento";
 
 export default function MeusEventos({ eventos, user }) {
     
-    
     return (
         <>
             <h2 className="text-2xl font-bold mb-6">Meus Eventos</h2>

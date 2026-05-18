@@ -102,7 +102,7 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                 cpf: novoCPF,
                 telefone: novoTelefone
             });
-            localStorage.setItem("user", JSON.stringify(response.data));
+            localStorage.setItem("userEmail", response.data.email);
             return response.data;
         } catch (error) {
             console.log(error);

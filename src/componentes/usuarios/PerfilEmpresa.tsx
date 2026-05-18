@@ -11,28 +11,29 @@ export default function PerfilEmpresa() {
     const formatDate = (dateString: string | number | Date) =>
         dateString
             ? new Date(dateString).toLocaleDateString("pt-BR", {
-                  day: "numeric",
-                  month: "long",
-                  year: "numeric",
-              })
+                day: "numeric",
+                month: "long",
+                year: "numeric",
+            })
             : "Data Indisponível";
 
-    const [empresa, setEmpresa] = useState({
-            data: localStorage.getItem("user")
-                ? JSON.parse(localStorage.getItem("user") || "{}")
-                : {
-                    nome: "Meninas Mulheres",
-                    cnpj: "",
-                    email: "meninasmulheres@exemplo.com.br",
-                    senha: "********",
-                    sobre: "Digite aqui um pequeno texto sobre sua empresa!",
-                    joinDate: "2025-11-13T00:00:00Z",
-                    profileImage: DEFAULT_PROFILE_IMAGE
-                }
-    });
+    const [empresa, setEmpresa] = useState({nome: "", nomeUsuario: "", email: "", sobre: "", telefone: "", dataEntrada: "", linkImagemPerfil: ""});
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const toggleModal = () => setIsModalOpen(!isModalOpen);
+    useEffect(() => {
+        let empresaEmail = localStorage.getItem("userEmail");
+        if (empresaEmail) {
+            fetch(`http://localhost:8080/usuario/encontrar/${empresaEmail}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    setEmpresa(data);
+                });
+        }
+    }, []);
+
+    const [abrirModal, setAbrirModal] = useState(false);
+    const abrir = () => setAbrirModal(true);
+    const fechar = () => setAbrirModal(false);
 
     const handleSave = (newEmpresaData: any) => {
         setEmpresa(newEmpresaData);
@@ -55,8 +56,8 @@ export default function PerfilEmpresa() {
                             <div className="relative -mt-16 sm:-mt-20 mb-6 flex flex-col sm:flex-row items-center sm:items-end gap-4 sm:gap-6">
                                 <div className="relative">
                                     <img
-                                        src={empresa.data.profileImage}
-                                        alt={empresa.data.nome}
+                                        src={empresa.linkImagemPerfil}
+                                        alt={empresa.nome}
                                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full border-4 border-white shadow-lg object-cover"
                                         onError={(
                                             e: React.SyntheticEvent<HTMLImageElement, Event>
@@ -69,7 +70,7 @@ export default function PerfilEmpresa() {
                                 </div>
                                 <div className="flex-1 text-center sm:text-left mb-4 mt-8 sm:mt-0">
                                     <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                                        {empresa.data.nome}
+                                        {empresa.nome}
                                     </h2>
                                     <div className="flex text-pink-600 items-center justify-center sm:justify-start gap-2">
                                         <Star />
@@ -80,7 +81,7 @@ export default function PerfilEmpresa() {
                                 </div>
                                 <div className="flex gap-3 mt-4 sm:mt-0 flex-shrink-0">
                                     <button
-                                        onClick={toggleModal}
+                                        onClick={abrir}
                                         className="bg-pink-500 hover:bg-pink-600 text-white px-4 py-2 rounded-lg font-medium transition-colors duration-200 flex items-center gap-2 shadow-md hover:shadow-lg"
                                     >
                                         <Edit3 className="w-4 h-4" />
@@ -96,7 +97,7 @@ export default function PerfilEmpresa() {
                                             Sobre a Empresa
                                         </h3>
                                         <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
-                                            {empresa.data.sobre?.trim() ||
+                                            {empresa.sobre?.trim() ||
                                                 "Nenhum texto 'Sobre' adicionado ainda. Clique em 'Editar Perfil' para adicionar um!"}
                                         </p>
                                     </div>
@@ -115,7 +116,7 @@ export default function PerfilEmpresa() {
                                                         Parceira desde
                                                     </p>
                                                     <p className="font-medium text-gray-800">
-                                                        {formatDate(empresa.data.joinDate)}
+                                                        {formatDate(empresa.dataEntrada)}
                                                     </p>
                                                 </div>
                                             </div>
@@ -126,7 +127,7 @@ export default function PerfilEmpresa() {
                                                         Email de login
                                                     </p>
                                                     <p className="font-medium text-gray-800 break-all">
-                                                        {empresa.data.email}
+                                                        {empresa.email}
                                                     </p>
                                                 </div>
                                             </div>
@@ -150,12 +151,10 @@ export default function PerfilEmpresa() {
                 </div>
             </div>
 
-            {/* Modal de Edição */}
             <EditarPerfilModal
-                isOpen={isModalOpen}
-                onClose={toggleModal}
-                onSave={handleSave}
-                initialData={empresa.data}
+                abrir={abrirModal}
+                fechar={fechar}
+                user={empresa}
             />
         </>
     );

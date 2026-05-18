@@ -107,7 +107,7 @@ export default function SobreNos() {
 
   return (
     <div className="max-w-full bg-pink-50 text-black py-16">
-      {/* Seção STEM Girls */}
+
       <div className="max-w-6xl mx-auto mb-20">
         <h2 className="text-3xl text-center mb-8 font-quicksand font-bold">STEM Girls</h2>
         <p className="m-10 text-[18px]">Em março de 2024 foi criada uma Equipe no Microsoft Teams da Fatec Ipiranga e divulgado para as alunas dos cursos de TI da Fatec, nomeada STEM Girls Fatec Ipiranga. Nessa equipe foi apresentado o projeto</p>
@@ -194,13 +194,10 @@ export default function SobreNos() {
       </div>
 
       {/* Seção de vídeo */}
-
-
-      {/* Seção de vídeo */}
       <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
         <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-10">Apresentação</h2>
 
-        {/* <div className="w-[65%] h-[70%] bg-gray-300 rounded-[20px] overflow-hidden">
+        <div className="w-[65%] h-[70%] bg-gray-300 rounded-[20px] overflow-hidden">
           <video
             className="w-full h-full object-cover"
             poster={thumbPitch}
@@ -208,19 +205,17 @@ export default function SobreNos() {
           >
             <source src={videoPitch} type="video/mp4" />
             Seu navegador não suporta vídeos.
-          </video> */}
+          </video> 
         </div>
+
       </div>
 
-
-
-      {/* <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
+      <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
         <h2 className="text-3xl mb-12 font-bold text-center text-gray-800 mb-10">Apresentação</h2>
         <div className="w-[65%] h-[70%] text-center bg-gray-300 rounded-[20px] flex items-center justify-center">
           <CirclePlay className="w-12 h-12 text-white" />
         </div>
-      </div> */}
-
+      </div> 
 
       {/* Seção Missão Visão e Valores */}
       <section className="mt-[80px] mb-[80px]">
@@ -255,9 +250,7 @@ export default function SobreNos() {
         </div>
       </section>
 
-
       {/* Nossa equipe */}
-
       <section className="bg-pink-50 py-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">
@@ -304,7 +297,6 @@ export default function SobreNos() {
 
         </div>
       </section>
-
     </div>
   );
 }

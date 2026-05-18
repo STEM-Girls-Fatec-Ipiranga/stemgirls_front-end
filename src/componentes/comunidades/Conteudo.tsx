@@ -52,9 +52,6 @@ const Conteudo: React.FC<ConteudoProps> = ({
     return comunidade?.souMembro || !comunidade; // Se for membro, exibe. Se a comunidade não existir, também exibe por garantia (ou ajuste se quiser regras mais rígidas)
   });
 
-  
-
-
   return (
     <div className={`flex-1 transition-all duration-300 ${barraLateralColapsada ? 'ml-0' : 'ml-0'}`}>
       <div className="max-w-4xl mx-auto p-6 bg-[#FFF6FF]"> {/* Adicionei max-w e mx-auto para centralizar o conteúdo */}

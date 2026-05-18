@@ -108,19 +108,7 @@ function LoginEmpresa() {
             });
 
             const empresa = response.data;
-
-            const empresaData = {
-                id: empresa.id,
-                nome: empresa.nome,
-                cnpj: empresa.cnpj,
-                email: empresa.email,
-                senha: empresa.senha,
-                telefone: empresa.telefone,
-                role: empresa.role,
-                status: empresa.status
-            };
-
-            localStorage.setItem("user", JSON.stringify(empresaData));
+            localStorage.setItem("user", JSON.stringify(empresa));
             
             alert("Cadastro realizado! Nossa equipe está analisando seus dados. Você será notificado por e-mail quando for aprovado.");
             setModo("sgnup");
@@ -146,17 +134,6 @@ function LoginEmpresa() {
 
             const empresa = response.data;
 
-            const empresaData = {
-                id: empresa.id,
-                nome: empresa.nome,
-                cnpj: empresa.cnpj,
-                email: empresa.email,
-                senha: empresa.senha,
-                telefone: empresa.telefone,
-                role: empresa.role,
-                status: empresa.status
-            };
-
             console.log(empresaData);
 
             if(empresa.status == "PENDENTE"){
@@ -165,7 +142,7 @@ function LoginEmpresa() {
             }else if(empresa.status == "REPROVADO"){
                 setStatusMessage("Infelizmente, seu cadastro foi reprovado. Entre em contato conosco para mais informações.");
             }else{
-                localStorage.setItem("user", JSON.stringify(empresaData));
+                localStorage.setItem("user", JSON.stringify(empresa));
             }
 
             setShowSuccessLoginPopup(true);

@@ -1,65 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { Search } from 'lucide-react';
-import { Comunidade } from '../types';
+// import { Comunidade } from '../types';
 import CriarComunidadesModal from './CriarComunidadesModal';
 import { useNavigate } from 'react-router-dom';
-import PopupLoginAviso from '../PopupLoginAviso'; // 🟣 ALTERAÇÃO: import do popup
+import PopupLoginAviso from '../PopupLoginAviso';
+import ComunidadeMiniatura from './ComunidadeMiniatura';
 
-interface MenuLateralProps {
-  comunidades: Comunidade[];
-  aoCriarComunidade: (dados: { nome: string; usuario: string; avatar: string }) => void;
-  aoEntrarNaComunidade: (comunidadeId: string) => void;
-  aoSelecionarComunidade: (comunidade: Comunidade | null) => void;
-  comunidadeSelecionada: Comunidade | null;
-  colapsada: boolean;
-}
+export default function MenuLateralComunidades({ minhasComunidades, comunidadesSugeridas }) {
 
-const MenuLateral: React.FC<MenuLateralProps> = ({
-  comunidades,
-  aoCriarComunidade,
-  aoEntrarNaComunidade,
-  aoSelecionarComunidade,
-  comunidadeSelecionada,
-  colapsada,
-}) => {
+  const navigate = useNavigate();
+
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [showLoginPopup, setShowLoginPopup] = useState(false);
 
-  const navigate = useNavigate();
-  //const user = localStorage.getItem("user");
+  const colapsada = false;
+  const aoCriarComunidade = { nome: '', usuario: '', avatar: '' };
+  const aoEntrarNaComunidade = { comunidadeId: '' };
+  const aoSelecionarComunidade = { comunidade: '' };
 
-  const [user, setUser] = useState({
-    data: localStorage.getItem("user")
-      ? JSON.parse(localStorage.getItem("user") || "{}")
-      : {}
-  });
+  const [comunidadeSelecionada, setComunidadeSelecionada] = useState({ id: '', nome: '', usuario: '', imagem: '' });
 
-  const [usuarioLogado, setUsuarioLogado] = useState({});
+  const [user, setUser] = useState({})
 
-  useEffect(() => {
-    if (user.data.nomeUsuario != null) {
-      setUsuarioLogado({
-        nomeUsuario: user.data.nomeUsuario,
-        role: user.data.role
-      });
-    }
-  }, []);
-
-  const aoSelecionar = (comunidade: Comunidade | null) => {
-    aoSelecionarComunidade(comunidade);
+  const selecionarComunidade = (comunidade) => {
+    setComunidadeSelecionada(comunidade);
   };
 
-  const minhasComunidades = comunidades.filter(c => c.souDono);
-  const comunidadesParticipadas = comunidades.filter(c => c.souMembro && !c.souDono);
-  const comunidadesExplorar = comunidades.filter(c => !c.souMembro);
+  const comunidadesParticipadas = minhasComunidades.filter(c => c.souMembro && !c.souDono);
+  const comunidadesExplorar = minhasComunidades.filter(c => !c.souMembro);
 
-  const comunidadesExplorarFiltradas = comunidadesExplorar.filter(c =>
+  const comunidadesExplorarFiltradas = minhasComunidades.filter(c =>
     c.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
     c.usuario.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // 🟣 ALTERAÇÃO: proteção para criar comunidade
   const handleCreateClick = () => {
     if (user == null) {
       setShowLoginPopup(true);
@@ -68,22 +43,17 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
     setShowCreateModal(true);
   };
 
-  // 🟣 ALTERAÇÃO: proteção ao clicar em comunidade
-  const handleCommunityClick = (comunidade: Comunidade | null) => {
-    if (user == null) {
-      setShowLoginPopup(true);
-      return;
-    }
-    aoSelecionar(comunidade);
-  };
-
-  // 🟣 ALTERAÇÃO: proteção na barra de pesquisa
   const handleSearchClick = () => {
     if (user == null) {
       setShowLoginPopup(true);
       return;
     }
   };
+
+  useEffect(() => {
+    let data = localStorage.getItem("user");
+    setUser(JSON.parse(data));
+  }, []);
 
   return (
     <>
@@ -96,9 +66,9 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
         </div>
 
         <div className="p-6 h-screen overflow-y-auto bg-[#FFF6FF]">
-          {/* Feed Geral */}
+        
           <div
-            onClick={() => handleCommunityClick(null)} // 🟣 ALTERAÇÃO
+            onClick={() => handleCommunityClick(null)}
             className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-200 mb-4 ${comunidadeSelecionada === null
               ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
               : 'hover:bg-gray-50'
@@ -112,7 +82,6 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
             <p className="font-bold text-gray-800 text-sm">Feed Geral</p>
           </div>
 
-          {/* Barra de pesquisa */}
           <div className="relative mb-6">
             <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
             <input
@@ -120,12 +89,11 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
               placeholder="Buscar comunidade..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              onClick={handleSearchClick} // 🟣 ALTERAÇÃO
+              onClick={handleSearchClick}
               className="w-full pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
             />
           </div>
 
-          {/* Minhas comunidades */}
           <div className="mb-6">
             <h3 className="text-lg font-semibold text-gray-800 mt-4 mb-6 mr-4">Minhas comunidades</h3>
             {minhasComunidades.length === 0 ? (
@@ -133,30 +101,18 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
             ) : (
               <div className="space-y-2 mb-3">
                 {minhasComunidades.map(comunidade => (
-                  <div
+                  <ComunidadeMiniatura
                     key={comunidade.id}
-                    onClick={() => handleCommunityClick(comunidade)} // 🟣 ALTERAÇÃO
-                    className={`flex items-center p-2 rounded-lg cursor-pointer transition-all duration-200 ${comunidadeSelecionada?.id === comunidade.id
-                      ? 'bg-gradient-to-r from-pink-100 to-purple-100 border border-pink-200'
-                      : 'hover:bg-gray-50'
-                      }`}
-                  >
-                    <img
-                      src={comunidade.avatar}
-                      alt={comunidade.nome}
-                      className="w-8 h-8 rounded-full mr-3"
-                    />
-                    <div className="flex-1">
-                      <p className="font-medium text-gray-800 text-sm">{comunidade.nome}</p>
-                      <p className="text-xs text-gray-500">{comunidade.usuario}</p>
-                    </div>
-                  </div>
+                    comunidade={comunidade}
+                    comunidadeSelecionada={comunidadeSelecionada}
+                    selecionarComunidade={selecionarComunidade}
+                  />
                 ))}
               </div>
             )}
 
             <button
-              onClick={handleCreateClick} // 🟣 ALTERAÇÃO
+              onClick={handleCreateClick}
               className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] m-auto rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium flex items-center justify-center"
             >
               + Criar comunidade
@@ -165,7 +121,6 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
 
           <hr className="border-t border-[#F36EC0] w-full" />
 
-          {/* Comunidades que participo */}
           <div className="mb-6 mt-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-3">Comunidades que participo</h3>
             {comunidadesParticipadas.length === 0 ? (
@@ -198,7 +153,6 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
 
           <hr className="border-t border-[#F36EC0] w-full" />
 
-          {/* Explorar */}
           <div className="mt-6">
             <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
               Explorar
@@ -224,7 +178,7 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
                   </div>
                   <button
                     onClick={() => {
-                      if (!user) { // 🟣 ALTERAÇÃO
+                      if (!user) {
                         setShowLoginPopup(true);
                         return;
                       }
@@ -241,19 +195,15 @@ const MenuLateral: React.FC<MenuLateralProps> = ({
         </div>
       </div>
 
-      {/* Modal de criar comunidade */}
-      <CriarComunidadesModal
+      {/* <CriarComunidadesModal
         estaAberto={showCreateModal}
         aoFechar={() => setShowCreateModal(false)}
-        aoCriar={aoCriarComunidade}
+        aoCriar={MenuLateralProps.aoCriarComunidade}
       />
-
-      {/* 🟣 ALTERAÇÃO: substitui o popup inline pelo componente separado */}
+     
       {showLoginPopup && (
         <PopupLoginAviso isOpen={showLoginPopup} onClose={() => setShowLoginPopup(false)} />
-      )}
+      )} */}
     </>
   );
 };
-
-export default MenuLateral;

@@ -46,11 +46,9 @@ export default function Home() {
   const centerIndex = Math.floor(slides.length / 2);
   const [active, setActive] = useState(centerIndex);
 
-  // Não reatribuir itemRefs.current em cada render (bug). Use ref e callback push único.
   const itemRefs = useRef([]);
   const videoRefs = useRef([]);
 
-  // callback ref para evitar duplicação
   const addToRefs = (el) => {
     if (!el) return;
     if (!itemRefs.current.includes(el)) {
@@ -77,17 +75,14 @@ export default function Home() {
   };
 
   useEffect(() => {
-    // centraliza o slide ativo na primeira vez sem animação
     const t = setTimeout(() => scrollToActive(active, "auto"), 50);
     return () => clearTimeout(t);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     scrollToActive(active, "smooth");
   }, [active]);
 
-  // Pausa todos os vídeos exceto o ativo
   const pauseAllVideos = () => {
     videoRefs.current.forEach((video) => {
       if (video && !video.paused) video.pause();

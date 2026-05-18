@@ -3,14 +3,14 @@ import React, { useState } from 'react';
 import { MoreHorizontal, Clock, Trash2 } from 'lucide-react';
 import { Postagem, Comunidade } from '../types';
 
-interface PostCardProps { // <-- Corrigido para PostCardProps
+interface PostCardProps { 
   postagem: Postagem;
   aoEntrarNaComunidade?: (idComunidade: string) => void;
   aoExcluirPostagem?: (idPostagem: string) => void;
   comunidades: Comunidade[];
 }
 
-const PostCard: React.FC<PostCardProps> = ({ // <-- Corrigido para PostCard
+const PostCard: React.FC<PostCardProps> = ({ 
   postagem, 
   aoEntrarNaComunidade, 
   aoExcluirPostagem, 
@@ -18,9 +18,8 @@ const PostCard: React.FC<PostCardProps> = ({ // <-- Corrigido para PostCard
 }) => {
   const [mostrarMenu, setMostrarMenu] = useState(false);
   
-  // 🔹 Busca os dados da comunidade
   const comunidade = comunidades.find(c => c.id === postagem.comunidadeId);
-  // Permite excluir se for dono da comunidade e se a função foi passada
+ 
   const podeExcluir = comunidade?.souDono && !!aoExcluirPostagem; 
   const ehMembro = comunidade?.souMembro;
 
