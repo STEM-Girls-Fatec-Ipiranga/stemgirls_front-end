@@ -269,7 +269,6 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
               type="text"
               placeholder="URL do evento online"
               className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-              value={evento.linkEventoOnline}
               onChange={handleChangeEvento}
             />
           </div>

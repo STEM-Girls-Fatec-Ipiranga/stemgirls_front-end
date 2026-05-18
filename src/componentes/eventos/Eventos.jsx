@@ -82,6 +82,7 @@ export default function Eventos() {
   useEffect(() => {
     let data = localStorage.getItem("user");
     setUser(JSON.parse(data));
+    
     listarEventos();
   }, []);
 
