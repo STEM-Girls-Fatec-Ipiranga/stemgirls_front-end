@@ -206,6 +206,7 @@ export default function SobreNos() {
             <source src={videoPitch} type="video/mp4" />
             Seu navegador não suporta vídeos.
           </video> */}
+        </div>
       </div>
 
       <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
@@ -248,7 +249,6 @@ export default function SobreNos() {
         </div>
       </section>
 
-      {/* Nossa equipe */}
       <section className="bg-pink-50 py-16 px-6">
         <div className="max-w-6xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-6">
@@ -259,7 +259,6 @@ export default function SobreNos() {
             sobre a equipe que desenvolveu a plataforma!
           </p>
 
-          {/* Grid de membros */}
           <div className="grid grid-cols-6 md:grid-cols-2 gap-12">
             {membros.map((membro, index) => (
               <div
