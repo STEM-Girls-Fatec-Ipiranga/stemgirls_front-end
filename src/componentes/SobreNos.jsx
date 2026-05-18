@@ -205,9 +205,7 @@ export default function SobreNos() {
           >
             <source src={videoPitch} type="video/mp4" />
             Seu navegador não suporta vídeos.
-          </video> 
-        </div>
-
+          </video> */}
       </div>
 
       <div className="mt-[80px] h-[700px] justify-center mx-auto flex flex-col items-center">
