@@ -49,12 +49,12 @@ const Conteudo: React.FC<ConteudoProps> = ({
   
   const postagensFiltradas = postagens.filter(p => {
     const comunidade = comunidades.find(c => c.id === p.comunidadeId);
-    return comunidade?.souMembro || !comunidade; // Se for membro, exibe. Se a comunidade não existir, também exibe por garantia (ou ajuste se quiser regras mais rígidas)
+    return comunidade?.souMembro || !comunidade; 
   });
 
   return (
     <div className={`flex-1 transition-all duration-300 ${barraLateralColapsada ? 'ml-0' : 'ml-0'}`}>
-      <div className="max-w-4xl mx-auto p-6 bg-[#FFF6FF]"> {/* Adicionei max-w e mx-auto para centralizar o conteúdo */}
+      <div className="max-w-4xl mx-auto p-6 bg-[#FFF6FF]"> 
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-black">
             Postagens

@@ -1,5 +1,50 @@
+import { useEffect, useState } from "react";
 
 export default function DetalhesEvento({ evento, fechar }) {
+
+    const [userInscrito, setUserInscrito] = useState(null);
+
+    const BACKEND_URL = "http://localhost:8080";
+
+    // const data = new Date(evento.data);
+    // const dataConvertida = new Intl.DateTimeFormat('pt-BR', {
+    //     day: '2-digit',
+    //     month: '2-digit',
+    //     year: 'numeric',
+    //     timeZone: 'UTC'
+    // }).format(data);
+
+    const baixarInscricoes = async () => {
+        try {
+            const response = await axios.get(
+                `${BACKEND_URL}/evento/${evento.id}/download/inscricoes`,
+                { responseType: 'blob' }
+            );
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', `participantes_do_evento_${evento.id}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (error) {
+            console.log("Erro baixar inscrições", error);
+        }
+    }
+
+    const verificarInscricao = async () => {
+        try {
+            const response = await axios.get(`${BACKEND_URL}/inscricao/${user.id}/${evento.id}`);
+            setUserInscrito(response.data);
+        } catch (error) {
+            console.log("Erro ao verificar inscrição", error);
+        }
+    }
+
+    useEffect(() => {
+        verificarInscricao();
+    }, [])
+
     return (
         <>
             <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start p-4 overflow-y-auto" onClick={fechar}>
@@ -17,7 +62,7 @@ export default function DetalhesEvento({ evento, fechar }) {
                                 {evento.data} • {evento.hora}
                             </p>
 
-                            <p className="text-sm italic text-gray-600 mt-1">
+                            <p className="text-sm text italic-gray-600 mt-1">
                                 {(evento.modalidade).toUpperCase()} - {(evento.endereco.cidade)}
                             </p>
 
@@ -68,16 +113,9 @@ export default function DetalhesEvento({ evento, fechar }) {
 
                                 <button
                                     className="border border-[#F36EC0] text-[#F36EC0] text-sm px-3 py-1 rounded-lg font-semibold hover:bg-[#F36EC0] hover:text-white transition"
-                                    // onClick={() => abrirInscricaoComRegras(detalhesEvento)}
+                                    onClick={baixarInscricoes()}
                                 >
                                     Baixar inscrições
-                                </button>
-
-                                <button
-                                    className="bg-[#F36EC0] text-white text-sm px-3 py-1 rounded-lg font-semibold hover:bg-[#e055a8] transition"
-                                    // onClick={() => abrirInscricaoComRegras(detalhesEvento)}
-                                >
-                                    Participar
                                 </button>
                             </div>
                         </div>

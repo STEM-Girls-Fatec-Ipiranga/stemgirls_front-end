@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { use, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Asterisk } from "lucide-react";
 import axios from "axios";
 
@@ -34,6 +34,7 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
   const fileInputRef = useRef(null);
   const [imagemPreview, setImagemPreview] = useState(null);
   const [file, setFile] = useState(null);
+  const [novoCEP, setNovoCEP] = useState("");
 
   const [modalidade, setModalidade] = useState("presencial");
 
@@ -43,74 +44,11 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
     const { name, value } = e.target;
     setEvento((prev) => ({ ...prev, [name]: value }));
   };
+
   const handleChangeEndereco = (e) => {
     const { name, value } = e.target;
     setEndereco((prev) => ({ ...prev, [name]: value }));
   };
-
-  const salvarEvento = async (e) => {
-    e.preventDefault();
-    try {
-      const corpoEvento = {
-        organizador: {
-          id: user.id
-        },
-        titulo: evento.titulo,
-        descricao: evento.descricao,
-        modalidade: modalidade,
-        endereco: {
-          rua: endereco.rua,
-          bairro: endereco.bairro,
-          cidade: endereco.cidade,
-          estado: endereco.estado,
-          numero: endereco.numero,
-          cep: endereco.cep,
-        },
-        data: evento.data,
-        hora: evento.hora,
-        tipo: evento.tipo,
-        linkEventoOnline: evento.linkEventoOnline,
-        linkInscricao: user.role === "EMPRESA" ? evento.linkInscricao : null
-      }
-
-      const formData = new FormData();
-      formData.append(
-        "evento",
-        new Blob([JSON.stringify(corpoEvento)], { type: "application/json" })
-      );
-
-      formData.append("imagem", file);
-
-      const response = await axios.post(`${BACKEND_URL}/evento/criar`, formData);
-      console.log(response);
-      setTimeout(() => {
-        setStatus({ message: "Evento cadastrado com sucesso!", color: "green" });
-        fechar();
-      }, 300);
-    } catch (error) {
-      setStatus({ message: "Erro ao cadastrar evento", color: "red" });
-      console.error("Erro ao cadastrar evento ", error);
-      return;
-    }
-  }
-
-  const preencherEndereco = async (cep) => {
-    if (cep.length == 8) {
-      try {
-        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
-        const data = response.data;
-        const endereco = {
-          rua: data.logradouro,
-          bairro: data.bairro,
-          cidade: data.localidade,
-          estado: data.uf
-        };
-        setEndereco(endereco);
-      } catch (error) {
-        console.log("Ocorreu um erro ao buscar o CEP ", error);
-      }
-    }
-  }
 
   const handleUploadImagem = (e) => {
     const file = e.target.files[0];
@@ -132,6 +70,84 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
     reader.readAsDataURL(file);
   };
 
+  const aplicarMascaraCEP = (cep) => {
+    const cepLimpo = cep.replace(/\D/g, "");
+    let cepFormatado = "";
+
+    if (cepLimpo.length <= 5) {
+      cepFormatado = cepLimpo;
+    } else {
+      cepFormatado = `${cepLimpo.slice(0, 5)}-${cepLimpo.slice(5, 8)}`;
+    }
+
+    setNovoCEP(cepFormatado);
+    return cepFormatado.substring(0, 9);
+  };
+
+  const salvarEvento = async (e) => {
+    e.preventDefault();
+    try {
+      const corpoEvento = {
+        organizador: {
+          id: user.id
+        },
+        titulo: evento.titulo,
+        descricao: evento.descricao,
+        modalidade: modalidade,
+        endereco: {
+          rua: endereco.rua,
+          bairro: endereco.bairro,
+          cidade: endereco.cidade,
+          estado: endereco.estado,
+          numero: endereco.numero,
+          cep: novoCEP,
+        },
+        data: evento.data,
+        hora: evento.hora,
+        linkEventoOnline: evento.linkEventoOnline,
+        linkInscricao: user.role === "EMPRESA" ? evento.linkInscricao : null
+      }
+
+      const formData = new FormData();
+      formData.append(
+        "evento",
+        new Blob([JSON.stringify(corpoEvento)], { type: "application/json" })
+      );
+
+      formData.append("imagem", file);
+
+      const response = await axios.post(`${BACKEND_URL}/evento/criar`, formData);
+
+      setTimeout(() => {
+        setStatus({ message: "Evento cadastrado com sucesso!", color: "green" });
+        fechar();
+      }, 300);
+
+    } catch (error) {
+      setStatus({ message: "Erro ao cadastrar evento", color: "red" });
+      console.error("Erro ao cadastrar evento ", error);
+      return;
+    }
+  }
+
+  const preencherEndereco = async (cep) => {
+    if (cep.length == 9) {
+      try {
+        const response = await axios.get(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = response.data;
+        const endereco = {
+          rua: data.logradouro,
+          bairro: data.bairro,
+          cidade: data.localidade,
+          estado: data.uf
+        };
+        setEndereco(endereco);
+      } catch (error) {
+        console.log("Ocorreu um erro ao buscar o CEP ", error);
+      }
+    }
+  }
+
   const limpar = () => {
     setEvento({});
     setEndereco({});
@@ -145,7 +161,6 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
       </div>
 
       <form className="flex flex-col gap-4" onSubmit={salvarEvento}>
-
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-1 font-semibold">
             <label className="font-semibold block" htmlFor="imagem">Imagem do evento</label>
@@ -199,7 +214,15 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
                 <label htmlFor="cep">CEP</label>
                 <Asterisk className="w-[10px] h-[10px] text-red-500" />
               </div>
-              <input type="text" name="cep" placeholder="CEP" className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={endereco.cep} onChange={(e) => { handleChangeEndereco(e); preencherEndereco(e.target.value) }} required />
+              <input
+                type="text"
+                name="cep"
+                placeholder="CEP"
+                className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                value={novoCEP}
+                onChange={(e) => { handleChangeEndereco(e); preencherEndereco(e.target.value); aplicarMascaraCEP(e.target.value) }}
+                required
+              />
             </div>
 
             <div className="flex gap-2">
@@ -222,18 +245,18 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
 
             <div className="flex flex-col gap-2 flex-1">
               <div className="flex items-center gap-1 font-semibold">
-                <label htmlFor="bairro">Bairro</label>
-                <Asterisk className="w-[10px] h-[10px] text-red-500" />
-              </div>
-              <input type="text" name="bairro" placeholder="Bairro" className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={endereco.bairro} onChange={handleChangeEndereco} required />
-            </div>
-
-            <div className="flex flex-col gap-2 flex-1">
-              <div className="flex items-center gap-1 font-semibold">
                 <label htmlFor="rua">Rua</label>
                 <Asterisk className="w-[10px] h-[10px] text-red-500" />
               </div>
               <input type="text" name="rua" placeholder="Rua" className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={endereco.rua} onChange={handleChangeEndereco} required />
+            </div>
+
+            <div className="flex flex-col gap-2 flex-1">
+              <div className="flex items-center gap-1 font-semibold">
+                <label htmlFor="bairro">Bairro</label>
+                <Asterisk className="w-[10px] h-[10px] text-red-500" />
+              </div>
+              <input type="text" name="bairro" placeholder="Bairro" className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={endereco.bairro} onChange={handleChangeEndereco} required />
             </div>
 
             <div className="flex gap-2">
@@ -247,7 +270,6 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
               <div className="flex flex-col gap-2 flex-1">
                 <div className="flex items-center gap-1 font-semibold">
                   <label htmlFor="complemento">Complemento</label>
-                  <Asterisk className="w-[10px] h-[10px] text-red-500" />
                 </div>
                 <input type="text" name="complemento" placeholder="Complemento" className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" value={endereco.complemento} onChange={handleChangeEndereco} />
               </div>

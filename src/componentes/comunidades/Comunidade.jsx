@@ -36,17 +36,17 @@ export default function Comunidade({ comunidade, postagens, voltarFeed }) {
 
             <div className="flex items-center space-x-3">
               <button
-                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 text-md rounded-xl font-medium transition-all duration-200 tranform hover:scale-105"
-              >
-                Entrar
-              </button>
-
-              <button
-                className="flex items-center justify-center bg-white text-pink-500 text-md border border-2 border-pink-500 rounded-xl px-4 py-2 font-medium transition-all durantion-200 transform hover:bg-pink-500 hover:text-white"
+                className="flex items-center justify-center bg-white text-pink-500 text-md border border-2 border-pink-500 rounded-xl px-3 py-1 font-medium transition-all durantion-200 transform hover:bg-pink-500 hover:text-white"
               >
                 <Plus className="h-4 w-4 mr-1" />
                 Publicar
               </button> 
+
+              <button
+                className="bg-gradient-to-r from-pink-500 to-purple-500 text-white px-4 py-2 text-md rounded-xl font-medium transition-all duration-200 tranform hover:scale-105"
+              >
+                Entrar
+              </button>
 
               {/* <button 
                 className="flex items-center bg-red-500 text-white px-4 py-2 rounded-lg font-medium hover:shadow-md transition-all durantion-200 transform hover:scale-105"

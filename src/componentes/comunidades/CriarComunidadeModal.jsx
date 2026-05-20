@@ -1,24 +1,12 @@
-import axios from "axios";
+import { useState, useEffect } from "react";
 
-export default function FormCertificado({ evento, fechar }) {
+export default function CriarComunidadeModal({ fechar }){
+    const [user, setUser] = useState(null);
 
-    const baixarCertificao = async () => {
-        try {
-            const response = await axios.get("http://localhost:8080/certificado/salvar",
-                { responseType: 'blob' }
-            );
-
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', 'certificado.pdf');
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (err) {
-            console.error('Erro ao salvar o PDF:', err);
-        }
-    }
+    useEffect(() => {
+        let data = localStorage.getItem("user");
+        setUser(JSON.parse(data));
+    })
 
     return (
         <>
@@ -33,45 +21,34 @@ export default function FormCertificado({ evento, fechar }) {
                                 <input
                                     className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                                     type="text"
-                                    placeholder="Digite seu nome completo"
+                                    placeholder="Digite o nome da comunidade"
                                 />
                             </div>
                             <div className="flex flex-col">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    CPF
+                                    Descrição
                                 </label>
                                 <input
                                     className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                                     type="text"
-                                    placeholder="Digite seu CPF"
-                                />
-                            </div>
-                            <div className="flex flex-col">
-                                <label className="block text-sm font-medium text-gray-700 mb-2">
-                                    Data do evento
-                                </label>
-                                <input
-                                    className="w-full pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
-                                    type="date"
-                                    placeholder="Digite seu CPF"
+                                    placeholder="Digite a descrição da comunidade"
                                 />
                             </div>
                         </div>
                         <div className="flex gap-2">
-                            <button className="bg-gray-200 px-3 py-1 rounded-lg" onClick={fechar}>
+                            <button className="text-black bg-gray-200 px-3 py-1 rounded-lg" onClick={fechar}>
                                 Fechar
                             </button>
                             <button
                                 className="bg-[#F36EC0] text-white text-sm px-3 py-1 rounded-lg font-semibold hover:bg-[#e055a8] transition"
                                 type="button"
-                                onClick={baixarCertificao}
                             >
-                                Baixar certificado
+                                Salvar
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
         </>
-    );
+    ); 
 }

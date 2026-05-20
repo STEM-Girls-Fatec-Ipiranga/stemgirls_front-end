@@ -15,15 +15,15 @@ export default function Evento({ user, evento }) {
 
     const abrirDetalhes = (e) => {
         setDetalhes(true);
-    };
+    }
 
     const fecharDetalhes = (e) => {
         setDetalhes(false);
-    };
+    }
 
     const abrirInscricao = (e) => {
         setInscricao(true);
-    };
+    }
 
     const fecharInscricao = (e) => {
         setInscricao(false);
@@ -43,24 +43,6 @@ export default function Evento({ user, evento }) {
             setUserInscrito(response.data);
         } catch (error) {
             console.log("Erro ao verificar inscrição", error);
-        }
-    }
-
-    const baixarInscricoes = async () => {
-        try {
-            const response = await axios.get(
-                `${BACKEND_URL}/evento/${evento.id}/download/inscricoes`,
-                { responseType: 'blob' }
-            );
-            const url = window.URL.createObjectURL(new Blob([response.data]));
-            const link = document.createElement('a');
-            link.href = url;
-            link.setAttribute('download', `participantes_do_evento_${evento.id}.csv`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        } catch (error) {
-            console.log("Erro baixar inscrições", error);
         }
     }
 
@@ -105,7 +87,6 @@ export default function Evento({ user, evento }) {
                                             abrirInscricao();
                                         }}
                                     >
-
                                         Inscrito
                                     </button>
                                 </>

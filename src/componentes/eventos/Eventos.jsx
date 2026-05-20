@@ -4,45 +4,9 @@ import CadastroEvento from "./CadastroEvento";
 import Evento from "./Evento";
 import MeusEventos from "./MeusEventos";
 import axios from "axios";
+import Categoria from "../Categoria";
 
 export default function Eventos() {
-
-  const imagensDisponiveis = [
-    "/src/assets/img/emeninas-digitais.jpeg",
-    "/src/assets/img/mulheresfortes.png",
-    "/src/assets/img/mulherwomakers.jpeg",
-    "/src/assets/img/mulheres-tecnologia.jpg",
-  ];
-
-  const eventosMock = [
-    {
-      id: 1,
-      titulo: "Reunião meninas digitais",
-      data: "2025-06-26",
-      hora: "19:00",
-      tipo: "ao-vivo",
-      local: "São Paulo",
-      descricao: "Reunião para trocar ideias e conhecimentos sobre o projeto buscando o aprimoramento.",
-      imagem: "/src/assets/img/mulheres-tecnologia.jpg",
-      organizador: "Stem Girls",
-      organizadorTipo: "stemgirls",
-      linkInscricao: "",
-    },
-    {
-      id: 2,
-      titulo: "Palestra tecnologia inclusiva",
-      data: "2025-06-28",
-      hora: "15:00",
-      tipo: "presencial",
-      local: "Rio de Janeiro",
-      descricao: "Discussão sobre inclusão de mulheres no mercado de tecnologia.",
-      imagem: "/src/assets/img/mulheres-tecnologia.jpg",
-      organizador: "Empresa XPTO",
-      organizadorTipo: "empresa",
-      linkInscricao: "https://empresa-xpto.com/inscricao",
-    },
-  ];
-
   const BACKEND_URL = "http://localhost:8080";
 
   const [user, setUser] = useState({});
@@ -52,14 +16,13 @@ export default function Eventos() {
 
   const [eventoEditando, setEventoEditando] = useState(null);
   const [eventoParaExcluir, setEventoParaExcluir] = useState(null);
+  const [confirmEmpresa, setConfirmEmpresa] = useState(null);
 
-  const [filtro, setFiltro] = useState("todos");
   const [localidade, setLocalidade] = useState("");
+  const [selecionado, setSelecionado] = useState("Todos");
 
   const [telaCadastro, setTelaCadastro] = useState(false);
   const [telaMeusEventos, setTelaMeusEventos] = useState(false);
-
-  const [confirmEmpresa, setConfirmEmpresa] = useState(null);
 
   const listarEventos = async () => {
     try {
@@ -82,17 +45,14 @@ export default function Eventos() {
   useEffect(() => {
     let data = localStorage.getItem("user");
     setUser(JSON.parse(data));
-    
     listarEventos();
-  }, []);
 
-  const todosEventos = [...eventosMock, ...eventos];
+    console.log(selecionado)
+  }, [selecionado]);
 
-  const eventosFiltrados = todosEventos.filter((ev) => {
-    const tipoMatch = filtro === "todos" || (ev.tipo || ev.tipoEvento || "").toLowerCase() === filtro;
-    const localMatch = (ev.local || ev.cidade || "").toLowerCase().includes(localidade.toLowerCase());
-    return tipoMatch && localMatch;
-  });
+  const handleSelecionado = (tipo) => {
+    setSelecionado(tipo);
+  }
 
   const confirmarExcluirEvento = async () => {
     if (!eventoParaExcluir) return;
@@ -110,12 +70,6 @@ export default function Eventos() {
       setEventoParaExcluir(null);
     }
   };
-
-  const Button = ({ children, className = "", ...props }) => (
-    <button className={`px-4 py-2 rounded-lg font-semibold ${className}`} {...props}>
-      {children}
-    </button>
-  );
 
   const confirmarRedirecionamentoEmpresa = () => {
     if (!confirmEmpresa) return;
@@ -226,14 +180,13 @@ export default function Eventos() {
         ) : (
           <>
             <div className="flex gap-4 mb-6 justify-center">
-              {["ao-vivo", "presencial", "remoto", "todos"].map((tipo) => (
-                <Button
+              {["Todos", "Ao-vivo", "Presencial", "Remoto"].map((tipo) => (
+                <Categoria 
                   key={tipo}
-                  onClick={() => setFiltro(tipo)}
-                  className={filtro === tipo ? "bg-pink-500 text-white" : "bg-white border"}
-                >
-                  {tipo === "ao-vivo" ? "Ao vivo" : tipo.charAt(0).toUpperCase() + tipo.slice(1)}
-                </Button>
+                  nome={tipo}
+                  onClick={() => setSelecionado(tipo)}
+                  className={selecionado === tipo ? `bg-pink-500 text-white` : `bg-transparent text-black hover:text-white hover:bg-pink-500 transition-all duration-200`}
+                />
               ))}
             </div>
 

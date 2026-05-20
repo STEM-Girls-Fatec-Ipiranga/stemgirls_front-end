@@ -5,13 +5,15 @@ import ComunidadeMiniatura from "./ComunidadeMiniatura";
 import Comunidade from "./Comunidade";
 import { Search } from 'lucide-react';
 import PerfilComunidade from "./PerfilComunidade";
-import Categoria from "./Categoria";
+import Categoria from "../Categoria";
+import CriarComunidadeModal from "./CriarComunidadeModal";
 
 export default function Comunidades() {
-
     const [comunidade, setComunidade] = useState(false);
     const [postagens, setPostagens] = useState(true);
     const [comunidadeSelecionada, setComunidadeSelecionada] = useState({ id: '', nome: '', usuario: '', imagem: '' });
+    const [criarComunidade, setCriarComunidade] = useState(false);
+    const [selecionado, setSelecionado] = useState("Tudo");
 
     const minhasComunidades = [
         {
@@ -67,14 +69,21 @@ export default function Comunidades() {
         setComunidadeSelecionada({ id: '', nome: '', usuario: '', imagem: '' });
     }
 
+    const abrirCriarComunidade = () => {
+        setCriarComunidade(true);
+    }
+
+    const fecharCriarComunidade = () => {
+        setCriarComunidade(false);
+    }
+
     return (
         <>
             <div
                 className="min-h-screen bg-gradient-to-br from-purple-50 to-pink-50"
             >
                 <div className="flex">
-                    {/* <MenuLateralComunidades minhasComunidades={minhasComunidades} /> */}
-
+                  
                     <aside className="flex flex-col p-4 bg-[#FFF6FF] shadow-lg transition-all duration-300">
 
                         <div className="bg-[#FFF6FF]">
@@ -116,7 +125,9 @@ export default function Comunidades() {
                                 </div>
                             )}
 
-                            <button className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] m-auto rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium">
+                            <button className="w-full bg-[#F36EC0] text-white font-semibold h-[40px] m-auto rounded-lg hover:shadow-lg transition-all duration-200 transform hover:scale-105 font-medium"
+                                onClick={abrirCriarComunidade}
+                            >
                                 + Criar comunidade
                             </button>
                         </div>
@@ -153,15 +164,14 @@ export default function Comunidades() {
                                         <p className="text-gray-600">Descubra conteúdos incríveis das comunidades Stem Girls</p>
                                     </div>
                                     <div className="flex items-center space-x-4 my-6 flex flex-row">
-                                        <Categoria
-                                            nome="Tudo"
-                                        />
-                                        <Categoria
-                                            nome="Mais recentes"
-                                        />
-                                        <Categoria
-                                            nome="Em alta"
-                                        />
+                                        {["Tudo", "Mais recentes", "Em alta"].map((tipo) => (
+                                            <Categoria 
+                                                key={tipo}
+                                                nome={tipo}
+                                                onClick={() => setSelecionado(tipo)}
+                                                className={selecionado === tipo ? `bg-pink-500 text-white` : `bg-transparent text-black hover:text-white hover:bg-pink-500 transition-all duration-200`}
+                                            />
+                                        ))}
                                     </div>
                                 </div>
                             )}
@@ -179,6 +189,12 @@ export default function Comunidades() {
                                     comunidade={comunidadeSelecionada}
                                     postagens={listaPostagens}
                                     voltarFeed={voltarFeed}
+                                />
+                            )}
+
+                            {criarComunidade && (
+                                <CriarComunidadeModal 
+                                    fechar={fecharCriarComunidade}
                                 />
                             )}
                         </div>

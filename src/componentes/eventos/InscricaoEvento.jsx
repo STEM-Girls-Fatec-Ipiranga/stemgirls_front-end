@@ -16,17 +16,17 @@ export default function InscricaoEvento({ evento, user, fechar }) {
     const aplicarMascaraCPF = (valor) => {
         const cpfLimpo = valor.replace(/\D/g, "");
         let cpfFormatado = "";
-        
-        if (cpfLimpo.length <= 3){
+
+        if (cpfLimpo.length <= 3) {
             cpfFormatado = cpfLimpo;
-        }else if(cpfLimpo.length <= 6){
+        } else if (cpfLimpo.length <= 6) {
             cpfFormatado = `${cpfLimpo.substring(0, 3)}.${cpfLimpo.substring(3)}`;
-        }else if(cpfLimpo.length <= 9){
+        } else if (cpfLimpo.length <= 9) {
             cpfFormatado = `${cpfLimpo.substring(0, 3)}.${cpfLimpo.substring(3, 6)}.${cpfLimpo.substring(6)}`;
-        }else{
+        } else {
             cpfFormatado = `${cpfLimpo.substring(0, 3)}.${cpfLimpo.substring(3, 6)}.${cpfLimpo.substring(6, 9)}-${cpfLimpo.substring(9, 11)}`;
         }
-        
+
         setNovoCPF(cpfFormatado);
         return cpfFormatado.substring(0, 14);
     };
@@ -34,16 +34,16 @@ export default function InscricaoEvento({ evento, user, fechar }) {
     const aplicarMascaraTelefone = (valor) => {
         const telefoneLimpo = valor.replace(/\D/g, "");
         let telefoneFormatado = "";
-        
-        if (telefoneLimpo.length > 0) 
+
+        if (telefoneLimpo.length > 0)
             telefoneFormatado = `(${telefoneLimpo.substring(0, 2)}`;
-        
-        if (telefoneLimpo.length > 2) 
+
+        if (telefoneLimpo.length > 2)
             telefoneFormatado += `) ${telefoneLimpo.substring(2, 7)}`;
 
-        if(telefoneLimpo.length > 7)
-            telefoneFormatado += `-${telefoneLimpo.substring(7,11)}`;
-        
+        if (telefoneLimpo.length > 7)
+            telefoneFormatado += `-${telefoneLimpo.substring(7, 11)}`;
+
         setNovoTelefone(telefoneFormatado);
         return telefoneFormatado.substring(0, 15);
     };
@@ -68,29 +68,29 @@ export default function InscricaoEvento({ evento, user, fechar }) {
         return resto === parseInt(c[10]);
     };
 
-    const validarCampos = async () => {  
+    const validarCampos = async () => {
         if (!user.cpf && !user.telefone) {
             let currentUser = user;
-            if (novoCPF=="") {
+            if (novoCPF == "") {
                 setStatus({ message: "Por favor, insira o CPF", color: "red" });
                 return;
             } else if (!validarCPF(novoCPF)) {
                 setStatus({ message: "CPF inválido, por favor digite novamente", color: "red" });
                 return;
-            } else if (novoTelefone=="") {
+            } else if (novoTelefone == "") {
                 setStatus({ message: "Por favor, insira o telefone", color: "red" });
                 return;
             } else {
-                try{
+                try {
                     currentUser = await atualizarUsuario();
-                }catch(error){
+                } catch (error) {
                     setStatus({ message: "Erro ao atualizar dados do usuário", color: "red" });
                     return;
                 }
             }
             setStatus({ message: "", color: "" });
             return currentUser;
-        }else{
+        } else {
             return user;
         }
     }
@@ -128,7 +128,7 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                 console.log(error);
                 setStatus({ message: "Erro ao enviar inscrição", color: "red" });
             }
-        }else{
+        } else {
             return;
         }
     }
@@ -165,7 +165,7 @@ export default function InscricaoEvento({ evento, user, fechar }) {
             <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
                 <div className="flex flex-col p-6 bg-white rounded-xl w-full max-w-md shadow-xl max-h-[100vh] overflow-y-auto">
 
-                    <div className="flex flex-col gap-4 mb-10">
+                    <div className="flex flex-col gap-4 mb-5">
                         <h2 className="text-[24px] font-bold">Evento</h2>
                         <img
                             src={evento.imagem}
@@ -181,10 +181,9 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                             </p>
 
                             <p className="text-sm italic text-gray-600 mt-1">
-                                {(evento.tipo).toUpperCase()} - {(evento.local)}
+                                {(evento.modalidade).toUpperCase()} - {(evento.endereco.rua)}, {(evento.endereco.bairro)}, {(evento.endereco.cidade)}
                             </p>
                         </div>
-
                     </div>
 
                     {!inscricao && (
@@ -195,22 +194,28 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                                     <h2 className="text-[24px] font-bold">Inscrição</h2>
 
                                     <div className="flex flex-col gap-2">
-                                        <p className="text-[16px] text-gray-500">
-                                            <span className="font-bold">Nome:</span> {user.nomeUsuario}
-                                        </p>
-                                        <p className="text-[16px] text-gray-500">
-                                            <span className="font-bold">Email:</span> {user.email}
-                                        </p>
+                                        <input
+                                            className="w-full text-sm px-2 py-2 mb-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                            readOnly
+                                            value={user.nomeUsuario}
+                                        />
+                                        <input
+                                            className="w-full text-sm px-2 py-2 mb-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                            readOnly
+                                            value={user.email}
+                                        />
                                     </div>
                                 </div>
 
                                 {user.cpf ? (
-                                    <p className="text-[16px] text-gray-500">
-                                        <span className="font-bold">CPF:</span> {user.cpf}
-                                    </p>
+                                    <input
+                                        className="w-full text-sm px-2 py-2 mb-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                        readOnly
+                                        value={user.cpf}
+                                    />
                                 ) : (
                                     <input
-                                        className="w-full mb-2 mt-2 pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                        className="w-full text-sm px-2 py-2 mb-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                                         placeholder="CPF"
                                         value={novoCPF}
                                         onChange={(e) => aplicarMascaraCPF(e.target.value)}
@@ -218,21 +223,22 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                                 )}
 
                                 {user.telefone ? (
-                                    <p className="text-[16px] text-gray-500">
-                                        <span className="font-bold">Telefone:</span> {user.telefone}
-                                    </p>
+                                    <input
+                                        className="w-full text-sm px-2 py-2 mb-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                        readOnly
+                                        value={user.telefone}
+                                    />
                                 ) : (
                                     <input
-                                        className="w-full mb-2 mt-2 pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                        className="w-full text-sm px-2 py-2 mb-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                                         placeholder="Telefone"
                                         value={novoTelefone}
                                         onChange={(e) => aplicarMascaraTelefone(e.target.value)}
                                     />
                                 )}
 
-                                <span className="text-[14px] text-gray-500">(Se houver instituição)</span>
                                 <input
-                                    className="w-full mb-2 pl-4 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
+                                    className="w-full text-sm px-2 py-2 mb-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700"
                                     placeholder="Instituição"
                                     value={instituicao}
                                     onChange={(e) => setInstituicao(e.target.value)}
