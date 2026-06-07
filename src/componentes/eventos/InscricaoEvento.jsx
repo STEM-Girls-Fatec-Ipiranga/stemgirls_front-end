@@ -162,21 +162,20 @@ export default function InscricaoEvento({ evento, user, fechar }) {
 
     return (
         <>
-            <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex justify-center items-center p-4">
-                <div className="flex flex-col p-6 bg-white rounded-xl w-full max-w-md shadow-xl max-h-[100vh] overflow-y-auto">
+            <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start overflow-y-auto">
+                <div className="md:max-w-md lg:max-w-lg bg-white p-6 rounded-2xl shadow-2xl mt-5 mb-5 overflow-y-auto">
 
                     <div className="flex flex-col gap-4 mb-5">
-                        <h2 className="text-[24px] font-bold">Evento</h2>
                         <img
                             src={evento.imagem}
                             alt={evento.titulo}
-                            className="w-40 h-28 object-cover rounded-lg flex-shrink-0"
+                            className="object-cover rounded-lg flex-shrink-0"
                         />
 
-                        <div className="flex-1 min-w-[200px]">
-                            <h2 className="text-[20px] text-[#454545] font-bold">{evento.titulo}</h2>
+                        <div className="flex-1">
+                            <h2 className="text-xl font-bold">{evento.titulo}</h2>
 
-                            <p className="text-pink-600 mt-1">
+                            <p className="text-md text-pink-600 mt-1">
                                 {evento.data} • {evento.hora}
                             </p>
 
@@ -191,7 +190,7 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                             <div className="flex flex-col gap-2">
                                 <div className="flex flex-col gap-2">
 
-                                    <h2 className="text-[24px] font-bold">Inscrição</h2>
+                                    <h2 className="text-2xl mb-1 font-bold">Inscrição</h2>
 
                                     <div className="flex flex-col gap-2">
                                         <input
@@ -278,18 +277,18 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                     )}
 
                     <div className="flex gap-2 mt-4 justify-end">
-                        <button className="bg-gray-200 px-4 py-2 rounded-lg" onClick={fechar}>
+                        <button className="bg-gray-200 text-sm px-3 py-1 rounded-lg" onClick={fechar}>
                             Fechar
                         </button>
 
                         {inscricao && (
-                            <button className="bg-red-400 text-white px-4 py-2 rounded-lg" onClick={excluirInscricao}>
+                            <button className="bg-red-400 text-sm text-white px-3 py-1 rounded-lg" onClick={excluirInscricao}>
                                 Cancelar inscrição
                             </button>
                         )}
 
                         {!inscricao && (
-                            <button className="bg-[#F36EC0] text-white font-semibold rounded-lg px-5 py-2 hover:bg-[#e055a8] transition" onClick={enviarInscricao}>
+                            <button className="bg-[#F36EC0] text-sm text-white font-semibold rounded-lg px-3 py-1 hover:bg-[#e055a8] transition" onClick={enviarInscricao}>
                                 Confirmar
                             </button>
                         )}

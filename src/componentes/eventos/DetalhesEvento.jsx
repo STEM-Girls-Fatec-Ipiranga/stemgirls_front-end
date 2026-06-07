@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+import InscricaoEvento from "./InscricaoEvento";
 
-export default function DetalhesEvento({ evento, fechar }) {
-
-    const [userInscrito, setUserInscrito] = useState(null);
+export default function DetalhesEvento({ usuario, evento, fechar }) {
+    const [inscricao, setInscricao] = useState(false);
+    const [mensagem, setMensagem] = useState("");
 
     const BACKEND_URL = "http://localhost:8080";
 
@@ -32,31 +34,30 @@ export default function DetalhesEvento({ evento, fechar }) {
         }
     }
 
-    const verificarInscricao = async () => {
-        try {
-            const response = await axios.get(`${BACKEND_URL}/inscricao/${user.id}/${evento.id}`);
-            setUserInscrito(response.data);
-        } catch (error) {
-            console.log("Erro ao verificar inscrição", error);
-        }
+    const abrirInscricao = () => {
+        setInscricao(true);
+    }
+
+    const fecharInscricao = () => {
+        setInscricao(false);
     }
 
     useEffect(() => {
-        verificarInscricao();
+        
     }, [])
 
     return (
         <>
-            <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start p-4 overflow-y-auto" onClick={fechar}>
-                <div className="bg-white rounded-2xl w-full max-w-xl shadow-2xl mt-10 mb-10 max-h-[90vh] overflow-y-auto">
+            <div className="fixed inset-0 z-50 bg-black/50 flex justify-center items-start overflow-y-auto" onClick={fechar}>
+                <div className="md:max-w-md lg:max-w-lg bg-white rounded-2xl shadow-2xl mt-5 mb-5 overflow-y-auto">
                     <div className="flex flex-col gap-4 p-6">
                         <img
                             src={evento.imagem}
                             alt={evento.titulo}
-                            className="w-[100%] h-[200px] object-cover rounded-lg flex-shrink-0"
+                            className="w-full object-cover rounded-lg flex-shrink-0"
                         />
 
-                        <div className="flex-1 min-w-[200px]">
+                        <div className="flex-1">
                             <h2 className="text-2xl font-bold break-words">{evento.titulo}</h2>
                             <p className="text-pink-600 mt-1">
                                 {evento.data} • {evento.hora}
@@ -82,7 +83,7 @@ export default function DetalhesEvento({ evento, fechar }) {
                         </div>
 
                         <div className="mb-4">
-                            <h4 className="font-semibold mb-2">Links</h4>
+                            <h4 className="font-semibold mb-2">Link</h4>
                             <div className="text-sm text-gray-700 flex flex-col gap-2">
                                 {/* {pegarLinkInscricao(detalhesEvento) ? (
                                     <button
@@ -97,26 +98,44 @@ export default function DetalhesEvento({ evento, fechar }) {
                                 ) : (
                                     <div className="text-gray-400">Sem link de inscrição</div>
                                 )} */}
+
                             </div>
                         </div>
 
                         <div className="flex justify-between items-center">
                             <div>
                                 <button
-                                    className="bg-gray-200 px-3 py-1 rounded-lg"
+                                    className="bg-gray-200 px-3 py-1 rounded-lg text-sm"
                                     onClick={fechar}
                                 >
                                     Fechar
                                 </button>
                             </div>
                             <div className="flex gap-2">
+                                <div>
+                                    <button
+                                        className="border border-[#F36EC0] text-[#F36EC0] text-sm px-3 py-1 rounded-lg font-semibold hover:bg-[#F36EC0] hover:text-white transition"
+                                        onClick={baixarInscricoes}
+                                    >
+                                        Baixar inscrições
+                                    </button>
+                                </div>
+                                <div>
+                                    <button
+                                        className="border border-[#F36EC0] bg-[#F36EC0] text-white text-sm px-3 py-1 rounded-lg font-semibold"
+                                        onClick={abrirInscricao}
+                                    >
+                                        Participar
+                                    </button>
+                                </div>
 
-                                <button
-                                    className="border border-[#F36EC0] text-[#F36EC0] text-sm px-3 py-1 rounded-lg font-semibold hover:bg-[#F36EC0] hover:text-white transition"
-                                    onClick={baixarInscricoes()}
-                                >
-                                    Baixar inscrições
-                                </button>
+                                {inscricao && (
+                                    <InscricaoEvento 
+                                        user={usuario}
+                                        evento={evento}
+                                        fehcar={fecharInscricao}
+                                    />
+                                )}
                             </div>
                         </div>
                     </div>

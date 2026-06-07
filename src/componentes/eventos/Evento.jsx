@@ -3,8 +3,9 @@ import DetalhesEvento from "./DetalhesEvento";
 import InscricaoEvento from "./InscricaoEvento";
 import FormCertificado from "./FormCertificado";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
-export default function Evento({ user, evento }) {
+export default function Evento({ usuario, evento }) {
     const [detalhes, setDetalhes] = useState(false);
     const [inscricao, setInscricao] = useState(false);
     const [formCertificado, setFormCertificado] = useState(false);
@@ -39,10 +40,10 @@ export default function Evento({ user, evento }) {
 
     const verificarInscricao = async () => {
         try {
-            const response = await axios.get(`${BACKEND_URL}/inscricao/${user.id}/${evento.id}`);
+            const response = await axios.get(`${BACKEND_URL}/inscricao/${usuario.id}/${evento.id}`);
             setUserInscrito(response.data);
-        } catch (error) {
-            console.log("Erro ao verificar inscrição", error);
+        } catch(err) {
+            console.log(err);
         }
     }
 
@@ -67,21 +68,11 @@ export default function Evento({ user, evento }) {
                     </div>
 
                     <div className="flex mt-4 gap-3 h-full justify-end">
-                        <button
-                            className="bg-white border border-pink-500 px-3 py-1 rounded-lg text-sm hover:bg-gray-100 transition text-pink-500 text-sm"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                abrirFormCertificado();
-                            }}
-                        >
-                            Obter certificado
-                        </button>
-
                         {
                             userInscrito ? (
                                 <>
                                     <button
-                                        className="bg-[#ABF7AB] text-[#38A838] font-semibold rounded-lg px-5 py-2 hover:bg-[#CCFFCC] transition"
+                                        className="bg-[#ABF7AB] text-[#38A838] text-sm font-semibold rounded-lg px-4 py-2 hover:bg-[#CCFFCC] transition"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             abrirInscricao();
@@ -93,7 +84,7 @@ export default function Evento({ user, evento }) {
                             ) : (
                                 <>
                                     <button
-                                        className="bg-[#F36EC0] text-white text-sm font-semibold rounded-lg px-3 py-1 hover:bg-[#e055a8] transition"
+                                        className="bg-[#F36EC0] text-white text-sm font-semibold rounded-lg px-4 py-2 hover:bg-[#e055a8] transition"
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             abrirInscricao();
@@ -112,6 +103,7 @@ export default function Evento({ user, evento }) {
             {detalhes && (
                 <DetalhesEvento
                     evento={evento}
+                    usuario={usuario}
                     fechar={fecharDetalhes}
                 />
             )}
@@ -119,15 +111,8 @@ export default function Evento({ user, evento }) {
             {inscricao && (
                 <InscricaoEvento
                     evento={evento}
-                    user={user}
+                    user={usuario}
                     fechar={fecharInscricao}
-                />
-            )}
-
-            {formCertificado && (
-                <FormCertificado
-                    evento={evento}
-                    fechar={fecharFormCertificado}
                 />
             )}
         </>

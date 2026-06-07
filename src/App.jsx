@@ -1,4 +1,4 @@
-import { Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import { ArrowUp, Import } from "lucide-react";
 
@@ -30,6 +30,7 @@ import Evento from "./componentes/eventos/Evento.jsx";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
+import FormCertificado from "./componentes/eventos/FormCertificado.jsx";
 
 function AppContent() {
   const location = useLocation();
@@ -55,10 +56,10 @@ function AppContent() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
+  const rotasSemMenu = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso", "/certificado"];
   const mostrarMenu = !rotasSemMenu.some((rota) => location.pathname.startsWith(rota));
 
-  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso"];
+  const rotasSemRodape = ["/login", "/esqueci-a-senha", "/redefinir-senha", "/perfil", "/termos-de-uso", "/certificado"];
   const mostrarRodape = !rotasSemRodape.some((rota) => location.pathname.startsWith(rota));
 
   return (
@@ -91,6 +92,8 @@ function AppContent() {
         <Route path="/criar-canais" element={<CriarCanais />} />
         <Route path="/postar-videos" element={<PostarVideos />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
+
+        <Route path="/certificado/:eventoId" element={<FormCertificado />} />
       </Routes>
 
       <button
