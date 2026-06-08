@@ -1,8 +1,9 @@
 import React, { use, useEffect, useRef, useState } from "react";
 import { ArrowLeft, Asterisk } from "lucide-react";
 import axios from "axios";
+import fundoPrevia from "../../assets/img/fundo_previa.png"
 
-export default function CadastroEventos({ user, eventoEditando = null, fechar }) {
+export default function CadastroEventos({ usuario, eventoEditando = null, fechar }) {
 
     const [endereco, setEndereco] = useState({
         cep: '',
@@ -32,13 +33,12 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
 
     const [imagem, setImagem] = useState(null);
     const fileInputRef = useRef(null);
-    const [imagemPreview, setImagemPreview] = useState(null);
+    const [imagemPreview, setImagemPreview] = useState(fundoPrevia);
     const [file, setFile] = useState(null);
     const [novoCEP, setNovoCEP] = useState("");
 
     const [liberarLink, setLiberarLink] = useState(false);
     const [link, setLink] = useState("");
-
     const [modalidade, setModalidade] = useState("presencial");
 
     const BACKEND_URL = "http://localhost:8080";
@@ -110,7 +110,7 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
         try {
             const corpoEvento = {
                 organizador: {
-                    id: user.id
+                    id: usuario.id
                 },
                 titulo: evento.titulo,
                 descricao: evento.descricao,
@@ -126,7 +126,7 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
                 data: evento.data,
                 hora: evento.hora,
                 linkEventoOnline: evento.linkEventoOnline,
-                linkInscricao: user.role === "EMPRESA" ? evento.linkInscricao : null
+                linkInscricao: usuario.role === "EMPRESA" ? evento.linkInscricao : null
             }
 
             const formData = new FormData();
@@ -158,7 +158,7 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
     };
 
     return (
-        <div className="max-w-xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+        <div className="max-w-2xl mx-auto bg-white p-6 rounded-xl shadow-lg">
             <div className="flex items-center gap-2 mb-4">
                 <ArrowLeft className="cursor-pointer" onClick={() => { limpar(); fechar(); }} />
                 <h2 className="text-2xl font-bold">{eventoEditando ? "Editar Evento" : "Cadastrar Evento"}</h2>
@@ -170,7 +170,7 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
                         <label className="font-semibold block" htmlFor="imagem">Imagem do evento</label>
                         <Asterisk className="w-[10px] h-[10px] text-red-500" />
                     </div>
-                    <img src={imagemPreview} alt="Prévia da imagem" className="w-full h-80 object-cover rounded-lg border" />
+                    <img src={imagemPreview} alt="Prévia da imagem do evento" className="w-full h-80 object-cover rounded-lg border" />
                     <input ref={fileInputRef} type="file" accept="image/*" onChange={(e) => { handleUploadImagem(e) }} className="w-full p-2 border rounded-lg" required />
                 </div>
 
@@ -279,7 +279,7 @@ export default function CadastroEventos({ user, eventoEditando = null, fechar })
                             </div>
                         </div>
 
-                        {user.role === "EMPRESA" && (
+                        {usuario.role === "EMPRESA" && (
                             <input type="text" placeholder="Link para formulário de inscrição (empresa)" className="w-full pl-4 pr-4 py-2 mb-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" name="linkInscricao" value={evento.linkInscricao} onChange={handleChangeEvento} />
                         )}
                     </div>

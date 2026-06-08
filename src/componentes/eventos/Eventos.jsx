@@ -5,6 +5,7 @@ import Evento from "./Evento";
 import MeusEventos from "./MeusEventos";
 import axios from "axios";
 import Categoria from "../Categoria";
+import Botao from "../Botao"
 
 export default function Eventos() {
 
@@ -156,6 +157,10 @@ export default function Eventos() {
                         >
                             + Publicar Evento
                         </button>
+
+                        <Botao 
+
+                        />
                     </>
                 )}
             </aside>
