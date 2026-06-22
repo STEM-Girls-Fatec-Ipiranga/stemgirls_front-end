@@ -5,7 +5,8 @@ import Evento from "./Evento";
 import MeusEventos from "./MeusEventos";
 import axios from "axios";
 import Categoria from "../Categoria";
-import Botao from "../Botao"
+import Botao from "../Botao";
+import DetalhesEvento2 from "./DetalhesEvento2";
 
 export default function Eventos() {
 
@@ -23,6 +24,16 @@ export default function Eventos() {
 
     const [telaCadastro, setTelaCadastro] = useState(false);
     const [telaMeusEventos, setTelaMeusEventos] = useState(false);
+
+    const [detalhes, setDetalhes] = useState({ status: false, evento: {}, usuario: {}});
+
+    const abrirDetalhes = (status, usuario, evento) => {
+        setDetalhes({status: status, usuario: usuario, evento: evento});
+    }
+
+    const fecharDetalhes = (e) => {
+        setDetalhes(false);
+    }
 
     let storage = localStorage.getItem("user");
     const [usuario, setUsuario] = useState(JSON.parse(storage));
@@ -87,10 +98,8 @@ export default function Eventos() {
 
     return (
         <div className="flex min-h-screen bg-[#FFF6FF] text-gray-800">
-
             <aside className="w-[300px] bg-[#FFF6FF] p-6 flex flex-col gap-6 shadow-lg">
                 <h1 className="font-bold text-black text-[22px] ml-4">Eventos</h1>
-
                 <div className="relative ml-4">
                     <Search className="absolute left-3 top-3 h-4 w-4 text-gray-400" />
                     <input
@@ -157,10 +166,6 @@ export default function Eventos() {
                         >
                             + Publicar Evento
                         </button>
-
-                        <Botao 
-
-                        />
                     </>
                 )}
             </aside>
@@ -182,30 +187,42 @@ export default function Eventos() {
                     </>
                 ) : (
                     <>
-                        <div className="flex gap-4 mb-6 justify-center">
-                            {["Todos", "Ao-vivo", "Presencial", "Remoto"].map((tipo) => (
-                                <Categoria
-                                    key={tipo}
-                                    nome={tipo}
-                                    onClick={() => setSelecionado(tipo)}
-                                    className={selecionado === tipo ? `bg-pink-500 text-white` : `bg-transparent text-black hover:text-white hover:bg-pink-500 transition-all duration-200`}
-                                />
-                            ))}
-                        </div>
+                        {detalhes.status ? (
+                            <DetalhesEvento2
+                                usuario={detalhes.usuario}
+                                evento={detalhes.evento}
+                                fechar={fecharDetalhes}
+                            />
+                        ) : (
+                            <>
+                                <div className="flex gap-4 mb-6 justify-center">
+                                    {["Todos", "Ao-vivo", "Presencial", "Remoto"].map((tipo) => (
+                                        <Categoria
+                                            key={tipo}
+                                            nome={tipo}
+                                            onClick={() => setSelecionado(tipo)}
+                                            className={selecionado === tipo ? `bg-pink-500 text-white` : `bg-transparent text-black hover:text-white hover:bg-pink-500 transition-all duration-200`}
+                                        />
+                                    ))}
+                                </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-center">
-                            {eventos.map((evento, index) => (
-                                <Evento
-                                    key={index}
-                                    evento={evento}
-                                    usuario={usuario}
-                                />
-                            ))}
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 items-center">
+                                    {eventos.map((evento, index) => (
+                                        <div onClick={(e) => abrirDetalhes(true, usuario, evento)}>
+                                            <Evento
+                                                key={index}
+                                                evento={evento}
+                                                usuario={usuario}
+                                            />
+                                        </div>
+                                    ))}
 
-                            {eventos.length === 0 && (
-                                <div className="text-center text-gray-500 col-span-full">Nenhum evento encontrado.</div>
-                            )}
-                        </div>
+                                    {eventos.length === 0 && (
+                                        <div className="text-center text-gray-500 col-span-full">Nenhum evento encontrado.</div>
+                                    )}
+                                </div>
+                            </>
+                        )}
                     </>
                 )}
 

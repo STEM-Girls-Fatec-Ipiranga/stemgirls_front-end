@@ -6,10 +6,10 @@ import "../../src/index.css";
 import { CirclePlay, Instagram, Linkedin, Github } from 'lucide-react';
 
 import thumbPitch from "../assets/img/ThumbPitch.jpg";
-import videoPitch from "../assets/img/pitch-STEMGirls.MP4";
+import videoPitch from "../assets/img/pitch-STEMGirls.mp4";
 
 import FotoTalita from "../assets/img/Foto_Talita.jpeg";
-import FotoKauane from "../assets/img/Foto_Kauane.jpg";
+import FotoKauane from "../assets/img/Foto_kauane.jpg";
 import FotoAna from "../assets/img/Foto_Ana.jpg";
 import FotoLethicia from "../assets/img/Foto_lelet.jpeg";
 

@@ -119,11 +119,8 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                     instituicao: instituicao
                 });
 
-                setTimeout(() => {
-                    setStatus({ message: "Enviando inscrição...", color: "blue" });
-                    setInscricao(response.data);
-                    window.location.reload();
-                }, 300);
+                setStatus({ message: "Inscrição enviada com sucesso!", color: "green"});
+                setInscricao(response.data);
             } catch (error) {
                 console.log(error);
                 setStatus({ message: "Erro ao enviar inscrição", color: "red" });

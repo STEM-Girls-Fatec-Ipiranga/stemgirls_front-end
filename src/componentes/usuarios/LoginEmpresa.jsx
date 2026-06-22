@@ -10,16 +10,16 @@ function LoginEmpresa() {
     const navigate = useNavigate();
 
     const [registerForm, setRegisterForm] = useState({
-        nome: '',
-        cnpj: '',
-        telefone: '',
-        email: '',
-        senha: ''
+        nome: "",
+        cnpj: "",
+        telefone: "",
+        email: "",
+        senha: ""
     });
 
     const [loginForm, setLoginForm] = useState({
-        email: '',
-        senha: ''
+        email: "",
+        senha: ""
     });
 
     const [passwordError, setPasswordError] = useState('');

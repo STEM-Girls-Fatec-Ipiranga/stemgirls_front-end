@@ -28,6 +28,8 @@ import PostarVideos from "./componentes/canais/PostarVideos.jsx";
 import EventoMiniatura from "./componentes/eventos/EventoMiniatura.jsx";
 import Evento from "./componentes/eventos/Evento.jsx";
 
+import DetalhesEvento2 from "./componentes/eventos/DetalhesEvento2.jsx";
+
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
 import FormCertificado from "./componentes/eventos/FormCertificado.jsx";
@@ -92,6 +94,8 @@ function AppContent() {
         <Route path="/criar-canais" element={<CriarCanais />} />
         <Route path="/postar-videos" element={<PostarVideos />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
+        
+        <Route path="/detalhes-evento2" element={<DetalhesEvento2 />} />
 
         <Route path="/certificado/:eventoId" element={<FormCertificado />} />
       </Routes>

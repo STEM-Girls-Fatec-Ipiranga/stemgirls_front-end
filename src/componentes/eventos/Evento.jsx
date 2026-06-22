@@ -100,13 +100,13 @@ export default function Evento({ usuario, evento }) {
                 </div>
             </div>
 
-            {detalhes && (
+            {/* {detalhes && (
                 <DetalhesEvento
                     evento={evento}
                     usuario={usuario}
                     fechar={fecharDetalhes}
                 />
-            )}
+            )} */}
 
             {inscricao && (
                 <InscricaoEvento
