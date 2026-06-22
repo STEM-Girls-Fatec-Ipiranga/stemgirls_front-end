@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Search, CheckCircle } from "lucide-react";
 import CriarCanais from "./CriarCanais";
@@ -15,6 +16,7 @@ export default function Canais() {
   const [showPopupLogin, setShowPopupLogin] = useState(false);
 
   const [videoAberto, setVideoAberto] = useState(null); 
+  const [confirmarRedirecionamento, setConfirmarRedirecionamento] = useState(false);
 
   const [likeCounts, setLikeCounts] = useState(() => {
     try {
@@ -58,29 +60,6 @@ const normalizeVideos = (arr) => {
   });
 
   const playableUrlCache = useRef(new Map());
-
-  const canaisPadrao = [
-    {
-      id: 1,
-      nome: "Tech World",
-      descricao: "Dicas de tecnologia",
-      banner: "/src/assets/img/FundoSGcolorido.jpg",
-      fotoPerfil: "/src/assets/img/katherine-johnson.jpg",
-      inscritos: 823,
-      videos: [],
-      owner: "system",
-    },
-    {
-      id: 2,
-      nome: "Mundo Gamer",
-      descricao: "Gameplay e notícias",
-      banner: "/src/assets/img/FundoSGcolorido.jpg",
-      fotoPerfil: "/src/assets/img/grace-hopper.jpg",
-      inscritos: 2310,
-      videos: [],
-      owner: "system",
-    },
-  ];
 
 useEffect(() => {
   const onCreated = (e) => {
@@ -282,8 +261,9 @@ useEffect(() => {
   }, []);
 
   const abrirVideo = (v) => {
-    setVideoAberto(v);
-  };
+  setVideoAberto(v);
+  setConfirmarRedirecionamento(true);
+};
 
   const Heart = ({ filled, size = 16, className = "" }) => {
     const [usuarioLogado, setUsuarioLogado] = useState({});
@@ -349,18 +329,19 @@ useEffect(() => {
   };
 
   const VideoPreview = ({ v }) => {
-  const playable = getPlayableUrl(v.url || "");
+  const playable = null;
 
   // 1) detecta todos os campos possíveis que seu backend pode usar
-  const rawThumb = v._thumbRaw;
+  const rawThumb =
     v.thumbnail ||
+    v._thumbRaw ||
     v.thumbnailUrl ||
     v.thumbnailPath ||
     v.thumb ||
     v.poster ||
     v.preview ||
     v.thumbnailBase64 ||
-    null;
+  null;
 
   // 2) monta a URL final (aceita data:, http(s), ou path começando com /uploads)
   const makeThumbUrl = (thumb) => {
@@ -767,83 +748,114 @@ useEffect(() => {
       )}
 
       {/* Modal de vídeo centralizado - com borda rosa no card grande */}
-      {videoAberto && (
-        <div
-          className="fixed inset-0 bg-black/60 flex itens-center justify-center z-50 p-4"
-          role="dialog"
-          aria-modal="true"
-          onClick={() => setVideoAberto(null)}
-        >
-          <div
-            className="bg-white w-full max-w-3xl rounded-2xl shadow-2xl p-6 relative border-2 border-pink-500"
-            onClick={(e) => e.stopPropagation()} // evitar fechar ao clicar dentro
-          >
-            <button
-              onClick={() => setVideoAberto(null)}
-              aria-label="Fechar"
-              className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 text-xl"
-            >
-              ✕
-            </button>
+      {videoAberto && confirmarRedirecionamento && (
+    <div
+    className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
+    role="dialog"
+    aria-modal="true"
+    onClick={() => {
+      setVideoAberto(null);
+      setConfirmarRedirecionamento(false);
+    }}
+  >
+    <div
+      className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl p-6 relative border-2 border-pink-500"
+      onClick={(e) => e.stopPropagation()}
+    >
+      <button
+        onClick={() => {
+          setVideoAberto(null);
+          setConfirmarRedirecionamento(false);
+        }}
+        className="absolute top-4 right-4 text-gray-600 hover:text-gray-800 text-xl"
+      >
+        ✕
+      </button>
 
-            {/* Player */}
-            <div className="w-full mb-4">
-              {videoAberto.url ? (
-                <video
-                  src={getPlayableUrl(videoAberto.url)}
-                  controls
-                  className="w-full h-[420px] md:h-[480px] rounded-xl object-cover bg-black"
-                />
-              ) : videoAberto.thumbnail ? (
-                <img
-                  src={videoAberto.thumbnail}
-                  alt={videoAberto.title}
-                  className="w-full h-[420px] md:h-[480px] rounded-xl object-cover"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="w-full h-[420px] md:h-[480px] rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
-                  Sem vídeo disponível
-                </div>
-              )}
-            </div>
-
-            {/* Conteúdo */}
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">{videoAberto.title}</h2>
-            <p className="text-gray-600 mb-4">{videoAberto.desc}</p>
-
-            <div className="flex items-center gap-3">
-              <button
-                onClick={() => toggleLike(String(videoAberto.id || videoAberto.title || ""))}
-                className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold shadow transition-all ${userLiked.has(String(videoAberto.id || videoAberto.title || "")) ? "bg-purple-600 text-white" : "bg-pink-500 text-white"
-                  }`}
-              >
-                <span className="inline-flex items-center">
-                  <Heart filled={userLiked.has(String(videoAberto.id || videoAberto.title || ""))} className={`${userLiked.has(String(videoAberto.id || videoAberto.title || "")) ? 'text-white' : 'text-white'}`} />
-                </span>
-                <span className="ml-2">
-                  {likeCounts[String(videoAberto.id || videoAberto.title || "")] ? `(${likeCounts[String(videoAberto.id || videoAberto.title || "")]})` : "Curtir"}
-                </span>
-              </button>
-
-              <button
-                onClick={() => {
-                  if (videoAberto.canalId) {
-                    const canal = canais.find((c) => c.id === videoAberto.canalId);
-                    if (canal) {
-                      setCanalSelecionado(canal);
-                      setVideoAberto(null);
-                    }
-                  }
-                }}
-                className="bg-gray-100 text-gray-800 px-4 py-2 rounded-xl font-medium shadow hover:bg-gray-200 transition-all"
-              >
-                Ver canal
-              </button>
-            </div>
+      <div className="mb-5">
+        {videoAberto._thumbRaw ? (
+          <img
+            src={
+              videoAberto._thumbRaw.startsWith("http")
+                ? videoAberto._thumbRaw
+                : `http://localhost:8080/${videoAberto._thumbRaw.replace(/^\/+/, "")}`
+            }
+            alt={videoAberto.title}
+            className="w-full h-[320px] rounded-xl object-cover"
+          />
+        ) : (
+          <div className="w-full h-[320px] rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
+            Sem imagem disponível
           </div>
-        </div>
-      )}
+        )}
+      </div>
+
+      <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        {videoAberto.title}
+      </h2>
+
+      <p className="text-gray-600 mb-4">
+        {videoAberto.desc}
+      </p>
+
+      <div className="bg-yellow-50 border border-yellow-300 rounded-xl p-4 mb-5">
+        <p className="text-yellow-800 font-medium">
+          ⚠️ Você será redirecionado para um site externo.
+        </p>
+        <p className="text-yellow-700 text-sm mt-1">
+          Verifique se você confia no conteúdo antes de continuar.
+        </p>
+      </div>
+
+      <div className="flex gap-3">
+        <button
+          onClick={() => {
+            window.open(
+              videoAberto.url,
+              "_blank",
+              "noopener,noreferrer"
+            );
+
+            setVideoAberto(null);
+            setConfirmarRedirecionamento(false);
+          }}
+          className="bg-pink-500 text-white px-5 py-2 rounded-xl font-semibold shadow hover:bg-pink-600 transition-all"
+        >
+          Continuar
+        </button>
+
+        <button
+          onClick={() => {
+            setVideoAberto(null);
+            setConfirmarRedirecionamento(false);
+          }}
+          className="bg-gray-200 text-gray-800 px-5 py-2 rounded-xl font-semibold shadow hover:bg-gray-300 transition-all"
+        >
+          Cancelar
+        </button>
+
+        <button
+          onClick={() => {
+            if (videoAberto.canalId) {
+              const canal = canais.find(
+                (c) => String(c.id) === String(videoAberto.canalId)
+              );
+
+              if (canal) {
+                setCanalSelecionado(canal);
+                setVideoAberto(null);
+                setConfirmarRedirecionamento(false);
+              }
+            }
+          }}
+          className="bg-white border border-gray-300 text-gray-700 px-5 py-2 rounded-xl font-semibold shadow hover:bg-gray-50 transition-all"
+        >
+          Ver canal
+        </button>
+      </div>
+    </div>
+  </div>
+)}
 
       {/* NOTIFICAÇÃO */}
       {showNotificacao && (

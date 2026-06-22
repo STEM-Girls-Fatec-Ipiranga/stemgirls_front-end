@@ -8,26 +8,17 @@ export default function PostarVideos({
   setCanalSelecionado,
   setShowNotificacao,
 }) {
-  const [videoFile, setVideoFile] = useState(null);
+
   const [thumbFile, setThumbFile] = useState(null);
-  const [videoPreview, setVideoPreview] = useState(null);
   const [thumbPreview, setThumbPreview] = useState(null);
+
   const [titulo, setTitulo] = useState("");
   const [desc, setDesc] = useState("");
   const [canalDestino, setCanalDestino] = useState(canalSelecionado?.id || "");
-  const [mostrarPopup, setMostrarPopup] = useState(false);
 
-  const arquivoInput = useRef();
+  const [linkVideo, setLinkVideo] = useState("");
+
   const thumbInput = useRef();
-
-  // Vídeo preview (blob url)
-  const handleVideoChange = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const blobUrl = URL.createObjectURL(file);
-    setVideoPreview(blobUrl);
-    setVideoFile(file);
-  };
 
   // Thumb preview + salvar arquivo pra enviar
   const handleThumbChange = (e) => {
@@ -40,14 +31,15 @@ export default function PostarVideos({
   };
 
   const publicar = () => {
-    if (!videoFile || !titulo.trim() || !canalDestino) {
+    if (!thumbFile || !linkVideo.trim() || !titulo.trim() || !canalDestino) {
       setShowNotificacao("Escolha vídeo, título e canal");
       setTimeout(() => setShowNotificacao(null), 2000);
       return;
     }
 
     const formData = new FormData();
-    formData.append("file", videoFile);
+    formData.append("link", linkVideo);
+    formData.append("thumb", thumbFile);
     formData.append("title", titulo);
     formData.append("desc", desc);
     formData.append("canalId", canalDestino);
@@ -99,23 +91,17 @@ export default function PostarVideos({
         <div className="bg-white p-6 rounded-2xl w-full max-w-2xl overflow-y-auto max-h-[90vh] border border-pink-200">
           <h2 className="text-2xl font-bold mb-4 text-center">Publicar Novo Vídeo</h2>
 
-          <label className="block mb-2 font-semibold text-sm text-pink-600">Vídeo:</label>
-          <input type="file" accept="video/*" ref={arquivoInput} onChange={handleVideoChange} className="mb-3" />
+          <label className="block mb-2 font-semibold text-sm text-pink-600"> Link do vídeo: </label>
+          <input type="url" placeholder="https://youtube.com/watch?v=..." value={linkVideo} onChange={(e) => setLinkVideo(e.target.value)} className="w-full mb-4 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" />
 
-          {videoPreview && (
-            <div className="relative cursor-pointer group" onClick={() => setMostrarPopup(true)}>
-              <video src={videoPreview} className="w-full h-48 object-cover rounded-lg mb-4" muted />
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40 text-white text-xl opacity-0 group-hover:opacity-100 rounded-lg transition">
-                ▶ Clique para visualizar
-              </div>
-            </div>
-          )}
-
-         {/* 
+        
+      {thumbPreview && ( <img src={thumbPreview} alt="thumbnail" className="w-full h-32 object-cover rounded-lg mb-4" />
+)}
+         
         <label className="block mb-2 font-semibold text-sm text-pink-600">Thumbnail:</label>
         <input type="file" accept="image/*" ref={thumbInput} onChange={handleThumbChange} className="mb-3" />
         {thumbPreview && <img src={thumbPreview} alt="thumbnail" className="w-full h-32 object-cover rounded-lg mb-4" />}
-        */}
+        
 
           <input type="text" placeholder="Título do vídeo" value={titulo} onChange={(e) => setTitulo(e.target.value)} className="w-full mb-4 pl-10 pr-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent shadow-inner bg-gray-100 text-gray-700" />
 
@@ -135,14 +121,8 @@ export default function PostarVideos({
         </div>
       </div>
 
-      {mostrarPopup && (
-        <div className="fixed inset-0 bg-black bg-opacity-80 z-[999] flex items-center justify-center p-4">
-          <div className="bg-black p-4 rounded-lg relative max-w-4xl w-full">
-            <video src={videoPreview} controls autoPlay className="w-full rounded-lg max-h-[80vh]" />
-            <button onClick={() => setMostrarPopup(false)} className="absolute top-2 right-2 bg-white bg-opacity-80 hover:bg-opacity-100 text-black px-3 py-1 rounded-lg font-bold">✕</button>
-          </div>
-        </div>
-      )}
     </>
   );
 }
+
+
