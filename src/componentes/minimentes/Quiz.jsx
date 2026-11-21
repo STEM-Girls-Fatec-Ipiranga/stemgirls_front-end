@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import quizLogo from "../../assets/img/quiz-logo.jpg";
+import QuizRevisao from "./QuizRevisao";
 
 export default function Quiz({ active, onClose, onFinish }) {
   const [quizState, setQuizState] = useState({
@@ -10,6 +11,8 @@ export default function Quiz({ active, onClose, onFinish }) {
     feedback: "",
     score: 0,
   });
+
+  const [modoRevisao, setModoRevisao] = useState(false);
 
   const q = active?.quiz || {};
   const currentQ = q.quiz?.[quizState.index] || {
@@ -207,7 +210,11 @@ export default function Quiz({ active, onClose, onFinish }) {
                 />
               </div>
 
-              {!quizState.started && !quizState.finished && (
+              {modoRevisao && (
+                <QuizRevisao atividadeId={q.id} onSair={() => setModoRevisao(false)} />
+              )}
+
+              {!modoRevisao && !quizState.started && !quizState.finished && (
                 <>
                   <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">
                     Este quiz foi criado para ajudar você a treinar e reforçar o que aprendeu! 💡
@@ -221,10 +228,23 @@ export default function Quiz({ active, onClose, onFinish }) {
                   >
                     Iniciar
                   </button>
+
+                  <div className="mt-6 pt-6 border-t border-pink-100">
+                    <p className="text-sm text-gray-700">
+                      🔁 <b>Modo Revisão:</b> errou? A pergunta volta para o fim da fila
+                      e você só termina quando acertar todas.
+                    </p>
+                    <button
+                      onClick={() => setModoRevisao(true)}
+                      className="mt-3 px-8 py-2 rounded-full border-2 border-pink-500 text-pink-600 hover:bg-pink-50 font-semibold"
+                    >
+                      Modo Revisão
+                    </button>
+                  </div>
                 </>
               )}
 
-              {quizState.started && !quizState.finished && (
+              {!modoRevisao && quizState.started && !quizState.finished && (
                 <div className="mt-6">
                   <hr className="border-pink-100 mb-4" />
 
@@ -297,7 +317,7 @@ export default function Quiz({ active, onClose, onFinish }) {
                 </div>
               )}
 
-              {quizState.finished && (
+              {!modoRevisao && quizState.finished && (
                 <div className="mt-6 text-center">
                   <h3 className="text-2xl font-bold text-pink-600">Resultado</h3>
                   <p className="mt-3 text-gray-600">
