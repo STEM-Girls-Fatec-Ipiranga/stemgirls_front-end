@@ -18,10 +18,6 @@ export default function Evento({ usuario, evento }) {
         setDetalhes(true);
     }
 
-    const fecharDetalhes = (e) => {
-        setDetalhes(false);
-    }
-
     const abrirInscricao = (e) => {
         setInscricao(true);
     }
@@ -42,7 +38,7 @@ export default function Evento({ usuario, evento }) {
         try {
             const response = await axios.get(`${BACKEND_URL}/inscricao/${usuario.id}/${evento.id}`);
             setUserInscrito(response.data);
-        } catch(err) {
+        } catch (err) {
             console.log(err);
         }
     }
@@ -59,7 +55,7 @@ export default function Evento({ usuario, evento }) {
                 <img src={evento.imagem} className="w-full h-40 object-cover rounded-t-xl" alt={evento.titulo} onClick={abrirDetalhes} />
 
                 <div className="flex flex-col p-4">
-                    <div onClick={abrirDetalhes}>
+                    <div>
                         <h3 className="font-bold text-lg break-words">{evento.titulo}</h3>
                         <p className="text-pink-600">{evento.data} • {evento.hora}</p>
                         <p className="text-sm italic text-gray-600 break-words">
@@ -82,39 +78,20 @@ export default function Evento({ usuario, evento }) {
                                     </button>
                                 </>
                             ) : (
-                                <>
-                                    <button
-                                        className="bg-[#F36EC0] text-white text-sm font-semibold rounded-lg px-4 py-2 hover:bg-[#e055a8] transition"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            abrirInscricao();
-                                        }}
-                                    >
-
-                                        Participar
-                                    </button>
-                                </>
+                                null
                             )
                         }
                     </div>
                 </div>
+
+                {inscricao && (
+                    <InscricaoEvento
+                        evento={evento}
+                        user={usuario}
+                        fechar={fecharInscricao}
+                    />
+                )}
             </div>
-
-            {/* {detalhes && (
-                <DetalhesEvento
-                    evento={evento}
-                    usuario={usuario}
-                    fechar={fecharDetalhes}
-                />
-            )} */}
-
-            {inscricao && (
-                <InscricaoEvento
-                    evento={evento}
-                    user={usuario}
-                    fechar={fecharInscricao}
-                />
-            )}
         </>
     );
 }

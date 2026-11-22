@@ -28,7 +28,7 @@ import PostarVideos from "./componentes/canais/PostarVideos.jsx";
 import EventoMiniatura from "./componentes/eventos/EventoMiniatura.jsx";
 import Evento from "./componentes/eventos/Evento.jsx";
 
-import DetalhesEvento2 from "./componentes/eventos/DetalhesEvento2.jsx";
+import DetalhesEvento from "./componentes/eventos/DetalhesEvento.jsx";
 
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import "./App.css";
@@ -83,7 +83,7 @@ function AppContent() {
         <Route path="/esqueci-a-senha" element={<ForgotPasswordPage />} />
 
         <Route path="/eventos" element={<Eventos />} />
-        <Route path="/eventos" element={<EventoMiniatura />} />
+        <Route path="/evento-miniatura" element={<EventoMiniatura />} />
         <Route path="/evento" element={<Evento />} />
 
         <Route path="/minimentes" element={<MiniMentes />} />
@@ -95,7 +95,7 @@ function AppContent() {
         <Route path="/postar-videos" element={<PostarVideos />} />
         <Route path="/redefinir-senha/:token" element={<ResetPasswordPage />} />
         
-        <Route path="/detalhes-evento2" element={<DetalhesEvento2 />} />
+        <Route path="/detalhes-evento" element={<DetalhesEvento />} />
 
         <Route path="/certificado/:eventoId" element={<FormCertificado />} />
       </Routes>

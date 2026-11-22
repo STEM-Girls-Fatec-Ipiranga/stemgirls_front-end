@@ -274,18 +274,29 @@ export default function InscricaoEvento({ evento, user, fechar }) {
                     )}
 
                     <div className="flex gap-2 mt-4 justify-end">
-                        <button className="bg-gray-200 text-sm px-3 py-1 rounded-lg" onClick={fechar}>
+                        <button 
+                            className="bg-gray-200 text-sm px-3 py-1 rounded-lg" 
+                            type="button"
+                            onClick={fechar}
+                        >
                             Fechar
                         </button>
 
                         {inscricao && (
-                            <button className="bg-red-400 text-sm text-white px-3 py-1 rounded-lg" onClick={excluirInscricao}>
+                            <button 
+                                className="bg-red-400 text-sm text-white px-3 py-1 rounded-lg"
+                                onClick={excluirInscricao}
+                                type="button"
+                            >
                                 Cancelar inscrição
                             </button>
                         )}
 
                         {!inscricao && (
-                            <button className="bg-[#F36EC0] text-sm text-white font-semibold rounded-lg px-3 py-1 hover:bg-[#e055a8] transition" onClick={enviarInscricao}>
+                            <button 
+                                className="bg-[#F36EC0] text-sm text-white font-semibold rounded-lg px-3 py-1 hover:bg-[#e055a8] transition" 
+                                onClick={enviarInscricao}
+                            >
                                 Confirmar
                             </button>
                         )}

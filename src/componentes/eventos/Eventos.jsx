@@ -6,7 +6,7 @@ import MeusEventos from "./MeusEventos";
 import axios from "axios";
 import Categoria from "../Categoria";
 import Botao from "../Botao";
-import DetalhesEvento2 from "./DetalhesEvento2";
+import DetalhesEvento2 from "./DetalhesEvento";
 
 export default function Eventos() {
 
