@@ -6,7 +6,7 @@ import MeusEventos from "./MeusEventos";
 import axios from "axios";
 import Categoria from "../Categoria";
 import Botao from "../Botao";
-import DetalhesEvento2 from "./DetalhesEvento";
+import DetalhesEvento from "./DetalhesEvento";
 
 export default function Eventos() {
 
@@ -188,7 +188,7 @@ export default function Eventos() {
                 ) : (
                     <>
                         {detalhes.status ? (
-                            <DetalhesEvento2
+                            <DetalhesEvento
                                 usuario={detalhes.usuario}
                                 evento={detalhes.evento}
                                 fechar={fecharDetalhes}
