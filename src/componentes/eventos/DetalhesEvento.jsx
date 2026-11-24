@@ -1,12 +1,18 @@
 import { ArrowLeft, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import InscricaoEvento from "./InscricaoEvento";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function DetalhesEvento2({ usuario, evento, fechar }) {
     const [inscricao, setInscricao] = useState(false);
     const [mensagem, setMensagem] = useState("");
+    const [userInscrito, setUserInscrito] = useState(null);
+    const [formCertificado, setFormCertificado] = useState(false);
 
     const BACKEND_URL = "http://localhost:8080";
+    const dataAtual = new Date();
+    const navigate = useNavigate();
 
     const baixarInscricoes = async () => {
         try {
@@ -26,6 +32,19 @@ export default function DetalhesEvento2({ usuario, evento, fechar }) {
         }
     }
 
+    const abrirFormCertificado = () => {
+        navigate(`/certificado/${evento.id}`);
+    }
+
+    const verificarInscricao = async () => {
+        try {
+            const response = await axios.get(`${BACKEND_URL}/inscricao/${usuario.id}/${evento.id}`);
+            setUserInscrito(response.data);
+        } catch (err) {
+            console.log(err);
+        }
+    }
+
     const abrirInscricao = () => {
         setInscricao(true);
     }
@@ -35,7 +54,7 @@ export default function DetalhesEvento2({ usuario, evento, fechar }) {
     }
 
     useEffect(() => {
-
+        verificarInscricao();
     }, [])
 
     return (
@@ -97,11 +116,33 @@ export default function DetalhesEvento2({ usuario, evento, fechar }) {
 
                         <button
                             type="button"
-                            className="border border-[#F36EC0] bg-[#F36EC0] text-white text-md px-3 py-1 rounded-lg font-semibold"
-                            onClick={abrirInscricao}
+                            className="border border-[#F36EC0] text-[#F36EC0] text-md px-3 py-1 rounded-lg font-semibold hover:bg-[#F36EC0] hover:text-white transition"
+                            onClick={abrirFormCertificado}
                         >
-                            Participar
+                            Certificado
                         </button>
+
+                        {
+                            userInscrito ? (
+                                <button
+                                    className="bg-[#ABF7AB] text-[#38A838] text-sm font-semibold rounded-lg px-4 py-2 hover:bg-[#CCFFCC] transition"
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        abrirInscricao();
+                                    }}
+                                >
+                                    Abrir inscrição
+                                </button>
+                            ) : (
+                                <button
+                                    type="button"
+                                    className="border border-[#F36EC0] bg-[#F36EC0] text-white text-md px-3 py-1 rounded-lg font-semibold"
+                                    onClick={abrirInscricao}
+                                >
+                                    Participar
+                                </button>
+                            )
+                        }
                     </div>
                 </div>
                 {inscricao && (
@@ -109,7 +150,7 @@ export default function DetalhesEvento2({ usuario, evento, fechar }) {
                         user={usuario}
                         evento={evento}
                         fechar={fecharInscricao}
-                    />  
+                    />
                 )}
             </div>
         </>
